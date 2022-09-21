@@ -284,7 +284,7 @@
        </h2>
 
       <ul class="directory">
-        <li v-for="authorID in $graffiti.getAuthors(arrivals.objects)">
+        <li v-for="authorID in $graffiti.getAuthors(arrivals.objects)" :key="authorID">
           <h3>
             <Name :id="authorID" />
           </h3>

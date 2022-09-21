@@ -9,10 +9,10 @@
 <body>
   <div id="app">
     <h1>hello world!</h1>
-    <graffiti-collection v-slot="hellos" :query="{
+    <graffiti-collection :query="{
       type: 'hello',
       timestamp: { '$gt': Date.now() - 24*60*60*1000 }
-    }">
+    }" v-slot="hellos">
       <p>{{hellos.objects.length}} “hellos” have been made in the last 24 hours.</p>
       <template v-if="!$graffiti.loggedIn">
         <button @click="$graffiti.logIn">log in to say hello!</button>
@@ -21,12 +21,7 @@
         <button @click="hellos.update({
           type: 'hello',
           timestamp: Date.now(),
-          _contexts: [{
-            _nearMisses: [{
-              type: 'nothello',
-              timestamp: Date.now()
-            }]
-          }]
+          _nearMisses: [ o=> o.type='nothello' ]
         })">
           say hello, world!
         </button>

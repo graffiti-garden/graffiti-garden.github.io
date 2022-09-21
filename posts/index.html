@@ -28,7 +28,7 @@
       </template>
 
       <ul>
-        <li v-for="post in posts.objects">
+        <li v-for="post in posts.objects" :key="post._id">
           <graffiti-collection v-slot="likes" :query="{
             type: 'like',
             at: post._id,
@@ -46,7 +46,7 @@
               </template>
               <template v-else>
                 <a href="" @click.prevent="likes.delete(
-                  likes.objects.find(l=>(l._by==$graffiti.myID))._id
+                  likes.objects.find(l=>l._by==$graffiti.myID)._id
                 )">unlike</a>
               </template>
             </template>

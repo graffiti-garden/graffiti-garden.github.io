@@ -166,8 +166,8 @@
             likes.update({
               type: 'like',
               object: post._id,
-              nearMisses: [
-                o=> o.object = 'not' + post._id
+              _nearMisses: [
+                o=> o.object += 'not'
               ]
             }) :
             likes.deleteMine()">
@@ -229,14 +229,14 @@
           type: 'post',
           content: content,
           _nearMisses: [
-            o=> o._by = 'not' + id
+            o=> o._by += 'not'
           ]
         } : {
           type: 'post',
           content: content,
           at: [id],
           _nearMisses: [
-            o=> o.at = ['not' + id]
+            o=> o.at[0] += 'not'
           ]
         });content=''">
 

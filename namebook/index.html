@@ -57,15 +57,12 @@
       name: { $type: 'string' }
     }" v-slot="names">
 
-      <form v-if="editing"
-        @submit.prevent="
-          replaceName = names.object? names.object : replaceName;
-          replaceName.name = editText;
-          names.update(replaceName);
-          editing = false;
-        ">
+      <form ref="form" v-if="editing"
+        @submit.prevent="submit(names)">
 
-        <input type="text" v-model="editText" @focus="$event.target.select()" ref="editor" />
+        <!-- autofocus, autoselect and submit on clickaway -->
+        <input ref="input" type="text" v-model="editText" @focus="$event.target.select()" v-focus
+          v-click-away="() => submit(names)" />
       </form>
 
       <router-link v-else :to="'/profile/' + id">
@@ -81,7 +78,6 @@
         @click="
         editText = names.object? names.object.name : '';
         editing = true;
-        this.$nextTick(() => this.$refs.editor.focus());
       ">
         ✏️
       </button>
@@ -93,13 +89,12 @@
     <div class="post-modifiers" v-if="post._by==$graffiti.myID">
       <input :id="'menu' + post._id" type="checkbox" v-model="editMenuOpen" />
       <label :for="'menu' + post._id">⚙️</label>
-      <ul v-show="editMenuOpen">
+      <ul v-if="editMenuOpen" v-click-away="() => editMenuOpen=false">
         <li v-if="!editing">
           <button @click="
             editText = post.content;
             editing = true;
             editMenuOpen = false;
-            this.$nextTick(() => this.$refs.editor.focus());
           ">
             edit
           </button>
@@ -138,7 +133,7 @@
           editing = false;
         ">
 
-        <textarea v-model="editText" @focus="$event.target.select()" ref="editor"></textarea>
+        <textarea v-model="editText" @focus="$event.target.select()" v-focus ></textarea>
         <input type="submit" value="save">
       </form>
       <template v-else>
@@ -304,6 +299,7 @@
 
   <script type="module">
     import Graffiti from "../vue/plugin.js"
+    import VueClickAway from "https://cdn.jsdelivr.net/npm/vue3-click-away@1.2.4/dist/module.js"
 
     const Post = {
       template: '#post',
@@ -326,16 +322,24 @@
         return {
           editing: false,
           editText: '',
-          replaceName: {
+        }
+      },
+
+      methods: {
+        submit(names) {
+          const submission = names.object? names.object : {
             type: 'name',
             of: this.id,
             _by: this.id
           }
+          submission.name = this.editText
+          names.update(submission)
+          this.editing = false
         }
       }
     }
 
-    const router = VueRouter.createRouter({
+    const Router = VueRouter.createRouter({
       history: VueRouter.createWebHashHistory(),
       routes: [
         { path: '/', component: {
@@ -353,11 +357,18 @@
       ],
     })
 
+    const focus = {
+      mounted: el => el.focus()
+    }
+
     Graffiti().then(g=> {
       Vue.createApp().use(g)
       .component('Post', Post)
       .component('Name', Name)
-      .use(router).mount('#app')
+      .directive('focus', focus)
+      .use(VueClickAway)
+      .use(Router)
+      .mount('#app')
     })
   </script>
 </body>

@@ -1,6 +1,3 @@
 [submodule "vue"]
 	path = vue
 	url = git@github.com:csail-graffiti/vue.git
-[submodule "talk"]
-	path = talk
-	url = git@github.com:csail-graffiti/talk.git

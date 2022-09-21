@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>hello world</title>
+</head>
+<body>
+  <div id="app">
+
+    <graffiti-collection
+      :query="{
+        type: 'hello',
+        timestamp: { '$gt': Date.now() - 24*60*60*1000 }
+      }"
+      v-slot="hellos"
+    >
+      {{hellos.objects.length}} "hellos" have been made in the last 24 hours.
+
+      <template v-if="!$graffiti.loggedIn">
+        <button @click="$graffiti.logIn">log in to say hello!</button>
+      </template>
+      <template v-else>
+        <button @click="hellos.update({
+            type: 'hello',
+            timestamp: Date.now(),
+            _contexts: [{
+              _nearMisses: [{
+                type: 'nothello',
+                timestamp: Date.now()
+              }]
+            }]
+          })"
+        >
+          Say Hello World!
+        </button>
+        <button @click="$graffiti.logOut">(log out)</button>
+      </template>
+    <graffiti-collection>
+  </div>
+
+  <script type="module">
+    import { createApp } from "https://unpkg.com/vue@3.2.36/dist/vue.esm-browser.prod.js"
+    import Graffiti from "https://sportdeath.github.io/graffiti-tools/vue.js"
+
+    Graffiti().then(g=>createApp().use(g).mount("#app"))
+  </script>
+</body>
+</html>

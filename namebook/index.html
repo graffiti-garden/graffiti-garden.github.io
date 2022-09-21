@@ -5,7 +5,7 @@
   <title>namebook</title>
   <link rel="stylesheet" href="https://use.typekit.net/ovj6wxu.css">
   <link rel="stylesheet" href="./style.css">
-  <script src="https://unpkg.com/vue@3.2.37/dist/vue.global.js"></script>
+  <script src="https://unpkg.com/vue@3.2.37/dist/vue.global.prod.js"></script>
   <script src="https://unpkg.com/vue-router@4.0.16/dist/vue-router.global.prod.js"></script>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 </head>
@@ -14,10 +14,12 @@
   <div id="app">
 
     <template v-if="!$graffiti.loggedIn">
-      <h1>
+      <h1 class="header"><u>
         namebook
-      </h1>
-      <button @click="$graffiti.logIn">log in to say hello!</button>
+      </u></h1>
+      <h2>
+        <button @click="$graffiti.logIn">log in with graffiti</button>
+      </h2>
     </template>
     <template v-else>
 
@@ -97,6 +99,7 @@
             editText = post.content;
             editing = true;
             editMenuOpen = false;
+            this.$nextTick(() => this.$refs.editor.focus());
           ">
             edit
           </button>
@@ -109,10 +112,10 @@
       </ul>
     </div>
 
-    <h2>
-      <Name :id="post._by" />
-    </h2>
     <h3>
+      <Name :id="post._by" />
+    </h3>
+    <h4>
       {{ new Date(post.timestamp).toLocaleDateString(undefined, {
         month: 'long',
         day: 'numeric',
@@ -120,7 +123,7 @@
         hour: 'numeric',
         minute: 'numeric'
       }) }}
-    </h3>
+    </h4>
 
     <!-- The post itself -->
     <p>
@@ -130,7 +133,7 @@
           editing = false;
         ">
 
-        <textarea v-model="editText" ></textarea>
+        <textarea v-model="editText" @focus="$event.target.select()" ref="editor"></textarea>
         <input type="submit" value="save">
       </form>
       <template v-else>
@@ -177,11 +180,7 @@
     <graffiti-collection :query="{
       type: 'post',
       content: { $type: 'string' },
-      $or: [{
-        _by: id
-      }, {
-        _to: id
-      }]
+      _by: id
     }" v-slot="posts">
 
       <p>
@@ -193,7 +192,7 @@
           ]
         });content=''">
 
-          <textarea v-model="content" placeholder="what's on your mind?" autofocus/></textarea>
+          <textarea v-model="content" placeholder="what's on your mind?" autofocus></textarea>
           <input type="submit" value="post">
         </form>
       </p>
@@ -208,32 +207,43 @@
   </script>
 
   <script type="text/x-template" id="directory">
-    <h1>
-      namebook directory
-    </h1>
+    <h1><u>
+      namebook
+    </u></h1>
 
     <graffiti-collection :query="{
       type: 'arrive',
       tags: 'namebook'
     }" v-slot="arrivals">
 
-      <input type="checkbox"
-        id="directorycheck"
-        :checked="arrivals.myObjects.length"
-        @change="$event.target.checked?
-          arrivals.update({
-            type: 'arrive',
-            tags: ['namebook'],
-            nearMisses: [
-              o=> o.tags = 'notnamebook'
-            ]
-          }) :
-          arrivals.deleteMine()">
-       <label for="directorycheck">add me to the directory</label>
+      <h2>
+        <input type="checkbox"
+          id="directorycheck"
+          :checked="!arrivals.myObjects.length"
+          @change="$event.target.checked?
+            arrivals.deleteMine() :
+            arrivals.update({
+              type: 'arrive',
+              tags: ['namebook'],
+              nearMisses: [
+                o=> o.tags = 'notnamebook'
+              ]
+            })">
+         <label for="directorycheck">
+           <template v-if="!arrivals.myObjects.length">
+             add me!
+           </template>
+           <template v-else>
+             remove me
+           </template>
+         </label>
+       </h2>
 
-      <ul>
+      <ul class="directory">
         <li v-for="authorID in $graffiti.getAuthors(arrivals.objects)">
-          <Name :id="authorID" />
+          <h3>
+            <Name :id="authorID" />
+          </h3>
         </li>
       </ul>
 

@@ -10,10 +10,15 @@
 
 a {
   color: inherit;
+  font: inherit;
   text-decoration: none;
 }
 
 a:hover {
+  text-decoration: underline;
+}
+
+.header .router-link-active {
   text-decoration: underline;
 }
 
@@ -28,6 +33,7 @@ ul {
 
 .header {
   background: var(--blue);
+  color: white;
   text-align: center;
   border-radius: 1em;
 }
@@ -38,14 +44,9 @@ ul {
 }
 
 u {
-  color: white;
-}
-
-u a {
   font-family: klavika-web, sans-serif;
-  color: white;
   text-decoration: none;
-  font-size: 150%;
+  font-size: 130%;
 }
 
 .feed {
@@ -58,19 +59,6 @@ input[type="checkbox"] {
   display: none;
 }
 
-label {
-  color: var(--grey);
-  user-select: none;
-  padding: 0.2em;
-  border-radius: 0.5em;
-}
-
-label:not([disabled]):hover {
-  cursor: pointer;
-  background: var(--grey);
-  color: white;
-}
-
 input[type="checkbox"]:checked + label {
   background: var(--blue);
   color: white;
@@ -80,21 +68,24 @@ input[type="checkbox"]:checked + label:hover {
   background: var(--dark-blue);
 }
 
-button {
+label, button {
+  padding-left: 0.5em;
+  padding-right: 0.5em;
+  padding-top: 0.2em;
+  padding-bottom: 0.2em;
+  font-size: inherit;
+  user-select: none;
+  box-shadow: 0.05em 0.05em 0.2em var(--grey);
   background: none;
   border: none;
   border-radius: 1em;
-  font-size: inherit;
-  user-select: none;
-  padding: 0;
-  padding-left: 0.3em;
-  padding-right: 0.3em;
+  color: var(--grey);
 }
 
-button:hover {
+:is(label, button):not([disabled]):hover {
+  cursor: pointer;
   background: var(--grey);
   color: white;
-  cursor: pointer;
 }
 
 .post {
@@ -130,6 +121,7 @@ button:hover {
 .post-modifiers button {
   width: 100%;
   border-radius: 0;
+  box-shadow: none;
 }
 
 .post-annotators {
@@ -148,12 +140,18 @@ h1 {
 }
 
 h2 {
+  font-size: 200%;
+  text-align: center;
+  margin: 1em;
+}
+
+h3 {
   color: var(--blue);
   margin: 0.1em;
   font-size: 110%;
 }
 
-h3 {
+h4 {
   color: var(--grey);
   margin: 0.1em;
   font-weight: normal;
@@ -197,8 +195,7 @@ textarea + input[type="submit"] {
 
 .superscript {
   vertical-align: top;
-  font-size: 70%;
-  transform:scale(-1, 1);
+  font-size: 50%;
 }
 
 input[type="text"] {
@@ -210,10 +207,15 @@ input[type="text"] {
   padding: 0;
   border: 0;
   outline-color: var(--blue);
-  width: 90%;
+  width: 80%;
 }
 
 p {
   white-space: pre;
   font-size: 130%;
+}
+
+.directory {
+  text-align: center;
+  font-size: 120%;
 }

@@ -92,7 +92,7 @@
       <ul v-if="editMenuOpen" v-click-away="() => editMenuOpen=false">
         <li v-if="!editing">
           <button @click="
-            editText = post.content;
+            editText = post.summary;
             editing = true;
             editMenuOpen = false;
           ">
@@ -128,7 +128,7 @@
     <!-- The post itself -->
     <p>
       <form v-if="editing" @submit.prevent="
-          post.content = editText;
+          post.summary = editText;
           collection.update(post);
           editing = false;
         ">
@@ -136,7 +136,8 @@
         <textarea v-model="editText" @focus="$event.target.select()" v-focus ></textarea>
         <input type="submit" value="save">
       </form>
-      <span v-else v-html="urledContent"></span>
+      <span :style="('type' in post && post.type=='post')?'':'font-style: italic'"
+        v-else v-html="sanitizedContent"></span>
     </p>
 
     <!-- Likes and comments -->
@@ -146,8 +147,7 @@
     }" v-slot="likes">
 
     <graffiti-collection :query="{
-      type: 'post',
-      content: { $type: 'string' },
+      summary: { $type: 'string' },
       inReplyTo: post._id
     }" v-slot="comments">
 
@@ -187,7 +187,7 @@
         <li class="post">
           <form @submit.prevent="comments.update({
             type: 'post',
-            content: commentText,
+            summary: commentText,
             inReplyTo: post._id,
             _nearMisses: [
               o=> o.inReplyTo += 'not'
@@ -209,8 +209,7 @@
     </h1>
 
     <graffiti-collection :query="{
-      type: 'post',
-      content: { $type: 'string' },
+      summary: { $type: 'string' },
       $or: [
         { _by: id },
         { at: id }
@@ -220,13 +219,13 @@
       <p>
         <form @submit.prevent="posts.update(id==$graffiti.myID? {
           type: 'post',
-          content: content,
+          summary: content,
           _nearMisses: [
             o=> o._by += 'not'
           ]
         } : {
           type: 'post',
-          content: content,
+          summary: content,
           at: [id],
           _nearMisses: [
             o=> o.at[0] += 'not'
@@ -312,8 +311,17 @@
         }
       },
       computed: {
-        urledContent() {
-          return this.post.content
+        sanitizedContent() {
+          const lookup = {
+              '&': "&amp;",
+              '"': "&quot;",
+              '\'': "&apos;",
+              '<': "&lt;",
+              '>': "&gt;"
+          }
+          return this.post.summary
+          // Remove all included tags
+          .replace( /[&"'<>]/g, c => lookup[c] )
           // Replace urls with <a>
           .replace(/(https?:\/\/[^\s]+)/g, url=> `<a href="${url}">${url}</a>`)
           // replace white space with <br>

@@ -45,7 +45,9 @@
           type: 'post',
           content: content,
           tags: ['demo'],
-          _nearMisses: [o=>o.tags=['notdemo']]
+          _inContextIf: [{
+            _queryFailsWithout: [ 'tags.0' ]
+          }]
         });content=''">
           <input type="text" v-model="content"/>
 
@@ -95,7 +97,10 @@
               <template v-else> 
                 <button @click="blocks.update({
                   type: 'block',
-                  at: post._id
+                  at: post._id,
+                  _inContextIf: [{
+                    _queryFailsWithout: [ 'at' ]
+                  }]
                 })">
                   block
                 </button>

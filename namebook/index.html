@@ -110,7 +110,7 @@
     <h3>
       <Name :id="post._by" />
       <template v-if="'at' in post">
-        <template v-for="id in post.at">
+        <template v-for="id in post.at" :key="id">
           @<Name :id="id" />
         </template>
       </template>
@@ -159,9 +159,9 @@
             likes.update({
               type: 'like',
               object: post._id,
-              _nearMisses: [
-                o=> o.object += 'not'
-              ]
+              _inContextIf: [{
+                '_queryFailsWithout': [ 'object']
+              }]
             }) :
             likes.deleteMine()">
         <label :for="'like' + post._id">
@@ -189,9 +189,9 @@
             type: 'post',
             summary: commentText,
             inReplyTo: post._id,
-            _nearMisses: [
-              o=> o.inReplyTo += 'not'
-            ]
+            _inContextIf: [{
+              '_queryFailsWithout': [ 'inReplyTo' ]
+            }]
           });commentText=''">
             <textarea v-model="commentText" placeholder="write a comment..."></textarea>
             <input type="submit" value="reply">
@@ -220,16 +220,16 @@
         <form @submit.prevent="posts.update(id==$graffiti.myID? {
           type: 'post',
           summary: content,
-          _nearMisses: [
-            o=> o._by += 'not'
-          ]
+          _inContextIf: [{
+            '_queryFailsWithout': [ '_by' ]
+          }]
         } : {
           type: 'post',
           summary: content,
           at: [id],
-          _nearMisses: [
-            o=> o.at[0] += 'not'
-          ]
+          _inContextIf: [{
+            '_queryFailsWithout': [ 'at.0' ]
+          }]
         });content=''">
 
           <textarea v-model="content" autofocus :placeholder="
@@ -269,9 +269,9 @@
             arrivals.update({
               type: 'arrive',
               tags: ['namebook'],
-              nearMisses: [
-                o=> o.tags = 'notnamebook'
-              ]
+              _inContextIf: [{
+                '_queryFailsWithout': [ 'tags.0' ]
+              }]
             })">
          <label for="directorycheck">
            <template v-if="!arrivals.myObjects.length">
@@ -343,7 +343,10 @@
           const submission = names.object? names.object : {
             type: 'name',
             of: this.id,
-            _by: this.id
+            _by: this.id,
+            _inContextIf: [{
+              _queryFailsWithout: [ 'of', '_by' ]
+            }]
           }
           submission.name = this.editText
           names.update(submission)

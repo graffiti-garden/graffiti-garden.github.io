@@ -37,7 +37,9 @@
       call update unless you add the timestamp=false -->
       <button @click="hellos.update({
         type: 'hello',
-        _nearMisses: [ o=> o.type='nothello' ]
+        _inContextIf: [{
+          _queryFailsWithout: [ 'type' ]
+        }]
       })">
         say hello, world!
       </button>

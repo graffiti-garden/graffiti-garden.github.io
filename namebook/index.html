@@ -1,0 +1,280 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>namebook</title>
+  <link rel="stylesheet" href="https://use.typekit.net/ovj6wxu.css">
+  <script src="https://unpkg.com/vue@3.2.37/dist/vue.global.js"></script>
+  <script src="https://unpkg.com/vue-router@4.0.16/dist/vue-router.global.prod.js"></script>
+</head>
+<body>
+
+  <div id="app">
+
+    <template v-if="!$graffiti.loggedIn">
+      <h1>
+        namebook
+      </h1>
+      <button @click="$graffiti.logIn">log in to say hello!</button>
+    </template>
+    <template v-else>
+
+      <ul>
+        <li>
+          <router-link to="/">
+            <u>
+              namebook
+            </u>
+          </router-link>
+        </li>
+        <li>
+          <router-link :to="'/profile/' + $graffiti.myID">
+            my profile
+          </router-link>
+        </li>
+        <li>
+          <a href="" @click.prevent="$graffiti.logOut">
+            log out
+          </a>
+        </li>
+      </ul>
+
+      <router-view></router-view>
+    </template>
+  </div>
+
+  <script type="text/x-template" id="name">
+    <graffiti-collection :query="{
+      type: 'name',
+      of: id,
+      _by: id,
+      name: { $type: 'string' }
+    }" v-slot="names">
+
+      <form v-if="editing"
+        @submit.prevent="
+          replaceName = names.object? names.object : replaceName;
+          replaceName.name = editText;
+          names.update(replaceName);
+          editing = false;
+        ">
+
+        <input type="text" v-model="editText" />
+        <input type="submit" value="✅">
+      </form>
+
+      <router-link v-else :to="'/profile/' + id">
+        <template v-if="names.object">
+          {{ names.object.name }}
+        </template>
+        <template v-else>
+          Anonymous
+        </template>
+      </router-link>
+
+      <button v-if="id==$graffiti.myID && !editing"
+        @click="
+        editText = names.object? names.object.name : '';
+        editing = true;
+      ">
+        ✏️
+      </button>
+    </graffiti-collection>
+  </script>
+
+  <script type="text/x-template" id="post">
+    <h2>
+      <Name :id="post._by" />
+    </h2>
+    <h3>
+      {{ new Date(post.timestamp).toLocaleDateString(undefined, {
+        month: 'long',
+        day: 'numeric',
+        year: 'numeric',
+        hour: 'numeric',
+        minute: 'numeric'
+      }) }}
+    </h3>
+
+    <!-- Controls for the post: edit, delete -->
+    <ul v-if="post._by==$graffiti.myID">
+      <li v-if="!editing">
+        <button @click="
+          editText = post.content;
+          editing = true;
+        ">
+          edit
+        </button>
+      </li>
+      <li>
+        <button @click="collection.delete(post)">
+          delete
+        </button>
+      </li>
+    </ul>
+
+    <!-- The post iteself -->
+    <form v-if="editing" @submit.prevent="
+        post.content = editText;
+        collection.update(post);
+        editing = false;
+      ">
+
+      <input type="text" v-model="editText" />
+      <input type="submit" value="save">
+    </form>
+    <p v-else>
+      {{post.content}}
+    </p>
+
+    <!-- Likes -->
+    <graffiti-collection :query="{
+      type: 'like',
+      object: post._id
+    }" v-slot="likes">
+      <h4>
+        likes: {{ $graffiti.getAuthors(likes.objects).length }}
+      </h4>
+
+      <input type="checkbox"
+        :id="'like' + post._id"
+        :checked="likes.myObjects.length"
+        @change="$event.target.checked?
+          likes.update({
+            type: 'like',
+            object: post._id,
+            nearMisses: [
+              o=> o.object = 'not' + post._id
+            ]
+          }) :
+          likes.deleteMine()">
+       <label :for="'like' + post._id">like</label>
+    </graffiti-collection>
+  </script>
+
+  <script type="text/x-template" id="profile">
+    <h1>
+      <Name :id="id" />
+    </h1>
+
+    <graffiti-collection :query="{
+      type: 'post',
+      content: { $type: 'string' },
+      $or: [{
+        _by: id
+      }, {
+        _to: id
+      }]
+    }" v-slot="posts">
+
+      <form @submit.prevent="posts.update({
+        type: 'post',
+        content: content,
+        _nearMisses: [
+          o=> o._by = 'not' + $graffiti.myID
+        ]
+      });content=''">
+
+        <input type="text" v-model="content"/>
+        <input type="submit" value="post">
+      </form>
+
+      <ul>
+        <li v-for="post in posts.objects" :key="post._id">
+          <Post :collection="posts" :post="post"/>
+        </li>
+      </ul>
+
+    </graffiti-collection>
+  </script>
+
+  <script type="text/x-template" id="directory">
+    <h1>
+      namebook directory
+    </h1>
+
+    <graffiti-collection :query="{
+      type: 'arrive',
+      tags: 'namebook'
+    }" v-slot="arrivals">
+
+      <input type="checkbox"
+        id="directorycheck"
+        :checked="arrivals.myObjects.length"
+        @change="$event.target.checked?
+          arrivals.update({
+            type: 'arrive',
+            tags: ['namebook'],
+            nearMisses: [
+              o=> o.tags = 'notnamebook'
+            ]
+          }) :
+          arrivals.deleteMine()">
+       <label for="directorycheck">add me to the directory</label>
+
+      <ul>
+        <li v-for="authorID in $graffiti.getAuthors(arrivals.objects)">
+          <Name :id="authorID" />
+        </li>
+      </ul>
+
+    </graffiti-collection>
+  </script>
+
+  <script type="module">
+    import Graffiti from "../vue/plugin.js"
+
+    const Post = {
+      template: '#post',
+      props: ['post', 'collection'],
+      data() {
+        return {
+          editing: false,
+          editText: ''
+        }
+      },
+    }
+
+    const Name = {
+      template: '#name',
+      props: ['id'], 
+      data() {
+        return {
+          editing: false,
+          editText: '',
+          replaceName: {
+            type: 'name',
+            of: this.id,
+            _by: this.id
+          }
+        }
+      }
+    }
+
+    const router = VueRouter.createRouter({
+      history: VueRouter.createWebHashHistory(),
+      routes: [
+        { path: '/', component: {
+          template: '#directory'
+        }},
+        { path: '/profile/:id', props: true, component: {
+          template: '#profile',
+          props: ['id'],
+          data() {
+            return {
+              content: ''
+            }
+          }
+        }}
+      ],
+    })
+
+    Graffiti().then(g=> {
+      Vue.createApp().use(g)
+      .component('Post', Post)
+      .component('Name', Name)
+      .use(router).mount('#app')
+    })
+  </script>
+</body>
+</html>

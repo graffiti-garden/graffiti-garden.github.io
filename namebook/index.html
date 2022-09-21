@@ -146,12 +146,17 @@
       </template>
     </p>
 
-    <!-- Likes -->
+    <!-- Likes and comments -->
     <graffiti-collection :query="{
       type: 'like',
       object: post._id
     }" v-slot="likes">
 
+    <graffiti-collection :query="{
+      type: 'post',
+      content: { $type: 'string' },
+      inReplyTo: post._id
+    }" v-slot="comments">
 
       <div class="post-annotators">
         <input type="checkbox"
@@ -173,7 +178,35 @@
         <label disabled>
           likes: {{ $graffiti.getAuthors(likes.objects).length }}
         </label>
+
+        <input type="checkbox"
+          :id="'comments' + post._id"
+          v-model="commentsOpen">
+        <label :for="'comments' + post._id">
+          comments: {{ comments.objects.length }}
+        </label>
       </div>
+
+      <ul v-if="commentsOpen">
+        <li class="post" v-for="comment in comments.objects.slice().reverse()" :key="comment._id">
+          <Post :collection="comments" :post="comment"/>
+        </li>
+        <li class="post">
+          <form @submit.prevent="comments.update({
+            type: 'post',
+            content: commentText,
+            inReplyTo: post._id,
+            _nearMisses: [
+              o=> o.inReplyTo += 'not'
+            ]
+          });commentText=''">
+            <textarea v-model="commentText" placeholder="write a comment..."></textarea>
+            <input type="submit" value="reply">
+          </form>
+        </li>
+      </ul>
+
+    </graffiti-collection>
     </graffiti-collection>
   </script>
 
@@ -279,7 +312,9 @@
         return {
           editing: false,
           editText: '',
-          editMenuOpen: false
+          commentText: '',
+          editMenuOpen: false,
+          commentsOpen: false
         }
       },
     }

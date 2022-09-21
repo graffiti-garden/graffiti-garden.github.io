@@ -7,6 +7,7 @@
   <link rel="stylesheet" href="./style.css">
   <script src="https://unpkg.com/vue@3.2.37/dist/vue.global.js"></script>
   <script src="https://unpkg.com/vue-router@4.0.16/dist/vue-router.global.prod.js"></script>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
 </head>
 <body>
 
@@ -47,52 +48,49 @@
   </div>
 
   <script type="text/x-template" id="name">
-    <div class="name">
-      <graffiti-collection :query="{
-        type: 'name',
-        of: id,
-        _by: id,
-        name: { $type: 'string' }
-      }" v-slot="names">
+    <graffiti-collection :query="{
+      type: 'name',
+      of: id,
+      _by: id,
+      name: { $type: 'string' }
+    }" v-slot="names">
 
-        <form v-if="editing"
-          @submit.prevent="
-            replaceName = names.object? names.object : replaceName;
-            replaceName.name = editText;
-            names.update(replaceName);
-            editing = false;
-          ">
-
-          <input type="text" v-model="editText" @focus="$event.target.select()" ref="editor" />
-          <input type="submit" value="✅">
-        </form>
-
-        <router-link v-else :to="'/profile/' + id">
-          <template v-if="names.object">
-            {{ names.object.name }}
-          </template>
-          <template v-else>
-            Anonymous
-          </template>
-        </router-link>
-
-        <button v-if="id==$graffiti.myID && !editing"
-          @click="
-          editText = names.object? names.object.name : '';
-          editing = true;
-          this.$nextTick(() => this.$refs.editor.focus());
+      <form v-if="editing"
+        @submit.prevent="
+          replaceName = names.object? names.object : replaceName;
+          replaceName.name = editText;
+          names.update(replaceName);
+          editing = false;
         ">
-          ✏️
-        </button>
-      </graffiti-collection>
-    </div>
+
+        <input type="text" v-model="editText" @focus="$event.target.select()" ref="editor" />
+      </form>
+
+      <router-link v-else :to="'/profile/' + id">
+        <template v-if="names.object">
+          {{ names.object.name }}
+        </template>
+        <template v-else>
+          Anonymous
+        </template>
+      </router-link>
+
+      <button class="superscript" v-if="id==$graffiti.myID && !editing"
+        @click="
+        editText = names.object? names.object.name : '';
+        editing = true;
+        this.$nextTick(() => this.$refs.editor.focus());
+      ">
+        ✏️
+      </button>
+    </graffiti-collection>
   </script>
 
   <script type="text/x-template" id="post">
     <!-- Controls for the post: edit, delete -->
     <div class="post-modifiers" v-if="post._by==$graffiti.myID">
       <input :id="'menu' + post._id" type="checkbox" v-model="editMenuOpen" />
-      <label :for="'menu' + post._id">...</label>
+      <label :for="'menu' + post._id">⚙️</label>
       <ul v-show="editMenuOpen">
         <li v-if="!editing">
           <button @click="
@@ -124,7 +122,7 @@
       }) }}
     </h3>
 
-    <!-- The post iteself -->
+    <!-- The post itself -->
     <p>
       <form v-if="editing" @submit.prevent="
           post.content = editText;
@@ -160,11 +158,13 @@
               ]
             }) :
             likes.deleteMine()">
-        <label :for="'like' + post._id">👍 like</label>
+        <label :for="'like' + post._id">
+          👍 like<template v-if="likes.myObjects.length">d</template>
+        </label>
 
-        <h4>
+        <label disabled>
           likes: {{ $graffiti.getAuthors(likes.objects).length }}
-        </h4>
+        </label>
       </div>
     </graffiti-collection>
   </script>
@@ -184,17 +184,19 @@
       }]
     }" v-slot="posts">
 
-      <form @submit.prevent="posts.update({
-        type: 'post',
-        content: content,
-        _nearMisses: [
-          o=> o._by = 'not' + $graffiti.myID
-        ]
-      });content=''">
+      <p>
+        <form @submit.prevent="posts.update({
+          type: 'post',
+          content: content,
+          _nearMisses: [
+            o=> o._by = 'not' + $graffiti.myID
+          ]
+        });content=''">
 
-        <textarea v-model="content" placeholder="what's on your mind?" autofocus/></textarea>
-        <input type="submit" value="post">
-      </form>
+          <textarea v-model="content" placeholder="what's on your mind?" autofocus/></textarea>
+          <input type="submit" value="post">
+        </form>
+      </p>
 
       <ul>
         <li class="post" v-for="post in posts.objects" :key="post._id">

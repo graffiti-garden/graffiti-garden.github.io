@@ -3,14 +3,16 @@ body {
   height: 100vh;
 }
 
-#input {
+#input-container {
   flex: 50%;
+  overflow: scroll;
 }
 
 #output {
   flex: 50%;
   overflow: scroll;
   border-left: 2px solid black;
+  text-align: center;
 }
 
 button {

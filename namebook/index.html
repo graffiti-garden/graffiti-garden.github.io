@@ -317,16 +317,13 @@
               '"': "&quot;",
               '\'': "&apos;",
               '<': "&lt;",
-              '>': "&gt;",
-              ' ': "&nbsp;"
+              '>': "&gt;"
           }
           return this.post.summary
           // Remove all included tags
-          .replace( /[&"'<> ]/g, c => lookup[c] )
+          .replace( /[&"'<>]/g, c => lookup[c] )
           // Replace urls with <a>
           .replace(/(https?:\/\/[^\s]+)/g, url=> `<a href="${url}">${url}</a>`)
-          // replace white space with <br>
-          .replace(/\n/g, "<br />");
         }
       }
     }

@@ -5,7 +5,7 @@
   <title>namebook</title>
   <link rel="stylesheet" href="https://use.typekit.net/ovj6wxu.css">
   <link rel="stylesheet" href="./style.css">
-  <script src="https://unpkg.com/vue@3.2.37/dist/vue.global.prod.js"></script>
+  <script src="https://unpkg.com/vue@3.2.37/dist/vue.global.js"></script>
   <script src="https://unpkg.com/vue-router@4.0.16/dist/vue-router.global.prod.js"></script>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 </head>
@@ -114,6 +114,11 @@
 
     <h3>
       <Name :id="post._by" />
+      <template v-if="'at' in post">
+        <template v-for="id in post.at">
+          @<Name :id="id" />
+        </template>
+      </template>
     </h3>
     <h4>
       {{ new Date(post.timestamp).toLocaleDateString(undefined, {
@@ -180,19 +185,33 @@
     <graffiti-collection :query="{
       type: 'post',
       content: { $type: 'string' },
-      _by: id
+      $or: [
+        { _by: id },
+        { at: id }
+      ]
     }" v-slot="posts">
 
       <p>
-        <form @submit.prevent="posts.update({
+        <form @submit.prevent="posts.update(id==$graffiti.myID? {
           type: 'post',
           content: content,
           _nearMisses: [
-            o=> o._by = 'not' + $graffiti.myID
+            o=> o._by = 'not' + id
+          ]
+        } : {
+          type: 'post',
+          content: content,
+          at: [id],
+          _nearMisses: [
+            o=> o.at = ['not' + id]
           ]
         });content=''">
 
-          <textarea v-model="content" placeholder="what's on your mind?" autofocus></textarea>
+          <textarea v-model="content" autofocus :placeholder="
+            id==$graffiti.myID?
+            'what\'s on your mind?' :
+            'to my dear friend...'
+          "></textarea>
           <input type="submit" value="post">
         </form>
       </p>

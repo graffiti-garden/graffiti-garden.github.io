@@ -1,11 +1,16 @@
 body {
   display: flex;
-  justify-content: center;
+  height: 100vh;
 }
 
-#app {
-  font-family: Arial, Helvetica, sans-serif;
-  text-align: center;
+#input {
+  flex: 50%;
+}
+
+#output {
+  flex: 50%;
+  overflow: scroll;
+  border-left: 2px solid black;
 }
 
 button {

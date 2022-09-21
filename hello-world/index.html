@@ -4,35 +4,71 @@
   <meta charset="utf-8">
   <title>hello world</title>
   <link rel="stylesheet" href="./style.css">
+  <link rel="stylesheet" href="https://prismjs.com/themes/prism.css">
+	<link rel="stylesheet" href="https://prismjs.com/plugins/line-numbers/prism-line-numbers.css">
+	<link rel="stylesheet" href="https://live.prismjs.com/prism-live.css">
+  <link rel="stylesheet" href="https://live.prismjs.com/style.css">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 </head>
 <body>
-  <div id="app">
-    <h1>hello world!</h1>
-    <graffiti-collection :query="{
-      type: 'hello',
-      timestamp: { '$gt': Date.now() - 24*60*60*1000 }
-    }" v-slot="hellos">
-      <p>{{hellos.objects.length}} “hellos” have been made in the last 24 hours.</p>
-      <template v-if="!$graffiti.loggedIn">
-        <button @click="$graffiti.logIn">log in to say hello!</button>
-      </template>
-      <template v-else>
-        <button @click="hellos.update({
-          type: 'hello',
-          timestamp: Date.now(),
-          _nearMisses: [ o=> o.type='nothello' ]
-        })">
-          say hello, world!
-        </button>
-        <p>(<a href="" @click.prevent="$graffiti.logOut">log out</a>)</p>
-      </template>
-    <graffiti-collection>
+
+  <textarea class="prism-live line-numbers language-html" id="input" onkeyup="copyCode()">
+<graffiti-app>
+
+  <h1>hello world!</h1>
+
+  <graffiti-collection :query="{
+    type: 'hello',
+    timestamp: { '$gt': Date.now() - 24*60*60*1000 }
+  }" v-slot="hellos">
+
+    <p>
+      {{hellos.objects.length}} “hellos” have been made in the last 24 hours
+      by {{$graffiti.getAuthors(hellos.objects).length}} account(s).
+    </p>
+
+    <template v-if="!$graffiti.loggedIn">
+      <button @click="$graffiti.logIn">log in to say hello!</button>
+    </template>
+    <template v-else>
+
+      <!-- A timestamp field is automatically added when you
+      call update unless you add the timestamp=false -->
+      <button @click="hellos.update({
+        type: 'hello',
+        _nearMisses: [ o=> o.type='nothello' ]
+      })">
+        say hello, world!
+      </button>
+
+      <p>
+        (<a href="" @click.prevent="$graffiti.logOut">log out</a>)
+      </p>
+    </template>
+
+  <graffiti-collection>
+</graffiti-app></textarea>
+
+  <div id="output">
   </div>
+
+  <script src="https://blissfuljs.com/bliss.shy.min.js"></script>
+  <script src="https://prismjs.com/prism.js"></script>
+  <script src="https://prismjs.com/plugins/line-numbers/prism-line-numbers.js"></script>
+  <script src="https://live.prismjs.com/src/prism-live.js"></script>
+  <script src="https://live.prismjs.com/src/prism-live-markup.js"></script>
   <script type="module">
     import { createApp } from "https://unpkg.com/vue@3.2.36/dist/vue.esm-browser.prod.js"
-    import Graffiti from "../vue/plugin.js"
-    Graffiti().then(g=>createApp().use(g).mount("#app"))
+    import { default as Graffiti, registerGraffitiApp } from "../vue/plugin.js"
+    Graffiti().then(g=>registerGraffitiApp(g, createApp))
+
+    // Editor code
+    var input = document.getElementById("input");
+    var output = document.getElementById("output");
+    window.copyCode = function() {
+     output.innerHTML = input.value;
+    }
+    window.copyCode()
   </script>
 </body>
 </html>

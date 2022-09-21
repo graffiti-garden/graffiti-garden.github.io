@@ -4,30 +4,63 @@
   --frontfaded: rgba(255, 255, 255, 0.7);
   --front: rgba(255, 255, 255, 0.87);
   --frontbold: #ca7acc;
-  --border: grey;
+  --blurpix: 2px;
+}
+
+body::before {
+  content: "";
+  position: fixed;
+  left: 0;
+  right: 0;
+  z-index: -1;
+  background-image: url(./graffiti.jpg);
+  background-size: cover;
+  background-repeat: no-repeat;
+  background-position: 50% 50%;
+  height: calc(100vh + 2*var(--blurpix));
+  width: calc(100vw + 2*var(--blurpix));
+  filter: blur(var(--blurpix));
+  margin: calc(-1*var(--blurpix));
 }
 
 html {
-  background: var(--halfback);
+  position: absolute;
+  top: 0;
+  left: 0;
+}
+
+body, html {
+  margin: 0;
+  padding: 0;
+  width: 100%;
 }
 
 body {
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: center;
+}
+
+main {
   font-family: Inter, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen, Ubuntu, Cantarell, "Fira Sans", "Droid Sans", "Helvetica Neue", sans-serif;
   font-size: 120%;
   line-height: 1.7;
   background: var(--back);
   color: var(--frontfaded);
   word-break: break-word;
-  max-width: 30em;
-  margin: auto;
-  margin-top: 1em;
-  padding: 2em;
+  max-width: 35em;
+  margin-top: 5vh;
+  margin-bottom: 5vh;
+  margin-left: 1vw;
+  margin-right: 1vw;
+  padding: 4vw;
   border-radius: 1em;
 }
 
 h1 {
   margin: 0;
-  margin-left: -2.5%;
+  margin-left: -1vw;
   line-height: 1.3;
   color: var(--front);
 }
@@ -35,7 +68,6 @@ h1 {
 h1 + p {
   margin-top: 0;
 }
-
 
 li {
   color: var(--front);

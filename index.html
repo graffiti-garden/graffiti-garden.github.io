@@ -1,43 +1,8 @@
-<!DOCTYPE html>
-<html>
-<head>
-  <meta charset="utf-8">
-  <title>hello world</title>
-  <link rel="stylesheet" href="./style.css">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-</head>
-<body>
-  <div id="app">
-    <h1>hello world!</h1>
-    <graffiti-collection v-slot="hellos" :query="{
-      type: 'hello',
-      timestamp: { '$gt': Date.now() - 24*60*60*1000 }
-    }">
-      <p>{{hellos.objects.length}} “hellos” have been made in the last 24 hours.</p>
-      <template v-if="!$graffiti.loggedIn">
-        <button @click="$graffiti.logIn">log in to say hello!</button>
-      </template>
-      <template v-else>
-        <button @click="hellos.update({
-          type: 'hello',
-          timestamp: Date.now(),
-          _contexts: [{
-            _nearMisses: [{
-              type: 'nothello',
-              timestamp: Date.now()
-            }]
-          }]
-        })">
-          say hello, world!
-        </button>
-        <p>(<a href="" @click.prevent="$graffiti.logOut">log out</a>)</p>
-      </template>
-    <graffiti-collection>
-  </div>
-  <script type="module">
-    import { createApp } from "https://unpkg.com/vue@3.2.36/dist/vue.esm-browser.prod.js"
-    import Graffiti from "https://sportdeath.github.io/graffiti-tools/vue.js"
-    Graffiti().then(g=>createApp().use(g).mount("#app"))
-  </script>
-</body>
-</html>
+<ul>
+  <li>
+    <a href="hello-world">hello world</a>
+  </li>
+  <li>
+    <a href="posts">posts</a>
+  </li>
+</ul>

@@ -136,9 +136,7 @@
         <textarea v-model="editText" @focus="$event.target.select()" v-focus ></textarea>
         <input type="submit" value="save">
       </form>
-      <template v-else>
-        {{post.content}}
-      </template>
+      <span v-else v-html="urledContent"></span>
     </p>
 
     <!-- Likes and comments -->
@@ -313,6 +311,15 @@
           commentsOpen: false
         }
       },
+      computed: {
+        urledContent() {
+          return this.post.content
+          // Replace urls with <a>
+          .replace(/(https?:\/\/[^\s]+)/g, url=> `<a href="${url}">${url}</a>`)
+          // replace white space with <br>
+          .replace(/\n/g, "<br />");
+        }
+      }
     }
 
     const Name = {

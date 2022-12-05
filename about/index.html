@@ -1,1 +1,71 @@
-Coming Soon...
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>Graffiti</title>
+  <link rel="stylesheet" type="text/css" href="//fonts.googleapis.com/css?family=Rock+Salt" />
+  <link rel="stylesheet" href="/style.css">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+</head>
+
+<body id="app">
+  <header>
+    <h1>
+      About Graffiti
+    </h1>
+  </header>
+  <nav>
+    <ul>
+      <router-link to="/">
+        <li>
+          <h1>
+            Why?
+          </h1>
+        </li>
+      </router-link>
+      <router-link to="/how">
+        <li>
+          <h1>
+            How?
+          </h1>
+        </li>
+      </router-link>
+      <router-link to="/but">
+        <li>
+          <h1>
+            But what about...
+          </h1>
+        </li>
+      </router-link>
+    </ul>
+  <main>
+    <router-view></router-view>
+  </main>
+  <script src="https://unpkg.com/vue@3.2.37/dist/vue.global.prod.js"></script>
+  <script src="https://unpkg.com/vue-router@4.0.14/dist/vue-router.global.prod.js"></script>
+  <script>
+    function lazyDoc(name, path=null) { return {
+      path: path?path:`/${name}`,
+      component: async ()=> {
+        const response = await fetch(`./${name}.html`)
+        return { template: await response.text() }
+      }
+    }}
+
+    const Router = VueRouter.createRouter({
+      history: VueRouter.createWebHashHistory(),
+      routes: [
+        lazyDoc('why', '/'),
+        lazyDoc('how'),
+        lazyDoc('but'),
+      ],
+      scrollBehavior (to, from, savedPosition) {
+        return {left: 0, top: 0}
+      }
+    })
+
+    Vue.createApp().use(Router).mount('#app')
+  </script>
+</body>
+</html>

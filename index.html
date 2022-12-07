@@ -8,63 +8,58 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 </head>
 
-<body>
-  <main>
-    <h1>
-      Graffiti
-    </h1>
-    <p>
-      lets you add custom social components to any static website with just a few lines of HTML and Javascript.
-      These applications can be as simple as a comments section or as complicated as Facebook or Google Docs.
-    </p>
+<body id="app">
+  <header>
+    <router-link to="/">
+      <h1>
+        Graffiti
+      </h1>
+    </router-link>
+  </header>
 
-    <p>
-      Applications within the Graffiti ecosystem also <em>interoperate</em>.
-      If your friends use a Graffiti application that you don't like, you can either modify it, create your own from scratch, or switch to an application that someone else has already built &mdash; all without losing your friends!
-      You can change pretty much anything including the moderation system, privacy settings, feed sorting algorithm, site layout, color scheme, etc.
-    </p>
-  </main>
+  <router-view v-slot="{ Component, route }">
+    <transition :name="route.meta.transitionName" mode="out-in">
+      <component :is="Component" />
+    </transition>
+  </router-view>
 
-  <nav>
-    <ul>
-      <li>
-        <a href="/about">
-          <h2>
-            🧐
-          </h2>
-          <h3>
-            Theory and Principles
-          </h3>
-        </a>
-      </li>
-      <li>
-        <a href="/docs">
-          <h2>
-            🛠
-          </h2>
-          <h3>
-            Build a Graffiti Application
-          </h3>
-        </a>
-      </li>
-      <li>
-        <a href="/library">
-          <h2>
-            🦓
-          </h2>
-          <h3>
-            Application Zoo
-          </h3>
-        </a>
-      </li>
-    </ul>
-  </nav>
+  <script src="https://unpkg.com/vue@3.2.37/dist/vue.global.prod.js"></script>
+  <script src="https://unpkg.com/vue-router@4.0.14/dist/vue-router.global.prod.js"></script>
+  <script>
+    function lazyDoc(name, path=null) { return {
+      path: path?path:`/${name}`,
+      component: async ()=> {
+        const response = await fetch(`./html/${name}.html`)
+        return { template: `<div>${await response.text()}</div>` }
+      }
+    }}
 
-  <footer>
-    <p>
-      The Graffiti project is is open source on <a href="https://github.com/graffiti-garden">Github</a>.
-    </p>
-  </footer>
-</main>
+    const Router = VueRouter.createRouter({
+      history: VueRouter.createWebHashHistory(),
+      routes: [lazyDoc('home', '/'), {
+        ...lazyDoc('about', '/about'),
+        children: [
+          lazyDoc('why', 'why'),
+          lazyDoc('how', 'how'),
+          lazyDoc('but', 'but'),
+        ],
+      }],
+      scrollBehavior (to, from, savedPosition) {
+        const out = { behavior: 'smooth' }
+        if (to.path.startsWith('/about/')) {
+          out.el = document.getElementsByTagName("nav")[0]
+        } else {
+          out.top = 0
+        }
+        return out
+      }
+    })
+
+    Router.afterEach((to, from) => {
+      to.meta.transitionName = to.path == '/' ? 'slide-left' : 'slide-right'
+    })
+
+    Vue.createApp().use(Router).mount('#app')
+  </script>
 </body>
 </html>

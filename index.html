@@ -9,14 +9,6 @@
 </head>
 
 <body id="app">
-  <header>
-    <router-link to="/">
-      <h1>
-        Graffiti
-      </h1>
-    </router-link>
-  </header>
-
   <router-view v-slot="{ Component, route }">
     <transition :name="route.meta.transitionName" mode="out-in">
       <component :is="Component" />
@@ -36,8 +28,10 @@
 
     const Router = VueRouter.createRouter({
       history: VueRouter.createWebHashHistory(),
-      routes: [lazyDoc('home', '/'), {
-        ...lazyDoc('about', '/about'),
+      routes: [
+        lazyDoc('home', '/'),
+        lazyDoc('zoo', '/zoo'), {
+        ...lazyDoc('theory', '/theory'),
         children: [
           lazyDoc('why', 'why'),
           lazyDoc('how', 'how'),
@@ -46,7 +40,7 @@
       }],
       scrollBehavior (to, from, savedPosition) {
         const out = { behavior: 'smooth' }
-        if (to.path.startsWith('/about/')) {
+        if (to.path.startsWith('/theory/')) {
           out.el = document.getElementsByTagName("nav")[0]
         } else {
           out.top = 0
@@ -59,7 +53,8 @@
       to.meta.transitionName = to.path == '/' ? 'slide-left' : 'slide-right'
     })
 
-    Vue.createApp().use(Router).mount('#app')
+    const app = Vue.createApp().use(Router)
+    Router.isReady().then(()=> app.mount('#app'))
   </script>
 </body>
 </html>

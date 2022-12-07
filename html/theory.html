@@ -1,0 +1,47 @@
+<header>
+  <h1>
+    <router-link to="/">
+      Graffiti</router-link>:
+    <router-link to="/theory">
+      Theory
+    </router-link>
+  </h1>
+</header>
+<p>
+  Graffiti aims to give users more autonomy over their social applictions.
+  If you want to dive straight in to using or building your own social applications, head back to the <router-link to="/">home page</router-link>.
+  This page is a theoretical overview of the project and the principles that guide it's design.
+</p>
+
+<p>
+  The sections below explore the following questions:
+  Why is Graffiti important for me and for other people?
+  How does Graffiti work on a high level?
+  What about other alternative social applications like Mastodon?
+</p>
+
+</header>
+<nav>
+<ul>
+  <li>
+    <router-link to="/theory/why">
+      Why?
+    </router-link>
+  </li>
+  <li>
+    <router-link to="/theory/how">
+      How?
+    </router-link>
+  </li>
+  <li>
+    <router-link to="/theory/but">
+        What about...
+    </router-link>
+  </li>
+</ul>
+</nav>
+<router-view v-slot="{ Component }">
+  <transition name="fade" mode="out-in" appear>
+    <component :is="Component" />
+  </transition>
+</router-view>

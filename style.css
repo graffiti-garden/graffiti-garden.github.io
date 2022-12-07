@@ -96,7 +96,7 @@ ul {
   padding-right: 0;
 }
 
-li {
+ul>li {
   width: 10rem;
 }
 

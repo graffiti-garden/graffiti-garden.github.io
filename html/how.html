@@ -1,37 +1,61 @@
 <p>
-  Graffiti is like big bucket that anyone can place social "objects" into.
-  These objects can represent posts, profiles, or anything anyone might make up - there's no enforced schema - how about objects to represent X or Y.
+  Graffiti is like a big bucket that anyone can place social "objects" into.
+  These objects can represent typical social media primitives like profiles and posts.
+  However, there is nothing limiting you to these predefined types &mdash; you can make objects that represent events, which might be useful if you're implementing a social calendar, or objects that represent virtual items, which might be useful if you're implementing a video game.
 </p>
 
 <p>
-  Objects can also reference other objects: a like object might reference the post object it is liking; a friend object might references the two profile objects it is forming a relationship between.
+  Objects can also reference other objects: a "like" object might reference the post object it is liking; a "friend" object might reference the two profile objects it is forming a relationship between.
   <!--This design is inherited from the <a href="https://en.wikipedia.org/wiki/Semantic_Web">semantic web</a> and one of it's realizations, ActivityStreams (which underlies ActivityPub, which underlies Mastodon).-->
 </p>
 
 <img src="/media/graffiti_bucket.png" />
 
 <p>
-  Different applications can be built by pulling different sets of objects out of the bucket.
-  To construct something like Twitter, I could look through the bucket for objects that answer:
-  Who am I friends with?
-  What posts have those friends made recently?
-  Who has liked those posts?
-  To construct something different like Yelp I could ask:
-  What restaurants are near me?
-  What have people said about those restaurants?
+  Different applications can be built by pulling different collections of objects out of the bucket.
+  To construct something like Twitter, you can look through the bucket for objects that answer:
+  <ol>
+    <li>
+      Who am I following?
+    </li>
+    <li>
+      What posts have those people made recently?
+    </li>
+    <li>
+      Who has liked those posts?
+    </li>
+  </ol>
+
+  <p>
+    Once you have collected the appropriate objects from the bucket, it is entirely up to you to choose how you want to organize and display them.
+    You can sort the posts chronologically, by each post's like count, or by some machine learning algorithm.
+    You can display a like count with each post, or <a href="https://about.fb.com/news/2021/05/giving-people-more-control/">turn them off</a> if that would stress you out.
+  <p>
+
+  <p>
+    Other apps can be made with different sorts of queries and presentations, but since all of the social objects are coming out of the same bucket, these different applications will naturally interoperate.
+    For example to make a location-based application, like YikYak, you might ask: which posts have been written near my current location?
+    Some of the posts that you see in this app may be posts that other people see in the Twitter-like app.
+  </p>
+
+
+<p>
+  However, <em>too much</em> interoperation can result in what's known as <a href="https://en.wikipedia.org/wiki/Context_collapse">context collapse</a>.
+  LinkedIn and Tinder both have user profiles, but most people don't want their profiles shared between those two applications.
+  The interesting part of Graffiti is how it enables people to maintain their own sense of social boundaries without agreeing with everyone that those boundaries should be the same.
+  For some people there is a cultural distinction between things that happen "on Slack" versus "on Messenger" but others would rather have a single messaging app.
+</p>
+  <!--Cleary, this bucket can be used to create many different sorts of applications and, if those applications are using similar sorts of objects, they will naturally interoperate with each other.-->
+  <!--However, we don't want too much interoperation. Linkden and Tinder both involve user profile objects but most people don't want users of one app to see their profile for the other.-->
+  <!--Social boundaries between different spaces are critical for healthy social interactions.-->
+  <!--In a world where everyone thinks and feels the same, this bucket analogy is probably enough to create a diverse set of would be enough to create a zoo of different social applications that all interoperate.-->
+  <!--But in a reality we need to deal with a critical : social boundaries.-->
+  <!--Some people hear things that they wish weren't said, and some people say things that they wish weren't widely heard.-->
 </p>
 
 <p>
-  Once I have pulled out the appropriate of the bucket, it is entirely up to me to choose how I want to organize and display them.
-  I could sort the posts chronologically, by each post's like count, or by some machine learning algorithm.
-  Maybe I display a like count with each post, or I could only display some profile to make it less of a popularity contest.
-<p>
-
-<p>
-  In a world where everyone thinks and feels the same, perhaps this bucket analogy would be enough to create a zoo of different social applications that all interoperate.
-  But in a reality we need to deal with a critical : social boundaries.
-  Some people hear things that they wish weren't said, and some people say things that they wish weren't widely heard.
-  We're going to look at three essential ways that people define maintain their social boundaries: moderation, access control, and context,
+  Graffiti affords three types of ways for people to define and maintain social boundaries: moderation, access control and context.
+  We're going to discuss how people can set these boundaries, without necessarily 
   We're also going to discuss how what properties Graffiti has that enables people to have these boundaries even if their's aren't the same as someone else's.
 </p>
 

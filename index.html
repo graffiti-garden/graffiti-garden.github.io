@@ -5,6 +5,7 @@
   <title>Graffiti</title>
   <link rel="stylesheet" type="text/css" href="//fonts.googleapis.com/css?family=Rock+Salt" />
   <link rel="stylesheet" href="/style.css">
+  <link href="https://unpkg.com/prismjs@1.28.0/themes/prism-tomorrow.min.css" rel="stylesheet" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 </head>
 
@@ -15,9 +16,36 @@
     </transition>
   </router-view>
 
+
+  <script src="https://unpkg.com/prismjs@1.28.0/components/prism-core.min.js"></script>
+  <script src="https://unpkg.com/prismjs@1.28.0/components/prism-markup.min.js"></script>
+  <script src="https://unpkg.com/prismjs@1.28.0/components/prism-clike.min.js"></script>
+  <script src="https://unpkg.com/prismjs@1.28.0/components/prism-javascript.min.js"></script>
   <script src="https://unpkg.com/vue@3.2.37/dist/vue.global.prod.js"></script>
   <script src="https://unpkg.com/vue-router@4.0.14/dist/vue-router.global.prod.js"></script>
-  <script>
+  <script type="module">
+    import Graffiti from 'https://graffiti.garden/graffiti-x-vue/graffiti.js'
+
+    const DisplayCode = {
+      props: ['path'],
+
+      data: ()=> ({code: ''}),
+
+      async created() {
+        const request = new Request(this.path)
+        const response = await fetch(request)
+        this.code = await response.text()
+      },
+
+      computed: {
+        codePretty() {
+          return Prism.highlight(this.code, Prism.languages.javascript, 'javascript');
+        }
+      },
+
+      template: '<pre><code class="language-javascript" v-html="codePretty"></code></pre>'
+    }
+
     function lazyDoc(name, path=null) { return {
       path: path?path:`/${name}`,
       component: async ()=> {
@@ -30,6 +58,7 @@
       history: VueRouter.createWebHashHistory(),
       routes: [
         lazyDoc('home', '/'),
+        lazyDoc('docs/introduction', '/docs'),
         lazyDoc('zoo', '/zoo'), {
         ...lazyDoc('theory', '/theory'),
         children: [
@@ -53,7 +82,10 @@
       to.meta.transitionName = to.path == '/' ? 'slide-left' : 'slide-right'
     })
 
-    const app = Vue.createApp().use(Router)
+    const app = Vue
+      .createApp()
+      .use(Router)
+      .component('DisplayCode', DisplayCode)
     Router.isReady().then(()=> app.mount('#app'))
   </script>
 </body>

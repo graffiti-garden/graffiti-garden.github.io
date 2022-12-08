@@ -1,0 +1,49 @@
+<h1>
+  Graffiti Tutorial
+</h1>
+
+<p>
+  <code class="language-markup">graffiti-x-vue</code> is a library that lets you add custom social components to any static website
+  via an extension to the <a href="https://vuejs.org/guide/introduction.html">Vue.js 3</a> Javascript framework that interfaces with the
+  <a href="https://github.com/digital-graffiti/server">Graffiti server</a>.
+</p>
+
+<p>
+  This guide assumes you are pretty familiar with
+  <a href="https://vuejs.org/guide/introduction.html">Vue</a>
+  and that you have a high level overview of Graffiti from the <router-link to="/theory">Theory section</router-link>.
+</p>
+
+</p>
+  These components can be hooked into the library by including the following code at the end of an HTML document within 
+  <code class="language-html">&lt;script type="module"&gt;&lt;/script&gt;</code> tags:
+
+  <DisplayCode path="./docs/demos/initialize.js" />
+
+  There is nothing particularly special about Vue, it's just what we happened to like. If you like a different framework and expand this tutorial, that would be great!
+</p>
+
+<p>
+  Practically, the library exposes three properties:
+  <ul>
+    <li>
+      <code class="language-js">toggleLogIn</code>:
+      A function that let's you log in and out of the Graffiti server via email.
+    </li>
+    <li>
+      <code class="language-js">myID</code>: 
+      A unique string associated with your Graffiti account.
+    </li>
+    <li>
+      <code class="language-js">useCollection</code>:
+      A <a href="https://vuejs.org/guide/reusability/composables.html">Vue Composable</a> that let's you retrieve and modify dynamic collections of social data from the Graffiti server — this is where the magic happens!
+    </li>
+  </ul>
+</p>
+
+
+<footer>
+  <router-link to="/logging-in">
+    Logging In
+  </router-link>
+</footer>

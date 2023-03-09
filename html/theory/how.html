@@ -1,7 +1,8 @@
 <p>
   Graffiti is like a big bucket that anyone can place social "objects" into.
-  These objects can represent typical social media primitives like profiles and posts.
-  However, there is nothing limiting you to these predefined types &mdash; you can make objects that represent events, which might be useful if you're implementing a social calendar, or objects that represent virtual items, which might be useful if you're implementing a video game.
+  These objects can represent typical social media primitives like a post or a user profile.
+  However, there is nothing limiting Graffiti to predefined types.
+  If you want to use Graffiti to create a site for food-lovers you can invent objects that represent recipes; if you want to use Graffiti to create an online video game you can invent objects that represent virtual items.
 </p>
 
 <p>
@@ -29,7 +30,7 @@
   <p>
     Once you have collected the appropriate objects from the bucket, it is entirely up to you to choose how you want to organize and display them.
     You can sort the posts chronologically, by each post's like count, or by some machine learning algorithm.
-    You can display a like count with each post, or <a href="https://about.fb.com/news/2021/05/giving-people-more-control/">turn them off</a> if that would stress you out.
+    You can display a like count with each post, display a temporal historgram of likes, or hide likes entirely.
   <p>
 
   <p>
@@ -38,25 +39,37 @@
     Some of these posts may be ones that you, or others, also see in the Twitter-like app.
   </p>
 
-
 <p>
-  However, <em>too much</em> interoperation can result in what's known as <a href="https://en.wikipedia.org/wiki/Context_collapse">context collapse</a>.
-  LinkedIn and Tinder both have user profiles, but most people don't want their profiles shared between those two applications.
-  The interesting part of Graffiti is how it enables people to maintain their own sense of social boundaries without agreeing with everyone that those boundaries should be the same.
-  For some people there is a cultural distinction between things that happen "on Slack" versus "on Messenger" but others would rather have a single messaging app.
-</p>
-  <!--Cleary, this bucket can be used to create many different sorts of applications and, if those applications are using similar sorts of objects, they will naturally interoperate with each other.-->
-  <!--However, we don't want too much interoperation. Linkden and Tinder both involve user profile objects but most people don't want users of one app to see their profile for the other.-->
-  <!--Social boundaries between different spaces are critical for healthy social interactions.-->
-  <!--In a world where everyone thinks and feels the same, this bucket analogy is probably enough to create a diverse set of would be enough to create a zoo of different social applications that all interoperate.-->
-  <!--But in a reality we need to deal with a critical : social boundaries.-->
-  <!--Some people hear things that they wish weren't said, and some people say things that they wish weren't widely heard.-->
-</p>
-
-<p>
-  Graffiti affords three types of ways for people to define and maintain social boundaries: moderation, access control and context.
-  We're going to discuss how people can set these boundaries, without necessarily 
+  In summary, Graffiti's first role is to put everything in the same place.
+  It's second role, is to seperate everything out again.
+  Personal boundaries are crucial for socializing, but the boundaries that one person sets don't need to be the same as another person's
+  Graffiti affords three types of ways for people to define and maintain social boundaries: tagging, peer moderation and access control.
   We're also going to discuss how what properties Graffiti has that enables people to have these boundaries even if their's aren't the same as someone else's.
+</p>
+
+<h2>
+  Tagging
+</h2>
+
+<p>
+  Things on the internet have a "place". Social interactions can happen "in a subreddit", "in a thread", "on a profile", or "on Slack".
+  Sometimes things "are" in multiple places at the same time.
+  On slack an item can be in a thread and also in the broader chat.
+  For example when you comment on Twitter that tweet lives in the comments section of the thread <em>and</em> on your profile.
+</p>
+
+<p>
+  When places collapse there is 
+  However, <em>too much</em> interoperation can result in what's known as <a href="https://en.wikipedia.org/wiki/Context_collapse">context collapse</a>.
+
+<p>
+  Therefore, all objects in Graffiti must be tagged with "where" it is.
+  A tag is just a string - it is not a room that needs to be created, a piece of hardware that needs to be created.
+  They can represent anything from
+  Objects can be found by querying for tags.
+  If a person wants to comment on something they tag their comment object with the thing they're tagging.
+  If they want that comment to also appear on their profile they tag their comment with their user ID.
+  What one person or their application chooses does not effect how other people choose.
 </p>
 
 <h2>
@@ -113,10 +126,6 @@ One alternative would be for the moderator to
   Context
 </h2>
 
-<p>
-  There are somethings that are technically public but intended for a specific audience.
-  Think subreddit, your wall, comment thread.
-</p>
 
 <p>
   Sometimes when these boundaries are broken.
@@ -183,3 +192,11 @@ The bots could be randomly audited.
 These bots could basically claim they are doing a particular task and.
 Maybe there could be a language for these tasks - who knows!
 maybe this is a place for smart contracts, although.
+
+
+<p>
+  However, <em>too much</em> interoperation can result in what's known as <a href="https://en.wikipedia.org/wiki/Context_collapse">context collapse</a>.
+  LinkedIn and Tinder both have user profiles, but most people don't want their profiles shared between those two applications.
+  An important part of Graffiti is how it enables people to define their own social boundaries without having to agree on those boundaries with everyone else.
+  For some people there is a cultural distinction between things that happen "on Slack" versus "on Messenger" but others would rather have a single messaging app.
+</p>

@@ -5,48 +5,18 @@
   <title>Graffiti</title>
   <link rel="stylesheet" type="text/css" href="//fonts.googleapis.com/css?family=Rock+Salt" />
   <link rel="stylesheet" href="/style.css">
-  <link href="https://unpkg.com/prismjs@1.28.0/themes/prism-tomorrow.min.css" rel="stylesheet" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-</head>
-
-<body id="app">
-  <router-view v-slot="{ Component, route }">
-    <transition :name="route.meta.transitionName" mode="out-in">
-      <component :is="Component" />
-    </transition>
-  </router-view>
-
-
-  <script src="https://unpkg.com/prismjs@1.28.0/components/prism-core.min.js"></script>
-  <script src="https://unpkg.com/prismjs@1.28.0/components/prism-markup.min.js"></script>
-  <script src="https://unpkg.com/prismjs@1.28.0/components/prism-clike.min.js"></script>
-  <script src="https://unpkg.com/prismjs@1.28.0/components/prism-javascript.min.js"></script>
-  <script src="https://unpkg.com/vue@3.2.37/dist/vue.global.prod.js"></script>
-  <script src="https://unpkg.com/vue-router@4.0.14/dist/vue-router.global.prod.js"></script>
+  <script async src="https://ga.jspm.io/npm:es-module-shims@1.6.2/dist/es-module-shims.js"></script>
+  <script type="importmap">{ "imports": {
+    "vue": "https://cdnjs.cloudflare.com/ajax/libs/vue/3.2.45/vue.esm-browser.min.js",
+    "@vue/devtools-api": "https://unpkg.com/@vue/devtools-api@6.2.1/lib/esm/index.js",
+    "vue-router": "https://cdnjs.cloudflare.com/ajax/libs/vue-router/4.1.6/vue-router.esm-browser.min.js"
+  }}</script>
   <script type="module">
-    import Graffiti from 'https://graffiti.garden/graffiti-x-vue/graffiti.js'
+    import * as Vue from 'vue'
+    import * as VueRouter from 'vue-router'
 
-    const DisplayCode = {
-      props: ['path'],
-
-      data: ()=> ({code: ''}),
-
-      async created() {
-        const request = new Request(this.path)
-        const response = await fetch(request)
-        this.code = await response.text()
-      },
-
-      computed: {
-        codePretty() {
-          return Prism.highlight(this.code, Prism.languages.javascript, 'javascript');
-        }
-      },
-
-      template: '<pre><code class="language-javascript" v-html="codePretty"></code></pre>'
-    }
-
-    function lazyDoc(name, path=null) { return {
+    export function lazyDoc(name, path=null) { return {
       path: path?path:`/${name}`,
       component: async ()=> {
         const response = await fetch(`./html/${name}.html`)
@@ -58,15 +28,16 @@
       history: VueRouter.createWebHashHistory(),
       routes: [
         lazyDoc('home', '/'),
-        lazyDoc('docs/introduction', '/docs'),
-        lazyDoc('zoo', '/zoo'), {
-        ...lazyDoc('theory', '/theory'),
-        children: [
-          lazyDoc('why', 'why'),
-          lazyDoc('how', 'how'),
-          lazyDoc('but', 'but'),
-        ],
-      }],
+        lazyDoc('garden', '/garden'),
+        {
+          ...lazyDoc('theory/introduction', '/theory'),
+          children: [
+            lazyDoc('theory/why', 'why'),
+            lazyDoc('theory/how', 'how'),
+            lazyDoc('theory/but', 'but'),
+          ],
+        }
+      ],
       scrollBehavior (to, from, savedPosition) {
         const out = { behavior: 'smooth' }
         if (to.path.startsWith('/theory/')) {
@@ -85,8 +56,15 @@
     const app = Vue
       .createApp()
       .use(Router)
-      .component('DisplayCode', DisplayCode)
     Router.isReady().then(()=> app.mount('#app'))
   </script>
+</head>
+
+<body id="app">
+  <router-view v-slot="{ Component, route }">
+    <transition :name="route.meta.transitionName" mode="out-in">
+      <component :is="Component" />
+    </transition>
+  </router-view>
 </body>
 </html>

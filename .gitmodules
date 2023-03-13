@@ -1,0 +1,3 @@
+[submodule "graffiti-js"]
+	path = graffiti-js
+	url = git@github.com:graffiti-garden/graffiti-js.git

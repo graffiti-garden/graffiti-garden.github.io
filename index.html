@@ -3,20 +3,30 @@
 <head>
   <meta charset="utf-8">
   <title>Graffiti</title>
-  <link rel="stylesheet" type="text/css" href="//fonts.googleapis.com/css?family=Rock+Salt" />
-  <link rel="stylesheet" href="/style.css">
+  <base target="_blank">
+  <link rel="stylesheet" href="./style.css" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <script src="https://unpkg.com/prismjs@1.28.0/components/prism-core.min.js"></script>
+  <script src="https://unpkg.com/prismjs@1.28.0/components/prism-markup.min.js"></script>
+  <script src="https://unpkg.com/prismjs@1.28.0/components/prism-clike.min.js"></script>
+  <script src="https://unpkg.com/prismjs@1.28.0/components/prism-javascript.min.js"></script>
+  <link href="https://unpkg.com/prismjs@1.28.0/themes/prism-tomorrow.min.css" rel="stylesheet" />
+  <link href="https://cdn.jsdelivr.net/npm/vue-prism-editor@2.0.0-alpha.2/dist/prismeditor.min.css" rel="stylesheet"/>
   <script async src="https://ga.jspm.io/npm:es-module-shims@1.6.2/dist/es-module-shims.js"></script>
   <script type="importmap">{ "imports": {
     "vue": "https://cdnjs.cloudflare.com/ajax/libs/vue/3.2.45/vue.esm-browser.min.js",
     "@vue/devtools-api": "https://unpkg.com/@vue/devtools-api@6.2.1/lib/esm/index.js",
-    "vue-router": "https://cdnjs.cloudflare.com/ajax/libs/vue-router/4.1.6/vue-router.esm-browser.min.js"
+    "vue-router": "https://cdnjs.cloudflare.com/ajax/libs/vue-router/4.1.6/vue-router.esm-browser.min.js",
+    "graffiti-vue": "./graffiti-js/plugins/vue/plugin.js",
+    "vue-prism-editor": "https://cdn.jsdelivr.net/npm/vue-prism-editor@2.0.0-alpha.2/dist/prismeditor.esm.js"
   }}</script>
   <script type="module">
-    import * as Vue from 'vue'
-    import * as VueRouter from 'vue-router'
+    import { createApp } from 'vue'
+    import { createRouter, createWebHashHistory } from 'vue-router'
+    import GraffitiVue from 'graffiti-vue'
+    import GraffitiPlayground from './components/graffiti-playground.js'
 
-    export function lazyDoc(name, path=null) { return {
+    function lazyDoc(name, path=null) { return {
       path: path?path:`/${name}`,
       component: async ()=> {
         const response = await fetch(`./html/${name}.html`)
@@ -24,47 +34,103 @@
       }
     }}
 
-    const Router = VueRouter.createRouter({
-      history: VueRouter.createWebHashHistory(),
+    const sections = {
+      'theory': [
+        'motivation',
+        'overview'
+      ],
+      'guide': [
+        'introduction',
+        'install',
+        'logging-in',
+        'object-basics',
+        'context',
+        'privacy',
+        'reference'
+      ],
+      'examples': [
+        'profile-creator',
+        'commenting',
+        'moderation',
+        'ordered-lists',
+        'spatial-contexts'
+      ]
+    }
+
+    const Router = createRouter({
+      history: createWebHashHistory(),
       routes: [
-        lazyDoc('home', '/'),
-        lazyDoc('garden', '/garden'),
-        {
-          ...lazyDoc('theory/introduction', '/theory'),
-          children: [
-            lazyDoc('theory/why', 'why'),
-            lazyDoc('theory/how', 'how'),
-            lazyDoc('theory/but', 'but'),
-          ],
-        }
+        lazyDoc('graffiti', '/'),
+        ...Object.values(sections).flat().map(
+          s=> lazyDoc(s))
       ],
       scrollBehavior (to, from, savedPosition) {
-        const out = { behavior: 'smooth' }
-        if (to.path.startsWith('/theory/')) {
-          out.el = document.getElementsByTagName("nav")[0]
-        } else {
-          out.top = 0
-        }
-        return out
+        return {left: 0, top: 0}
       }
     })
 
-    Router.afterEach((to, from) => {
-      to.meta.transitionName = to.path == '/' ? 'slide-left' : 'slide-right'
-    })
+    function title(section) {
+      return section
+        // Dashes to spaces
+        .replace(/-/g, ' ')
+        // Capitalize first letter of word
+        .replace(/\b\w/g, x=> x.toUpperCase())
+    }
 
-    const app = Vue
-      .createApp()
+    function sectionHTML(section, path=null) {
+      path = path?path:`/${section}`
+
+      return `
+        <li>
+          <router-link to="${path}">
+            ${title(section)}
+          </router-link>
+        </li>`
+    }
+
+    const TOC = {
+      template: `<ul>
+      ${Object.keys(sections).map(
+        s=>`
+          <li>${title(s)}
+          <ul>
+            ${sections[s].map(
+              ss=> sectionHTML(ss))
+            .join('')}
+          </ul></li>`)
+      .join('')}</ul>`
+    }
+
+    createApp()
+      .use(GraffitiVue)
+      .component('GraffitiPlayground', GraffitiPlayground)
+      .component('toc', TOC)
       .use(Router)
-    Router.isReady().then(()=> app.mount('#app'))
+      .mount('#app')
   </script>
 </head>
 
-<body id="app">
-  <router-view v-slot="{ Component, route }">
-    <transition :name="route.meta.transitionName" mode="out-in">
-      <component :is="Component" />
-    </transition>
-  </router-view>
+<body>
+  <div id="app">
+    <nav>
+      <h1>
+        <router-link to="/">
+          Graffiti
+        </router-link>
+      </h1>
+      <toc></toc>
+      <ul>
+        <li>
+          <a target="_blank" class="logo" href="https://github.com/graffiti-garden">
+            <img src="./media/github.png"/>
+            Github
+          </a>
+        </li>
+      </ul>
+    </nav>
+    <main>
+      <router-view class="contents"></router-view>
+    </main>
+  </div>
 </body>
 </html>

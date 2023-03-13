@@ -69,15 +69,19 @@ export default {
       <fieldset v-if="render" class="demo-render">
         <legend>Demo</legend>
         <Renderer :code="code" :data="data"/>
+        <Transition name="fade">
+          <button v-if="hide" @click="hide=false" class="reveal-code">
+            Show Source Code
+          </button>
+        </Transition>
       </fieldset>
-      <fieldset class="demo-code" @click="hide=false">
-        <legend>
-          Source Code
-        </legend>
-        <PrismEditor v-if="!hide" v-model="code" :highlight="highlighter"/>
-        <button v-else>
-          Show Source Code
-        </button>
-      </fieldset>
+      <Transition name="stretch">
+        <fieldset v-if="!hide" class="demo-code">
+          <legend @click="hide=true">
+            Source Code
+          </legend>
+          <PrismEditor v-model="code" :highlight="highlighter"/>
+        </fieldset>
+      </Transition>
     </div>`
 }

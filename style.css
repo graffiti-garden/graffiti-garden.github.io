@@ -260,7 +260,7 @@ code {
 }
 
 fieldset {
-  padding: 1rem;
+  padding: 2rem;
   background: var(--halfback);
   color: white;
 }
@@ -285,6 +285,9 @@ fieldset {
   flex-direction: column;
   align-items: center;
   border-radius: 1rem 1rem 0 0;
+  position: relative;
+  border: 2px solid white;
+  margin-bottom: 1.5rem;
 }
 
 .demo-code {
@@ -294,9 +297,63 @@ fieldset {
 
 .demo-render + .demo-code {
   border-radius: 0 0 1rem 1rem;
+  margin-top: -1.5rem;
 }
 
 .error {
   color: #e54f53;
   font-weight: bold;
+}
+
+.reveal-code {
+  position: absolute;
+  top: calc(100% - 0.5em - 0.5rem);
+  border: 2px solid white;
+  background: var(--halfback);
+  font-size: 100%;
+  z-index: 2;
+}
+
+.fade-leave-active {
+  transition: opacity 0.2s;
+}
+
+.fade-enter-active {
+  transition: opacity 0.2s 0.5s;
+}
+
+.fade-enter-from,
+.fade-leave-to {
+  opacity: 0;
+}
+
+.stretch-enter-active {
+  transition: opacity 0.2s;
+}
+
+.stretch-enter-active .prism-editor-wrapper {
+  transition: font-size 0.5s 0.2s;
+}
+
+.stretch-leave-active {
+  transition: opacity 0.2s 0.5s;
+}
+
+.stretch-leave-active .prism-editor-wrapper {
+  transition: font-size 0.5s;
+}
+
+.stretch-enter-from,
+.stretch-leave-to {
+  opacity: 0;
+}
+
+.stretch-enter-from .prism-editor-wrapper,
+.stretch-leave-to .prism-editor-wrapper {
+  font-size: 0;
+}
+
+.demo-code legend:hover {
+  cursor: pointer;
+  color: var(--frontbold);
 }

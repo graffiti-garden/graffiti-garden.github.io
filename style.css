@@ -51,11 +51,13 @@ html {
 }
 
 #app {
+  min-height: 100vh;
   display: flex;
   flex-direction: row;
 }
 
 nav {
+  z-index: 3;
   flex-grow: 0;
   flex-shrink: 0;
   flex-basis: 12rem;
@@ -275,6 +277,10 @@ fieldset {
   }
 }
 
+.demo fieldset {
+  border: 2px solid white;
+}
+
 .demo-render {
   z-index: 1;
   display: flex;
@@ -283,7 +289,6 @@ fieldset {
   align-items: center;
   border-radius: 1rem 1rem 0 0;
   position: relative;
-  border: 2px solid white;
   margin-bottom: 1.5rem;
   transition: border-radius 0.2s
 }
@@ -345,7 +350,6 @@ fieldset {
 .stretch-leave-active .prism-editor-wrapper {
   transition: font-size 0.5s;
 }
-
 
 .demo-render + .demo-code.stretch-enter-from,
 .demo-render + .demo-code.stretch-leave-to {

@@ -75,7 +75,7 @@ export default {
           </button>
         </Transition>
       </fieldset>
-      <Transition name="stretch">
+      <Transition name="stretch" :duration="700">
         <fieldset v-if="!hide" class="demo-code">
           <legend @click="render?hide=true:null">
             Source Code

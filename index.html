@@ -30,14 +30,15 @@
       path: path?path:`/${name}`,
       component: async ()=> {
         const response = await fetch(`./html/${name}.html`)
-        return { template: `<div>${await response.text()}</div>` }
+        return { template: `<main>${await response.text()}</main>` }
       }
     }}
 
     const sections = {
-      'theory': [
+      'high-level': [
         'motivation',
-        'overview'
+        'overview',
+        'implimentation'
       ],
       'guide': [
         'introduction',
@@ -65,7 +66,7 @@
           s=> lazyDoc(s))
       ],
       scrollBehavior (to, from, savedPosition) {
-        return {left: 0, top: 0}
+        return {left: 0, top: 0, behavior: 'smooth'}
       }
     })
 
@@ -128,9 +129,11 @@
         </li>
       </ul>
     </nav>
-    <main>
-      <router-view class="contents"></router-view>
-    </main>
+    <router-view v-slot="{ Component }">
+      <transition name="slide-right" mode="out-in">
+        <component :is="Component" />
+      </transition>
+    </router-view>
   </div>
 </body>
 </html>

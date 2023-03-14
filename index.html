@@ -6,6 +6,13 @@
   <base target="_blank">
   <link rel="stylesheet" href="./style.css" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <script>
+    const redirect = sessionStorage.redirect;
+    delete sessionStorage.redirect;
+    if (redirect && redirect !== location.href) {
+      history.replaceState(null, null, redirect);
+    }
+  </script>
   <script src="https://unpkg.com/prismjs@1.28.0/components/prism-core.min.js"></script>
   <script src="https://unpkg.com/prismjs@1.28.0/components/prism-markup.min.js"></script>
   <script src="https://unpkg.com/prismjs@1.28.0/components/prism-clike.min.js"></script>
@@ -22,7 +29,7 @@
   }}</script>
   <script type="module">
     import { createApp } from 'vue'
-    import { createRouter, createWebHashHistory } from 'vue-router'
+    import { createRouter, createWebHashHistory, createWebHistory } from 'vue-router'
     import GraffitiVue from 'graffiti-vue'
     import GraffitiPlayground from './components/graffiti-playground.js'
 
@@ -38,8 +45,8 @@
       'high-level': [
         'motivation',
         'overview',
-        'implimentation'
-      ],
+        //'implimentation'
+     ],
       'guide': [
         'introduction',
         'install',
@@ -59,7 +66,8 @@
     }
 
     const Router = createRouter({
-      history: createWebHashHistory(),
+      history: window.location.hostname=="localhost"?
+        createWebHashHistory() : createWebHistory(),
       routes: [
         lazyDoc('graffiti', '/'),
         ...Object.values(sections).flat().map(

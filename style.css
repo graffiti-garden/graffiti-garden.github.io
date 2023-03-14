@@ -276,6 +276,7 @@ fieldset {
 }
 
 .demo-render {
+  z-index: 1;
   display: flex;
   gap: 1rem;
   flex-direction: column;
@@ -284,6 +285,12 @@ fieldset {
   position: relative;
   border: 2px solid white;
   margin-bottom: 1.5rem;
+  transition: border-radius 0.2s
+}
+
+.demo-render.alone {
+  border-radius: 1rem;
+  transition: border-radius 0.2s 0.5s;
 }
 
 .demo-code {
@@ -324,7 +331,7 @@ fieldset {
 }
 
 .stretch-enter-active {
-  transition: opacity 0.2s;
+  transition: opacity 0.2s, margin-top 0.2s;
 }
 
 .stretch-enter-active .prism-editor-wrapper {
@@ -332,15 +339,17 @@ fieldset {
 }
 
 .stretch-leave-active {
-  transition: opacity 0.2s 0.5s;
+  transition: opacity 0.2s 0.5s, margin-top 0.2s 0.5s;
 }
 
 .stretch-leave-active .prism-editor-wrapper {
   transition: font-size 0.5s;
 }
 
-.stretch-enter-from,
-.stretch-leave-to {
+
+.demo-render + .demo-code.stretch-enter-from,
+.demo-render + .demo-code.stretch-leave-to {
+  margin-top: -5.5rem;
   opacity: 0;
 }
 
@@ -349,7 +358,7 @@ fieldset {
   font-size: 0;
 }
 
-.demo-code legend:hover {
+.demo-render + .demo-code legend:hover {
   cursor: pointer;
   color: var(--frontbold);
 }

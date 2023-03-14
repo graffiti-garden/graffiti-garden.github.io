@@ -66,7 +66,7 @@ export default {
 
   template: `
     <div class="demo">
-      <fieldset v-if="render" class="demo-render">
+      <fieldset v-if="render" :class="['demo-render', hide?'alone':'']">
         <legend>Demo</legend>
         <Renderer :code="code" :data="data"/>
         <Transition name="fade">
@@ -77,7 +77,7 @@ export default {
       </fieldset>
       <Transition name="stretch">
         <fieldset v-if="!hide" class="demo-code">
-          <legend @click="hide=true">
+          <legend @click="render?hide=true:null">
             Source Code
           </legend>
           <PrismEditor v-model="code" :highlight="highlighter"/>

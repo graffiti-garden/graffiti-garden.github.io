@@ -2,8 +2,8 @@
   --back: rgb(26, 26, 26, 0.95);
   --backfaded: rgb(26, 26, 26, 0.7);
   --halfback: #2d2d2d;
-  --frontfaded: rgba(255, 255, 255, 0.7);
-  --front: rgba(255, 255, 255, 0.87);
+  --frontfaded: rgb(178, 178, 178);
+  --front: rgb(229, 229, 229);
   --frontbold: #ca7acc;
   --border: grey;
   --blurpix: 4px;
@@ -69,7 +69,7 @@ main {
   max-width: 50rem;
   margin-left:auto;
   margin-right: auto;
-  padding: min(4rem, 6vw);
+  padding: 4rem;
   background: var(--back);
   display: flex;
   flex-direction: column;
@@ -78,50 +78,10 @@ main {
 
 header {
   display: none;
-}
-
-@media screen and (max-width: 65rem) {
-
-  header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 3vw;
-    background: var(--backfaded);
-  }
-
-  header h1 {
-    font-size: 1.5rem;
-    line-height: 1;
-  }
-
-  nav {
-    display: none;
-  }
-
-  nav.open {
-    flex: 1;
-    display: block;
-    max-width: 50rem;
-    margin-left:auto;
-    margin-right: auto;
-    background: var(--back);
-    font-size: 1.5rem;
-  }
-
-  nav.open + main {
-    display: none;
-  }
-
-  main h1 {
-    text-align: center;
-    margin-top: 4rem;
-    font-size: 1.5rem;
-  }
-
-  main footer {
-    font-size: 0.75rem;
-  }
+  justify-content: space-between;
+  align-items: center;
+  padding: 3vw;
+  background: var(--backfaded);
 }
 
 a {
@@ -158,13 +118,22 @@ figcaption {
   font-style: italic;
 }
 
+header h1 {
+  font-size: 1rem;
+  line-height: 1;
+}
+
 nav h1 {
   font-size: 120%;
   margin-bottom: 2rem;
 }
 
-:is(nav,header) h1 a {
+nav h1 a {
   color: white;
+}
+
+header h1 a {
+  color: var(--frontfaded);
 }
 
 nav a {
@@ -306,7 +275,7 @@ code {
 }
 
 fieldset {
-  padding: min(2rem, 3vw);
+  padding: 2rem;
   background: var(--halfback);
   color: white;
 }
@@ -449,7 +418,7 @@ fieldset {
 .hamburger div::before,
 .hamburger div::after {
   display: block;
-  background-color: white;
+  background-color: var(--frontfaded);
   position: absolute;
   height: 0.25rem;
   width: 2rem;
@@ -483,4 +452,53 @@ fieldset {
 
 .hamburger input:checked + div::after {
   transform: rotate(-45deg);
+}
+
+@media screen and (max-width: 65rem) {
+  header {
+    display: flex;
+  }
+
+  nav {
+    display: none;
+  }
+
+  nav.open {
+    flex: 1;
+    display: block;
+    max-width: 50rem;
+    margin-left:auto;
+    margin-right: auto;
+    background: var(--back);
+    font-size: 1.5rem;
+  }
+
+  nav.open + main {
+    display: none;
+  }
+
+  main {
+    padding: 1em;
+  }
+
+  fieldset {
+    padding: 1em;
+  }
+
+  .demo-render + .demo-code.stretch-enter-from,
+  .demo-render + .demo-code.stretch-leave-to {
+    margin-top: -3.5rem;
+  }
+
+  main h1 {
+    text-align: center;
+    padding-top: 2rem;
+    padding-bottom: 3rem;
+    font-size: 1.5rem;
+    border-bottom: 1px solid grey;
+  }
+
+  main footer {
+    font-size: 0.75rem;
+  }
 }

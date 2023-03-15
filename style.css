@@ -112,6 +112,16 @@ header {
   nav.open + main {
     display: none;
   }
+
+  main h1 {
+    text-align: center;
+    margin-top: 4rem;
+    font-size: 1.5rem;
+  }
+
+  main footer {
+    font-size: 0.75rem;
+  }
 }
 
 a {
@@ -320,6 +330,7 @@ fieldset {
 }
 
 .demo-render {
+  text-align: center;
   z-index: 1;
   display: flex;
   gap: 1rem;

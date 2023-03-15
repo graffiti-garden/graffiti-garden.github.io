@@ -94,7 +94,7 @@ a:hover {
   text-decoration: underline;
 }
 
-.router-link-active {
+:not(header) > * > .router-link-active {
   color: var(--frontbold);
 }
 

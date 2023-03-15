@@ -110,7 +110,18 @@
       .join('')}</ul>`
     }
 
-    createApp()
+    const app = {
+      data: ()=> ({
+        navOpen: false
+      }),
+      watch:{
+        $route (to, from){
+          this.navOpen = false
+        }
+      } 
+    }
+
+    createApp(app)
       .use(GraffitiVue)
       .component('GraffitiPlayground', GraffitiPlayground)
       .component('toc', TOC)
@@ -119,10 +130,21 @@
   </script>
 </head>
 
-<body>
-  <div id="app">
-    <nav>
-      <h1>
+<body id="app">
+  <header>
+    <label class="hamburger">
+      <input v-model="navOpen" type="checkbox">
+      <div></div>
+    </label>
+    <h1>
+      <router-link to="/">
+        Graffiti
+      </router-link>
+    </h1>
+  </header>
+  <div>
+    <nav :class="navOpen?'open':''">
+      <h1 v-if="!navOpen">
         <router-link to="/">
           Graffiti
         </router-link>

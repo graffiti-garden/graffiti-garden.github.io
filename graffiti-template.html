@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>My Graffiti App</title>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <script async src="https://ga.jspm.io/npm:es-module-shims@1.7.0/dist/es-module-shims.js"></script>
+  <script type="importmap">{ "imports": {
+    "vue": "https://cdnjs.cloudflare.com/ajax/libs/vue/3.2.47/vue.esm-browser.min.js",
+    "graffiti-vue": "https://graffiti.garden/graffiti-js/plugins/vue/plugin.js"
+  }}</script>
+  <script type="module">
+    import { createApp } from 'vue'
+    import GraffitiVue from 'graffiti-vue'
+
+    function data() {
+      return {
+        // INITIALIZE YOUR VUE DATA HERE
+      }
+    }
+
+    createApp()
+      .component('MainComponent',
+        { data, template: '#main' })
+      .use(GraffitiVue)
+      .mount('#app')
+  </script>
+</head>
+<script type="text/html" id="main">
+
+  <!-- YOUR APP GOES HERE -->
+
+</script>
+<body id="app">
+  <main-component></main-component>
+</body>
+</html>

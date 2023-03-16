@@ -1,0 +1,12 @@
+<input v-model=id placeholder="Paste a message ID..."/>
+
+<GraffitiObject v-slot={object:message} :id=id>
+  {{message.content}}
+
+  <button @click="message.content+='!'">
+    ❗️
+  </button>
+  <button @click="delete message.id">
+    ❌
+  </button>
+</GraffitiObject>

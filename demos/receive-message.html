@@ -1,0 +1,27 @@
+<input v-model=recipientActor placeholder="Paste the recipient's actor ID...">
+
+The 5 most recent messages from the recipient:
+<GraffitiObjects v-slot={objects:messages}
+  :schema="{
+    required: ['type', 'content', 'bto'],
+    properties: {
+      type: { enum: ['Note'] },
+      content: { type: 'string' },
+      bto: {
+        type: 'array',
+        minItems: 1,
+        maxItems: 1,
+        items: { enum: [$graffitiMyActor] }
+      },
+      actor: { enum: [recipientActor] }
+    },
+  }"
+  sortBy="-published">
+
+  <ul>
+    <li v-for="message of messages.slice(0,5)">
+      {{ message.content }}
+    </li>
+  </ul>
+
+</GraffitiObjects>

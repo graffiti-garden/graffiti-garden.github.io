@@ -1,0 +1,11 @@
+<input v-model=recipientActor placeholder="Paste the recipient's actor ID...">
+<input v-model=messageContent placeholder="Type a message...">
+
+<button @click="$graffitiUpdate({
+  type: 'Note',
+  content: messageContent,
+  bto: [recipientActor],
+  context: [$graffitiMyActor, recipientActor]
+}); messageContent=''">
+  Send
+</button>

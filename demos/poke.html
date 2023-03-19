@@ -1,13 +1,13 @@
 My Actor URI:
-<input readonly :value=$graffitiMyActor />
+<input readonly :value=$gf.me />
 
 Recipient's Actor URI:
 <input v-model=recipient />
 
-<button @click="$graffitiUpdate({
+<button @click="$gf.update({
     type: 'Poke',
     bto: [recipient],
-    context: [$graffitiMyActor, recipient]
+    context: [$gf.me, recipient]
   })">
   👉 Poke
 </button>

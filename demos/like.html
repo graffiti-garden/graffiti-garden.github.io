@@ -13,7 +13,7 @@
   <button v-if="likes.mine.length" @click="likes.removeMine()">
     👎 unlike?
   </button>
-  <button v-else @click="$graffitiUpdate({
+  <button v-else @click="$gf.update({
     type: 'Like',
     object: messageID,
     context: [messageID]

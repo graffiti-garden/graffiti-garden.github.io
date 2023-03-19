@@ -4,7 +4,8 @@
 
 <p>
   Graffiti apps are read-only unless you log in.
-  To log in or out of Graffiti from a Vue app all you need to do is call the global <code class="language-js">$graffitiToggleLogIn</code> function.
+  To log in or out of Graffiti from a Vue app all you need to do is call <code class="language-js">$graffiti.toggleLogIn</code> function.
+  <code class="language-js">$graffiti</code> is in the global Vue namespace so you can use it directly in templates or via <code class="language-js">this.$graffiti</code> in components.
   You can log in from any domain.
 </p>
 

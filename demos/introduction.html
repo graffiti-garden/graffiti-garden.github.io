@@ -1,6 +1,6 @@
 <GraffitiObjects v-slot={objects:waves}
   :context="['https://graffiti.garden']"
-  :schema="{
+  :query="{
     properties: {
       type: { const: 'Wave' }
     },
@@ -14,10 +14,7 @@
     <button v-if=waves.mine.length class=waving @click=waves.removeMine()>
       👋
     </button>
-    <button v-else @click="$gf.update({
-       context: ['https://graffiti.garden'],
-       type: 'Wave'
-      })">
+    <button v-else @click="waves.post({type: 'Wave'})">
       👋
     </button>
   </template>

@@ -5,18 +5,17 @@
   :schema="{
     required: ['type', 'object'],
     properties: {
-      type: { enum: ['Like'] },
-      object: { enum: [messageID] }
+      type: { const: 'Like' },
+      object: { const: messageID }
     }
   }">
 
   <button v-if="likes.mine.length" @click="likes.removeMine()">
     👎 unlike?
   </button>
-  <button v-else @click="$gf.update({
+  <button v-else @click="likes.post({
     type: 'Like',
     object: messageID,
-    context: [messageID]
   })">
     👍 like?
   </button>

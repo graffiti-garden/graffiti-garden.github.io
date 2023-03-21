@@ -2,7 +2,7 @@
 
 The 5 most recent messages from the recipient:
 <GraffitiObjects v-slot={objects:messages}
-  :schema="{
+  :query="{
     required: ['type', 'content', 'bto'],
     properties: {
       type: { const: 'Note' },
@@ -15,8 +15,7 @@ The 5 most recent messages from the recipient:
       },
       actor: { const: recipient }
     }
-  }"
-  sortBy="-published">
+  }">
 
   <ul>
     <li v-for="message of messages.slice(0,5)">

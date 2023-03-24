@@ -21,7 +21,7 @@ html::before {
   left: 0;
   right: 0;
   z-index: -1;
-  background-image: url(https://graffiti.garden/media/graffiti.jpg);
+  background-image: url(https://graffiti.garden/pics/graffiti.jpg);
   background-size: cover;
   background-repeat: no-repeat;
   background-position: 50% 50%;

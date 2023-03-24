@@ -1,0 +1,36 @@
+<GraffitiObjects v-slot="{objects: profiles}"
+  :query="{
+    required: ['type', 'name', 'image'],
+    properties: {
+      type: { const: 'Profile' },
+      name: { type: 'string' },
+      image: { type: 'string' }
+    }
+  }">
+
+  <form @submit.prevent="$gf.media.store(imageFile).then(imageURI=>{
+      profiles.post({
+        type: 'Profile',
+        name: name,
+        image: imageURI
+      })
+    })">
+
+    <label>Name:
+      <input v-model="name" placeholder="Type your name...">
+    </label>
+    <label>Profile Picture:
+      <input type="file" @change="imageFile=$event.target.files[0]">
+    </label>
+    <input type="submit" value="Save">
+  </form>
+
+  <template v-if="profiles.length">
+    <br>
+    <h1>
+      {{ profiles[0].name }}
+    </h1>
+    <img :src="$gf.media.fetchBlobURL(profiles[0].image)">
+  </template>
+
+</GraffitiObjects>

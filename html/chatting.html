@@ -26,7 +26,8 @@
 </p>
 
 <p>
-  Your actor ID is shown below, we've just wrapped it in an <code class="language-html">&lt;input></code> to make it easier to copy.
+  You can access your actor ID with the variable <code class="language-html">$gf.me</code> as shown below
+  We've just wrapped it in an <code class="language-html">&lt;input></code> to make it easier to copy.
   As you can see it's pretty ugly, so in your actual app you probably don't want to expose it to the user.
   However, for the sake of simplifying the demos in this section we're going to be manually copying and pasting it where needed.
 </p>
@@ -34,19 +35,16 @@
 <GraffitiPlayground path="actor" />
 
 <h2>
-  Sending a Message
+  Sending and Receiving Messages
 </h2>
 
 <p>
-  There are two main steps to getting a chat app to work: sending and receiving messages.
-  Messages in Graffiti are just JSON objects. To send a message, you
-  need to construct a JSON object full of all the information
-  you want in your message and then pass it to the <code class="language-js">$graffitiUpdate</code> function
-  to add the message to the Graffiti database.
+  Messages in Graffiti are just JSON objects.
+  The first step to making a messenger is deciding what properties our JSON objects and then filtering for those objects.
 </p>
 
 <p>
-  There is a lot of flexibility for you to add custom properties to your JSON objects,
+  There is a lot of flexibility for you to use custom properties in your JSON objects,
   but it's best to use commonly understood properties
   when possible so that your app will interoperate with other chat apps.
   We're going to make our message look like an ActivityStreams <a href="https://www.w3.org/TR/activitystreams-vocabulary/#dfn-note">Note</a> type which is used for short pieces of text, like messages or tweets.
@@ -54,6 +52,12 @@
   <code class="language-js">type</code> property of the JSON object to <code class="language-js">'Note'</code>
   and assign the <code class="language-js">content</code> property of the object to the message text we want to send.
 </p>
+
+
+  To send a message, you
+  need to construct a JSON object full of all the information
+  you want in your message and then pass it to the <code class="language-js">$graffitiUpdate</code> function
+  to add the message to the Graffiti database.
 
 <p>
   We're also going to use the <code class="language-js">bto</code> property ("blind to")

@@ -69,11 +69,9 @@ export default {
       <fieldset v-if="render" :class="['demo-render', hide?'alone':'']">
         <legend>Demo</legend>
         <Renderer :code="code" :data="data"/>
-        <Transition name="fade">
-          <button v-if="hide" @click="hide=false" class="reveal-code">
-            Show Source Code
-          </button>
-        </Transition>
+        <button @click="hide=!hide" class="reveal-code">
+          {{ hide? 'Show' : 'Hide' }} Source Code
+        </button>
       </fieldset>
       <Transition name="stretch" :duration="700">
         <fieldset v-if="!hide" class="demo-code">

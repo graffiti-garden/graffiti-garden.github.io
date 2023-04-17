@@ -2,7 +2,7 @@
 
 <GraffitiObjects v-slot={objects:likes}
   :context=[messageID]
-  :schema="{
+  :query="{
     required: ['type', 'object'],
     properties: {
       type: { const: 'Like' },
@@ -10,7 +10,8 @@
     }
   }">
 
-  <button v-if="likes.mine.length" @click="likes.removeMine()">
+  <button v-if="likes.mine.length"
+          @click="$gf.remove(...likes.mine)">
     👎 unlike?
   </button>
   <button v-else @click="likes.post({

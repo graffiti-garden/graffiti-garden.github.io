@@ -1,9 +1,10 @@
 <GraffitiObjects v-slot={objects:boopbops}
+  :mine=true
   :query="{ required: ['type'] }">
 
   <ul v-for="type in ['Boop', 'Bop']">
     <li v-for="boopbop in
-      boopbops.mine.filter(o=>o.type==type)">
+      boopbops.filter(o=>o.type==type)">
       {{ boopbop.type }}
 
       <button @click="boopbop.type=
@@ -11,7 +12,7 @@
         🔄
       </button>
 
-      <button @click="boopbops.remove(boopbop)">
+      <button @click="$gf.remove(boopbop)">
         ❌
       </button>
     </li>

@@ -1,36 +1,11 @@
-<GraffitiObjects v-slot={objects:messages}
-  :query="{
-    required: ['type', 'content', 'bto'],
-    properties: {
-      type: { const: 'Note' },
-      content: { type: 'string' },
-      bto: {
-        type: 'array',
-        minItems: 1,
-        maxItems: 1,
-        items: { const: recipient }
-      },
-      actor: { const: $gf.me }
-    }
-  }">
+<input v-model=recipient placeholder="Paste the recipient's actor ID...">
+<input v-model=messageContent placeholder="Type a message...">
 
-  <input v-model=recipient placeholder="Paste the recipient's actor ID...">
-  <input v-model=messageContent placeholder="Type a message...">
-
-  <button @click="messages.post({
-    type: 'Note',
-    content: messageContent,
-    bto: [recipient],
-    context: [$gf.me, recipient]
-  }); messageContent=''">
-    Send
-  </button>
-
-  The 5 most recent messages I've sent:
-  <ul>
-    <li v-for="message of messages.slice(0,5)">
-      {{ message.content }}
-    </li>
-  </ul>
-
-</GraffitiObjects>
+<button @click="$gf.post({
+  type: 'Note',
+  content: messageContent,
+  bto: [recipient],
+  context: [$gf.me, recipient]
+}); messageContent=''">
+  Send
+</button>

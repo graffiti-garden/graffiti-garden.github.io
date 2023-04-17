@@ -15,7 +15,7 @@
 </p>
 
 <p>
-  To add data to the database you simply need to pass the JSON object you want to add to the global <code class="language-js">$graffitiUpdate</code> function.
+  To add data to the database you simply need to pass the JSON object you want to add to the global <code class="language-js">$gf.post</code> function.
   In the example below, clicking the button creates an object with <code class="language-js">type</code> "Boop".
 </p>
 
@@ -35,14 +35,14 @@
 
 <p>
   Below, we're mapping the <code class="language-js">objects</code> variable exposed by the <code class="language-js">GraffitiObjects</code> component to the variable <code class="language-js">boops</code> &mdash; remapping the variable helps with readability and it prevents name collisions if you are using nested <code class="language-js">GraffitiObjects</code> components.
-  Then, we're filtering for objects that <em>you</em> have created and we use <a href="https://json-schema.org/">JSON schema</a> notation to filter for objects of type "Boop".
+  Then, we're filtering for objects that <em>you</em> have created with <code class="language-js">mine</code> and we use <a href="https://json-schema.org/">JSON schema</a> notation to <code class="language-js">query</code> for objects of type "Boop".
 </p>
 
 <GraffitiPlayground path="boop-viewer" />
 
 <p>
   JSON Schema is very flexible and eventually we suggest that you check out it's <a href="https://json-schema.org/learn/getting-started-step-by-step.html">tutorial</a> but basically <code class="language-js">properties</code> describes the schema of certain properties <em>if those properties exist</em> and <code class="language-js">required</code> specifies which properties <em>must</em> exist.
-  Additional properties outside of those specified may also exist in the object. This can be disabled by setting <code class="language-js">additionalProperties: false</code> but we suggest that you never use this option as it can prevent interoperability between applications with different but overlapping schemas.
+  Additional properties outside of those specified may also exist in the object, which allows for interoperability with other apps that use expanded schemas.
 </p>
 
 <p>
@@ -59,8 +59,7 @@
 </p>
 
 <p>
-  You can delete objects by calling <code class="language-js">delete</code> on an object's <code class="language-js">id</code> property, as also demonstrated in the example below.
-  <code class="language-js">id</code> is a unique URI assigned to every object that we'll describe along with other special regulated properties at the end of this section.
+  You can delete objects by calling the global <code class="language-js">$gf.remove</code> function, as also demonstrated in the example below.
 </p>
 
 <p>
@@ -71,29 +70,34 @@
 <GraffitiPlayground path="boopbop" />
 
 <p>
-  Alternatively you can call the <code class="language-js">removeMine</code> function on an <code class="language-js">objects</code> array to remove all objects from that array that you created.
-  This is useful for clearing "reaction" objects such as "likes" or the "Wave" objects used in the <RouterLink to="/">introduction</RouterLink> demo.
+  You can also pass a list of objects to the <code class="language-js">$gf.remove</code> function, which is used below to clear all of your boops and bops.
 </p>
 
 <GraffitiPlayground path="remove-mine" />
 
 <h2>
-  Filtering and Sorting
+  Filtering
 </h2>
 
 <p>
-  As we saw in the last demo, you can filter objects using the keyword <code class="language-js">mine</code> and by passing in a JSON schema <code class="language-js">schema</code>.
-  Alternatively, you can also pass in a <code class="language-js">filter</code> function, or a <code class="language-js">sort</code> function which are equivalent to the <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/filter">prototypical Array functions</a>. For example:
+  As we saw in the previous demos, you can filter objects using the keyword <code class="language-js">mine</code> and by passing in a JSON schema to <code class="language-js">query</code>.
+  Alternatively, you can also pass in a <code class="language-js">filter</code> function which is equivalent to the <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/filter">prototypical Array function</a>.
+  For example:
 
   <GraffitiPlayground path="boop-viewer-filter" />
 </p>
 
 <p>
-  Using <code class="language-js">filter</code> is more concise in this case, but it is less human-readable.
-  We recommend using <code class="language-js">schema</code> as much as possible unless there is something that requires special programmatic filtering that is outside the scope of JSON schema.
+  Using <code class="language-js">filter</code> is more concise but oftentimes less human-readable and it can be easy to miss edge cases.
+  We recommend using <code class="language-js">query</code> as much as possible unless there is something that requires special programmatic filtering that is outside the scope of JSON schema.
 </p>
 
+<h2>
+  Sorting
+</h2>
+
 <p>
+  To sort objects, you can use either <code class="language-js">sortBy</code> or <code class="language-js">sort</code>.
   We also provide a more concise version of <code class="language-js">sort</code> via the function <code class="language-js">sortBy</code>.
   This function sorts the array by a particular property.
   For example, in later demos you will see <code class="language-js">:sortBy="-published"</code>

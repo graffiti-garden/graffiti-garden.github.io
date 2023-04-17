@@ -3,20 +3,37 @@
 </h1>
 
 <p>
-  Graffiti apps are read-only unless you log in.
-  To log in or out of Graffiti from a Vue app all you need to do is call <code class="language-js">$graffiti.toggleLogIn</code> function.
-  <code class="language-js">$graffiti</code> is in the global Vue namespace so you can use it directly in templates or via <code class="language-js">this.$graffiti</code> in components.
-  You can log in from any domain.
+  Graffiti applications can be used without logging in, but the user will not have an identity or be able to create new content.
+  To log in or out of Graffiti from a Vue app all you need to do is call <code class="language-js">$gf.toggleLogIn</code> function.
+  <code class="language-js">$gf</code> is in the global Vue namespace so you can use it directly in templates or via <code class="language-js">this.$gf</code> in components.
+  You can also use the longer alias <code class="language-js">$graffiti</code> if you want.
 </p>
 
 <p>
-  To check whether a user is logged in, you can use the <code class="language-js">$graffitiMyActor</code> variable.
-  This variable is equal to a user's unique URI if they are logged in and <code class="language-js">null</code> otherwise.
+  You can add a log in button to from any domain.
+</p>
+
+<p>
+  To check whether a user is logged in, you can use the <code class="language-js">$gf.me</code> variable.
+  This variable is equal to a user's unique ID if they are logged in and <code class="language-js">null</code> otherwise.
   We will come back to this variable in both <RouterLink to="/context">§Context</RouterLink> and <RouterLink to="/privacy">§Privacy</RouterLink>, but to make a basic button to log or out, we can just treat the variable as a boolean.
   For example:
 </p>
 
 <GraffitiPlayground path="log-in" />
+
+<h2>
+  Connectivity
+</h2>
+
+<p>
+  In addition to actually being logged in,
+  it's important to let your user know whether they're connected to the Graffiti server or not.
+  You can use the reactive <code class="language-js">$gf.connected</code> to check this state.
+  Check out what happens to in the demo below if you turn off your WiFi.
+</p>
+
+<GraffitiPlayground path="connected" />
 
 <footer>
   <router-link to="/object-basics">

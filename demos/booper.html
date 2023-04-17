@@ -1,14 +1,3 @@
-<GraffitiObjects v-slot={objects:boops}
-  :query="{
-    properties: {
-      type: { const: 'Boop' },
-    },
-    required: ['type']
-  }">
-
-  <button @click="boops.post({type: 'Boop'})">
-    Boop
-  </button>
-
-  # of times you booped: {{boops.mine.length}}
-</GraffitiObjects>
+<button @click="$gf.post({type: 'Boop'})">
+Boop
+</button>

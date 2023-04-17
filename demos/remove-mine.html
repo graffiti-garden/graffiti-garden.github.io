@@ -1,11 +1,12 @@
 <GraffitiObjects v-slot={objects:boopbops}
-  :mine=true
-  :schema="{
-    properties: {type: {enum: ['Boop', 'Bop']}},
-    required: ['type']
+  :query="{
+    required: ['type'],
+    properties: {
+      type: {enum: ['Boop', 'Bop']}
+    }
   }">
 
-  <button @click=boopbops.removeMine()>
+  <button @click="$gf.remove(...boopbops.mine)">
     Remove All My Boops and Bops
   </button>
 </GraffitiObjects>

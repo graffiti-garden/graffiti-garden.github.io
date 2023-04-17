@@ -11,10 +11,12 @@
     Log in to wave!
   </button>
   <template v-else>
-    <button v-if="waves.mine.length" class="waving" @click="$gf.remove(...waves.mine)">
+    <button v-if="waves.mine.length"
+      class="waving" @click="$gf.remove(...waves.mine)">
       👋
     </button>
-    <button v-else @click="waves.post({type: 'Wave'})">
+    <button v-else
+      @click="waves.post({type: 'Wave'})">
       👋
     </button>
   </template>

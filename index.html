@@ -81,7 +81,7 @@
       routes: [
         lazyDoc('graffiti', '/'),
         ...Object.values(sections).flat().map(
-          s=> lazyDoc(s))
+          s=> lazyDoc(s.toLowerCase()))
       ],
       scrollBehavior (to, from, savedPosition) {
         return {left: 0, top: 0, behavior: 'smooth'}

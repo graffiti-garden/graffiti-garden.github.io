@@ -1,4 +1,4 @@
-import { h, compile } from "vue"
+import * as Vue from "vue"
 import { PrismEditor } from "vue-prism-editor"
 
 const Renderer = {
@@ -7,12 +7,12 @@ const Renderer = {
   render() {
     let hyperscript
     try {
-      hyperscript = h({
-        render: compile(this.code),
+      hyperscript = Vue.h({
+        render: Vue.compile(this.code),
         data: ()=>(this.data)
       })
     } catch(e) {
-      hyperscript = h('div', {
+      hyperscript = Vue.h('div', {
         class: 'error',
         innerHTML: e.toString()
       })
@@ -42,6 +42,10 @@ export default {
     'hideSource': {
       type: Boolean,
       default: false
+    },
+    'language': {
+      type: String,
+      default: 'html'
     }
   },
 
@@ -53,14 +57,17 @@ export default {
   },
 
   async created() {
-    const request = new Request(`./demos/${this.path}.html`)
+    const request = new Request(`./demos/${this.path}.${this.language}`)
     const response = await fetch(request)
     this.code = await response.text()
   },
 
   methods: {
     highlighter(code) {
-      return Prism.highlight(code, Prism.languages.markup)
+      return Prism.highlight(code,
+        this.language == 'html'?
+        Prism.languages.markup :
+        Prism.languages.js)
     }
   },
 

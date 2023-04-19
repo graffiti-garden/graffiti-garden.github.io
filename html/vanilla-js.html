@@ -1,0 +1,159 @@
+<h1>
+  Vanilla JS Reference
+</h1>
+
+<p>
+  Graffiti can be used with vanilla javscript via the following interface.
+
+  <GraffitiPlayground path="vanilla-installation-script" :render="false"/>
+</p>
+
+<h2>
+  Constructing
+</h2>
+
+<h3>
+  <code class="language-js">
+    new Graffiti(options)
+  </code>
+</h3>
+
+<p>
+  The constructor establishes a connection to the <a href="https://github.com/graffiti-garden/graffiti-server">Graffiti server</a> and exposes the API described below.
+  As of this time, the only property that can be passed into the the optional
+  <code class="language-js">options</code> object is <code class="language-js">url</code>,
+  which specifies the URL of the Graffiti server.
+  If no URL is specified, the constructor
+  will connect with the global server at <a href="https://graffiti.garden">graffiti.garden</a>.
+</p>
+
+<h2>
+  Connecting
+</h2>
+
+<h3>
+  <code class="language-js">
+    get events
+  </code>
+  →
+  <code class="language-js">
+    <a href="https://developer.mozilla.org/en-US/docs/Web/API/EventTarget/EventTarget">
+      EventTarget
+    </a>
+  </code>
+</h3>
+
+<p>
+  This EventTarget emits a
+  <code class="language-js">"connected"</code> event when the interface establishes a connection with the server,
+  and a <code class="language-js">"disconnected"</code> event when the interface loses connection with the server,
+  for example when a WiFi connection is broken.
+  In a connected state, the
+  <code class="language-js">toggleLogIn()</code> function may be called,
+  and the <code class="language-js">me</code> variable will be equal to the user's ID if that user is logged in.
+
+  <GraffitiPlayground path="events" language="js" :render="false"/>
+</p>
+
+<h3>
+  <code class="language-js">
+    function toggleLogIn()
+  </code>
+</h3>
+<p>
+  This function toggles the login state of the user: if the user is logged out, they are logged in; if the user is is logged in, they are logged out.
+</p>
+
+<h3>
+  <code class="language-js">
+    get me
+  </code>
+  →
+  <code class="language-js">
+    ActorID
+  </code>
+</h3>
+
+<p>
+  This variable is equal to the user's unique ID if the user is logged in and connected to the server and <code class="language-js">null</code> otherwise.
+  This ID is referred to as their "actor" ID in alignment with <a href="https://www.w3.org/TR/activitypub/#actors">ActivityPub</a>.
+</p>
+
+<h2>
+  Reading and writing
+</h2>
+
+<h3>
+  <code class="language-js">
+    function post(object) → GraffitiObject
+  </code>
+</h3>
+
+<p>
+  To add an object to the Graffiti server, you simply need to call <code class="language-js">post</code> on a serializable JSON object.
+  This function automatically adds required fields, described in the GraffitiObject section below.
+  This function is synchronous becuase it changes are reflected immediately locally and synced with the server in the background.
+</p>
+
+<h3>
+  <code class="language-js">
+    function remove(...objects)
+  </code>
+</h3>
+
+<p>
+  This code automatically learns
+</p>
+
+<h3>
+  <code class="language-js">
+    async *function objects(context, signal) 
+  </code>
+</h3>
+
+<h3>
+  <code class="language-js">
+    async myContexts()
+  </code>
+</h3>
+
+<p>
+
+</p>
+
+<h2>
+  Graffiti Object
+</h2>
+
+<ul>
+  <li>
+    <code class="language-js">id</code>
+    is a unique identifier associated with each object.
+    As described above, deleting this required property deletes the whole object.
+    It also acts as a "link" to the object, as we'll see in <RouterLink to="/context">§Context</RouterLink>.
+  </li>
+  <li>
+    <code class="language-js">context</code>
+    is a list of unique identifiers that specify "where" an object can be found.
+    We explore this property in depth in <RouterLink to="/context">§Context</RouterLink>.
+  </li>
+  <li>
+    <code class="language-js">actor</code>
+    is a unique identified associated with each user and also attached to each object.
+    This is important for both <RouterLink to="/context">context</RouterLink> and <RouterLink to="/privacy">privacy</RouterLink>
+  </li>
+  <li>
+    <code class="language-js">bto</code>
+    and
+    <code class="language-js">bcc</code>
+    optionally specify who is allowed to see an object, via an array of actor URIs.
+    If either field is not included the object is public.,
+    We explore these properties in depth in <RouterLink to="/privacy">§Privacy</RouterLink>.
+  </li>
+  <li>
+    <code class="language-js">published</code>
+    and
+    <code class="language-js">updated</code>
+    are required timestamps that specify when an object was created and when it was last updated.
+  </li>
+</ul>

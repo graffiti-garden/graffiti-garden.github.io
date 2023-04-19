@@ -1,0 +1,86 @@
+<h1>
+  Vue Plugin Reference
+</h1>
+
+<p>
+  The Graffiti plugin for <a href="">Vue.JS</a> inherits from the
+  <RouterLink to="/vanilla-js">
+    vanilla interface
+  </RouterLink>
+  and is mostly identitcal. However some methods have been augmented or added
+  to take advantage of Vue's reactive features.
+</p>
+
+<p>
+  The plugin can be installed as follows:
+
+  <GraffitiPlayground path="vue-installation-script" :render="false"/>
+</p>
+
+
+<p>
+  The plugin exposes the <a href="https://vuejs.org/api/application.html#app-config-globalproperties">global Vue property</a>
+  <code class="language-js">$graffiti</code> and it's alias
+  <code class="language-js">$gf</code>.
+  This can be reffered via <code class="language-js">this.$gf</code> in components or as simply <code class="language-js">$gf</code> Vue templates.
+</p>
+ 
+<p>
+  The following properties of <code class="language-js">$gf</code> are identitcal to their 
+  <RouterLink to="/vanilla-js">
+    vanilla counterparts
+  </RouterLink>:
+  <ul>
+    <li>
+      <code class="language-js">
+        events
+      </code>
+    </li>
+    <li>
+      <code class="language-js">
+        toggleLogin
+      </code>
+    </li>
+    <li>
+      <code class="language-js">
+        post
+      </code>
+    </li>
+    <li>
+      <code class="language-js">
+        remove
+      </code>
+    </li>
+    <li>
+      <code class="language-js">
+        objects
+      </code>
+    </li>
+  </ul>
+</p>
+
+<h3>
+  <code class="language-js">
+    me
+  </code>
+</h3>
+
+<h3>
+  <code class="language-js">
+    connected
+  </code>
+</h3>
+
+<h3>
+  <code class="language-js">
+    useObjects
+  </code>
+</h3>
+
+<p>
+  This is a <a href="https://vuejs.org/guide/reusability/composables.html">Vue composable</a> wrapper
+  around the vanilla async generator <code class="language-js">objects</code> function that makes it
+  possible to.
+
+  <GraffitiPlayground path="useObjects" language="js" :render="false"/>
+</p>

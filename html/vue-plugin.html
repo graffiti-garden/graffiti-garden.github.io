@@ -19,17 +19,16 @@
 
 
 <p>
-  The plugin exposes the <a href="https://vuejs.org/api/application.html#app-config-globalproperties">global Vue property</a>
-  <code class="language-js">$graffiti</code> and it's alias
+  The plugin exposes the
+  <a href="https://vuejs.org/api/application.html#app-config-globalproperties">global Vue property</a> <code class="language-js">$graffiti</code> and it's alias
   <code class="language-js">$gf</code>.
-  This can be reffered via <code class="language-js">this.$gf</code> in components or as simply <code class="language-js">$gf</code> Vue templates.
+  This property can be accessed via <code class="language-js">this.$gf</code> in components or as simply <code class="language-js">$gf</code> Vue templates.
 </p>
  
 <p>
   The following properties of <code class="language-js">$gf</code> are identitcal to their 
   <RouterLink to="/vanilla-js">
-    vanilla counterparts
-  </RouterLink>:
+    vanilla counterparts</RouterLink>:
   <ul>
     <li>
       <code class="language-js">
@@ -65,11 +64,24 @@
   </code>
 </h3>
 
+<p>
+  Like the vanilla counterpart but reactive. You can use it to change the log in / out code, for example.
+</p>
+
+<GraffitiPlayground path="log-in" />
+
 <h3>
   <code class="language-js">
     connected
   </code>
 </h3>
+
+<p>
+  Simplifies event logic of the vanilla counterpart with a reactive variable that is
+  true if connected to the graffiti server and false otherwise.
+</p>
+
+<GraffitiPlayground path="connected" />
 
 <h3>
   <code class="language-js">
@@ -80,7 +92,9 @@
 <p>
   This is a <a href="https://vuejs.org/guide/reusability/composables.html">Vue composable</a> wrapper
   around the vanilla async generator <code class="language-js">objects</code> function that makes it
-  possible to.
+  possible to access Graffiti objects via a reactive array.
+  Any references to the reactive array, either in the template or computed properties, will automatically
+  update when new objects are added by any user.
 
   <GraffitiPlayground path="useObjects" language="js" :render="false"/>
 </p>

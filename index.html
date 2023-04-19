@@ -34,9 +34,8 @@
   <script type="module">
     import * as Vue from 'vue'
     import { createRouter, createWebHashHistory, createWebHistory } from 'vue-router'
-    import GraffitiVue from 'graffiti-vue'
+    import GraffitiPlugin from 'graffiti-vue'
     import GraffitiPlayground from './components/graffiti-playground.js'
-    const { GraffitiPlugin, useGraffitiObjects } = GraffitiVue(Vue)
 
     function lazyDoc(name, path=null) { return {
       path: path?path:`/${name}`,
@@ -133,7 +132,7 @@
     }
 
     Vue.createApp(app)
-      .use(GraffitiPlugin)
+      .use(GraffitiPlugin(Vue))
       .component('GraffitiPlayground', GraffitiPlayground)
       .component('toc', TOC)
       .use(Router)

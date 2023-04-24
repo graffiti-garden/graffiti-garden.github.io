@@ -32,12 +32,12 @@
   <ul>
     <li>
       <code class="language-js">
-        events
+        toggleLogIn
       </code>
     </li>
     <li>
       <code class="language-js">
-        toggleLogin
+        events
       </code>
     </li>
     <li>
@@ -55,37 +55,70 @@
         objects
       </code>
     </li>
+    <li>
+      <code class="language-js">
+        myContexts
+      </code>
+    </li>
   </ul>
 </p>
 
+<h2>
+  Plugin-Specific Variable
+</h2>
+
 <h3>
   <code class="language-js">
-    me
+    get me
   </code>
+  →
+  <code class="language-js">
+    <a href="https://vuejs.org/api/reactivity-core.html#reactive">
+      Reactive
+    </a>Actor URI
+  </code>
+
 </h3>
 
 <p>
-  Like the vanilla counterpart but reactive. You can use it to change the log in / out code, for example.
+  This is a reactive variation of the vanilla <code class="language-js">gf.me</code>.
+  The variable is equal to the user's actor URI when they are logged in and connected to the Graffiti server and <code class="language-js">null</code> otherwise.
+  However, unlike the vanilla version, changes between these states will trigger downstream effects.
+  You can use this to change the description of a <code class="language-js">toggleLogIn</code> button, for example.
 </p>
 
 <GraffitiPlayground path="log-in" />
 
 <h3>
   <code class="language-js">
-    connected
+    get connected
+  </code>
+  →
+  <code class="language-js">
+    <a href="https://vuejs.org/api/reactivity-core.html#reactive">
+      Reactive
+    </a>Boolean
   </code>
 </h3>
 
 <p>
-  Simplifies event logic of the vanilla counterpart with a reactive variable that is
-  true if connected to the graffiti server and false otherwise.
+  This reactive variable simplifies access to the connection status that is available only available in the vanilla API via event listeners.
+  When connected to the Graffiti server the variable is true, and false otherwise.
+  For example, try turning your WiFi on and off and observing the demo below:
 </p>
 
 <GraffitiPlayground path="connected" />
 
 <h3>
   <code class="language-js">
-    useObjects
+    function useObjects(context)
+  </code>
+  <br>
+  →
+  <code class="language-js">
+    { objects:<a href="https://vuejs.org/api/reactivity-core.html#reactive">
+      Reactive
+    </a>Array }
   </code>
 </h3>
 
@@ -95,6 +128,13 @@
   possible to access Graffiti objects via a reactive array.
   Any references to the reactive array, either in the template or computed properties, will automatically
   update when new objects are added by any user.
-
-  <GraffitiPlayground path="useObjects" language="js" :render="false"/>
+  Cleanup is automatically handled when the parent component is destroyed.
 </p>
+
+<p>
+  Since the <code class="language-js">setup</code> function that composables must be used within is called before
+  the component is initialized, Graffiti must be <a href="https://vuejs.org/guide/components/provide-inject.html">injected</a> in
+  but then can be used as normal.
+</p>
+
+<GraffitiPlayground path="useObjects" language="js" :render="false"/>

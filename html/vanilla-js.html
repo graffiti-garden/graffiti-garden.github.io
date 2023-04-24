@@ -33,6 +33,30 @@
 
 <h3>
   <code class="language-js">
+    function toggleLogIn()
+  </code>
+</h3>
+<p>
+  This function toggles the login state of the user: if the user is logged out, they are logged in; if the user is is logged in, they are logged out.
+</p>
+
+<h3>
+  <code class="language-js">
+    get me
+  </code>
+  →
+  <code class="language-js">
+    ActorURI
+  </code>
+</h3>
+
+<p>
+  This variable is equal to a user's ID if the user is logged in and connected to the server and <code class="language-js">null</code> otherwise.
+  The is ID is a URI is referred to as an "actor" URI in alignment with <a href="https://www.w3.org/TR/activitypub/#actors">ActivityPub specification</a>.
+</p>
+
+<h3>
+  <code class="language-js">
     get events
   </code>
   →
@@ -50,34 +74,11 @@
   for example when a WiFi connection is broken.
   In a connected state, the
   <code class="language-js">toggleLogIn()</code> function may be called,
-  and the <code class="language-js">me</code> variable will be equal to the user's ID if that user is logged in.
+  and the <code class="language-js">me</code> variable will be equal to the user's actor URI if that user is logged in.
 
   <GraffitiPlayground path="events" language="js" :render="false"/>
 </p>
 
-<h3>
-  <code class="language-js">
-    function toggleLogIn()
-  </code>
-</h3>
-<p>
-  This function toggles the login state of the user: if the user is logged out, they are logged in; if the user is is logged in, they are logged out.
-</p>
-
-<h3>
-  <code class="language-js">
-    get me
-  </code>
-  →
-  <code class="language-js">
-    ActorID
-  </code>
-</h3>
-
-<p>
-  This variable is equal to the user's unique ID if the user is logged in and connected to the server and <code class="language-js">null</code> otherwise.
-  This ID is referred to as their "actor" ID in alignment with <a href="https://www.w3.org/TR/activitypub/#actors">ActivityPub</a>.
-</p>
 
 <h2>
   Reading and writing
@@ -94,10 +95,53 @@
 </h3>
 
 <p>
-  To add an object to the Graffiti server, you simply need to call <code class="language-js">post</code> on a serializable JSON object.
-  This function automatically adds required fields, described in the GraffitiObject section below.
-  This function is synchronous becuase it changes are reflected immediately locally and synced with the server in the background.
+  This function adds a JSON object to the Graffiti server.
+  It returns a <code class="language-js">GraffitiObject</code> proxy,
+  which includes all the properties of the input object.
+  Any modifications to this proxy will automatically be synced with the server.
+  Additionally, the proxy is augmented with the following properties:
 </p>
+
+<ul>
+  <li>
+    <code class="language-js">id</code>
+    is a unique identifier associated with each Graffiti object.
+  </li>
+  <li>
+    <code class="language-js">actor</code>
+    is a unique identified associated with each user and also attached to each object.
+  </li>
+  <li>
+    <code class="language-js">published</code>
+    and
+    <code class="language-js">updated</code>
+    specify when an object was created and when it was last updated.
+  </li>
+</ul>
+
+<p>
+  Most properties of the input object can be any serializable JSON and have no functional meaning to the server.
+  The following properties are the exceptions:
+</p>
+
+<ul>
+  <li>
+    <code class="language-js">context</code>
+    is an array of uniform resource identifiers that specify "where" an object can be found.
+    This field <strong>must</strong> be included in the input object and contain at least one URI.
+  </li>
+  <li>
+    <code class="language-js">bto</code>
+    and
+    <code class="language-js">bcc</code>
+    specify who is allowed to retrieve an object via an array of actor URIs.
+    These properties are <strong>optional</strong>.
+    If neither property is included, the object is public.
+    If one or both of the properties are included but no actor URIs are included in either array,
+    the object can only be seen by it's creator
+  </li>
+
+</ul>
 
 <h3>
   <code class="language-js">
@@ -106,14 +150,16 @@
 </h3>
 
 <p>
-  This removes one or more graffiti objects from the server.
-  Note that you can only remove objects that you have created.
+  This function removes one or more graffiti objects from the server.
+  Note that you can only remove objects from the server that you have created
+  or equivalently objects whose `actor` property is equal to `gf.me`.
 </p>
 
 <h3>
   <code class="language-js">
-    async *function objects([context], <a href="https://developer.mozilla.org/en-US/docs/Web/API/AbortSignal">AbortSignal</a>)
+    async *function objects(context, <a href="https://developer.mozilla.org/en-US/docs/Web/API/AbortSignal">AbortSignal</a>)
   </code>
+  <br>
   →
   <code class="language-js">
     GraffitiObject
@@ -121,9 +167,18 @@
 </h3>
 
 <p>
-  This asynchronous generator returns objects associated with a particular context as they appear.
-  In order to stop the generator you can pass in an abort signal to stop it.
+  This is an asynchronous generator used to retrieve Graffiti objects from the server.
+  <code class="language-js">context</code> must be an array of URIs like the <code class="language-js">context</code> property of each <code class="language-js">GraffitiObject</code>.
+  Any object with a <code class="language-js">context</code> that <strong>intersects</strong> the <code class="language-js">context</code> passed to this generator will be returned, subject to the <code class="language-js">bto</code> and <code class="language-js">bcc</code> access constraints described above.
 </p>
+
+<p>
+  If an object is deleted from the server, the generator will return an object that only contains the <code class="language-js">id</code> of the deleted object.
+  The generator will continue to stream Graffiti objects as they are added to the server until it receives an <a href="https://developer.mozilla.org/en-US/docs/Web/API/AbortSignal">AbortSignal</a>.
+  For example:
+</p>
+
+<GraffitiPlayground path="objects" language="js" :render="false"/>
 
 <h3>
   <code class="language-js">
@@ -132,40 +187,5 @@
 </h3>
 
 <p>
-  This returns a list of all contexts you've ever posted in.
+  This function returns a list of all contexts the user has ever posted in.
 </p>
-
-<h2>
-  Graffiti Objects
-</h2>
-
-Objects sent or retrieved from the Graffiti server have certain special properties:
-
-<ul>
-  <li>
-    <code class="language-js">id</code>
-    is a unique identifier associated with each object.
-  </li>
-  <li>
-    <code class="language-js">context</code>
-    is a list of unique identifiers that specify "where" an object can be found.
-  </li>
-  <li>
-    <code class="language-js">actor</code>
-    is a unique identified associated with each user and also attached to each object.
-  </li>
-  <li>
-    <code class="language-js">bto</code>
-    and
-    <code class="language-js">bcc</code>
-    optionally specify who is allowed to see an object, via an array of actor URIs.
-    If either field is not included the object is public,
-    if one or both fields are empty arrays, the object can only be seen by it's creator.
-  </li>
-  <li>
-    <code class="language-js">published</code>
-    and
-    <code class="language-js">updated</code>
-    are required timestamps that specify when an object was created and when it was last updated.
-  </li>
-</ul>

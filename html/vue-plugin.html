@@ -64,7 +64,7 @@
 </p>
 
 <h2>
-  Plugin-Specific Variable
+  Plugin-Specific Variables
 </h2>
 
 <h3>
@@ -82,12 +82,24 @@
 
 <p>
   This is a reactive variation of the vanilla <code class="language-js">gf.me</code>.
-  The variable is equal to the user's actor URI when they are logged in and connected to the Graffiti server and <code class="language-js">null</code> otherwise.
-  However, unlike the vanilla version, changes between these states will trigger downstream effects.
+  The variable is equal to the user's actor URI if they are logged in and first contact has been made with the Graffiti server.
+  The variable is <code class="language-js">null</code> otherwise.
+</p>
+
+<p>
+  Unlike the vanilla version, changes between these states will trigger downstream effects.
   You can use this to change the description of a <code class="language-js">toggleLogIn</code> button, for example.
 </p>
 
 <GraffitiPlayground path="log-in" />
+
+<p>
+  <code class="language-js">$gf.me</code> may not be defined by the time that <a href="https://vuejs.org/guide/essentials/lifecycle.html">Vue lifecycle hooks</a>
+  like <code class="language-js">created</code> and <code class="language-js">mounted</code> are triggered.
+  Therefore, if you need to perform some initialization involving <code class="language-js">$gf.me</code>, use a <a href="https://vuejs.org/guide/essentials/watchers.html">Vue watcher</a>.
+</p>
+
+<GraffitiPlayground path="watchMe" language="js" :render="false"/>
 
 <h3>
   <code class="language-js">
@@ -138,3 +150,11 @@
 </p>
 
 <GraffitiPlayground path="useObjects" language="js" :render="false"/>
+
+<p>
+  If <code class="language-js">context</code> or any of the URIs within it are reactive or refs,
+  the composable will react to their changes.
+  If you want to access objects in the context of <code class="language-js">gf.me</code>, you must destructure it with
+  <a href="https://vuejs.org/api/reactivity-utilities.html#toref">toRef</a> to retain retain reactivity.
+  This looks like: <code class="language-js">$gf.useObjects([Vue.toRef($gf.me)])</code>.
+</p>

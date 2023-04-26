@@ -1,0 +1,17 @@
+<script type="module">
+  import Graffiti from 'https://graffiti.garden/graffiti-js/graffiti.js'
+  const gf = new Graffiti
+
+  const inputEl = document.getElementsByTagName("input")[0]
+  inputEl.addEventListener("change", handleFiles, false);
+
+  async function handleFiles() {
+    const file = this.files[0]
+    const magnet = await gf.media.store(file)
+    console.log(`Download the file from: ${magnet}`)
+  }
+</script>
+
+<body>
+  <input type="file"/>
+</body>

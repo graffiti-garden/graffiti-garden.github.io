@@ -8,7 +8,7 @@
   <GraffitiPlayground path="vanilla-installation-script" :render="false"/>
 </p>
 
-<h2>
+<h2 id="constructing">
   Constructing
 </h2>
 
@@ -27,7 +27,7 @@
   will connect with the global server at <a href="https://graffiti.garden">graffiti.garden</a>.
 </p>
 
-<h2>
+<h2 id="connecting">
   Connecting
 </h2>
 
@@ -80,8 +80,8 @@
 </p>
 
 
-<h2>
-  Reading and writing
+<h2 id="reading-and-writing">
+  Reading and Writing
 </h2>
 
 <h3>
@@ -189,3 +189,62 @@
 <p>
   This function returns a list of all contexts the user has ever posted in.
 </p>
+
+<h2 id="media-uploads">
+  Media Uploads
+</h2>
+
+<p>
+  Media in Graffiti is not stored in the server but instead served peer-to-peer over <a href="https://en.wikipedia.org/wiki/WebTorrent">WebTorrents</a>.
+  You act as the server or <a href="https://en.wikipedia.org/wiki/Seeding_(computing)">seed</a> of your own files and any one who views your files also becomes a seed.
+</p>
+
+<p>
+  This approach means there is no prescribed limit to the number or size of files you want to share since you are the one responsible for hosting them.
+  The downside is that your media files can go offline when there are no seeders online.
+  We're in the process of creating a <a href="https://en.wikipedia.org/wiki/Seedbox">seedboxes</a> for Graffiti content,
+  but for now this is simply a limitation of alpha-stage software.
+</p>
+
+<h3>
+  <code class="language-js">
+    async media.store(<a href="https://developer.mozilla.org/en-US/docs/Web/API/Blob">Blob</a>)
+  </code>
+  →
+  <code class="language-js">
+    <a href="https://en.wikipedia.org/wiki/Magnet_URI_scheme">magnet link</a>
+  </code>
+</h3>
+
+<p>
+  This asynchronous function takes as input a <a href="https://developer.mozilla.org/en-US/docs/Web/API/Blob">Blob</a> or <a href="https://developer.mozilla.org/en-US/docs/Web/API/File">File</a>
+  and returns a corresponding <a href="https://en.wikipedia.org/wiki/Magnet_URI_scheme">magnet link</a>.
+  The magnet link can be used to download the file on other Graffiti instances or in a standard Webtorrent client like <a href="https://webtorrent.io/desktop/">Webtorrent desktop</a>.
+</p>
+
+<p>
+  The media will be cached in local storage and will reseed any time Graffiti is active at the same domain.
+</p>
+
+<GraffitiPlayground path="media-store" :render="false"/>
+
+<h3>
+  <code class="language-js">
+    async media.fetch(<a href="https://en.wikipedia.org/wiki/Magnet_URI_scheme">magnet link</a>)
+  </code>
+  →
+  <code class="language-js">
+    <a href="https://developer.mozilla.org/en-US/docs/Web/API/Blob">Blob</a>
+  </code>
+</h3>
+
+<p>
+  This function fetches media from a magnet link and returns a Blob once it is fully downloaded.
+  It will also seed a copy of the fetched media that persists in local storage just like with <code class="language-js">store</code>.
+</p>
+
+<p>
+  You may want to use <a href="https://developer.mozilla.org/en-US/docs/Web/API/URL/createObjectURL">URL.createObjectURL</a> to display the media as in the example below:
+</p>
+
+<GraffitiPlayground path="media-fetch" :render="false"/>

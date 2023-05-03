@@ -2,10 +2,8 @@
   import Graffiti from './graffiti-js/graffiti.js'
   const gf = new Graffiti()
 
-  const blob = await gf.media.fetch("magnet:?xt=...")
-
   const imgEl = document.getElementsByTagName("img")[0]
-  imgEl.src = URL.createObjectURL(blob)
+  imgEl.src = await gf.media.fetchURL("magnet:?xt=...")
 </script>
 
 <body>

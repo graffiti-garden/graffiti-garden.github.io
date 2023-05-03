@@ -212,14 +212,14 @@
   </code>
   →
   <code class="language-js">
-    <a href="https://en.wikipedia.org/wiki/Magnet_URI_scheme">magnet link</a>
+    <a href="https://en.wikipedia.org/wiki/Magnet_URI_scheme">magnet URI</a>
   </code>
 </h3>
 
 <p>
   This asynchronous function takes as input a <a href="https://developer.mozilla.org/en-US/docs/Web/API/Blob">Blob</a> or <a href="https://developer.mozilla.org/en-US/docs/Web/API/File">File</a>
-  and returns a corresponding <a href="https://en.wikipedia.org/wiki/Magnet_URI_scheme">magnet link</a>.
-  The magnet link can be used to download the file on other Graffiti instances or in a standard Webtorrent client like <a href="https://webtorrent.io/desktop/">Webtorrent desktop</a>.
+  and returns a corresponding <a href="https://en.wikipedia.org/wiki/Magnet_URI_scheme">magnet URI</a>.
+  The magnet URI can be used to download the file on other Graffiti instances or in a standard Webtorrent client like <a href="https://webtorrent.io/desktop/">Webtorrent desktop</a>.
 </p>
 
 <p>
@@ -239,7 +239,7 @@
 </h3>
 
 <p>
-  This function fetches media from a magnet link and returns a Blob once it is fully downloaded.
+  This function fetches media from a magnet URI and returns a Blob once it is fully downloaded.
   It will also seed a copy of the fetched media that persists in local storage just like with <code class="language-js">store</code>.
   If this function is called multiple times, the file is
   only actually downloaded once to preserve bandwidth.
@@ -247,7 +247,7 @@
 
 <p>
   If the function is passed an invalid magnet URI
-  it will throw an error. So if you're getting magnet links from some user-generated source make sure to wrap the fetch in a <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/try...catch">try...catch</a>.
+  it will throw an error. So if you're getting magnet URIs from some user-generated source make sure to wrap the fetch in a <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/try...catch">try...catch</a>.
 </p>
 
 <h3>
@@ -262,7 +262,7 @@
 
 <p>
 To display the <a href="https://developer.mozilla.org/en-US/docs/Web/API/Blob">Blob</a> returned by <code class="language-js">gf.media.fetch</code> in any media tags, like <code class="language-html">&lt;img></code>, the Blob needs to be converted to a URL that can be passed to the <code class="language-htm">src</code> attribute.
-  This can be done with <a href="https://developer.mozilla.org/en-US/docs/Web/API/URL/createObjectURL">URL.createObjectURL</a>, but this requires an extra step and will create a new link every time it is called.
+  This can be done with <a href="https://developer.mozilla.org/en-US/docs/Web/API/URL/createObjectURL">URL.createObjectURL</a>, but this requires an extra step and will create a new URL every time it is called.
 </p>
 
 <p>

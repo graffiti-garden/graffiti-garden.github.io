@@ -1,0 +1,28 @@
+{
+  "name": "graffiti-garden",
+  "version": "1.0.0",
+  "description": "",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/graffiti-garden/graffiti-garden.github.io"
+  },
+  "author": "Theia Henderson",
+  "license": "GPL-3.0-or-later",
+  "devDependencies": {
+    "@vitejs/plugin-vue": "^4.3.1",
+    "vite": "^4.4.9"
+  },
+  "dependencies": {
+    "@graffiti-garden/graffiti-p2p": "^1.0.5",
+    "prismjs": "^1.29.0",
+    "vue": "^3.3.4",
+    "vue-prism-editor": "^2.0.0-alpha.2",
+    "vue-router": "^4.2.4"
+  }
+}

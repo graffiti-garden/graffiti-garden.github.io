@@ -1,10 +1,9 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
   <meta charset="utf-8">
   <title>Graffiti</title>
   <base target="_blank">
-  <link rel="stylesheet" href="./style.css" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <script>
     const redirect = sessionStorage.redirect;
@@ -13,167 +12,61 @@
       history.replaceState(null, null, redirect);
     }
   </script>
-  <script src="https://unpkg.com/prismjs@1.28.0/components/prism-core.min.js"></script>
-  <script src="https://unpkg.com/prismjs@1.28.0/components/prism-markup.min.js"></script>
-  <script src="https://unpkg.com/prismjs@1.28.0/components/prism-clike.min.js"></script>
-  <script src="https://unpkg.com/prismjs@1.28.0/components/prism-javascript.min.js"></script>
-  <link href="https://unpkg.com/prismjs@1.28.0/themes/prism-tomorrow.min.css" rel="stylesheet" />
-  <link href="https://cdn.jsdelivr.net/npm/vue-prism-editor@2.0.0-alpha.2/dist/prismeditor.min.css" rel="stylesheet"/>
-  <script async src="https://ga.jspm.io/npm:es-module-shims@1.6.2/dist/es-module-shims.js"></script>
-  <script type="importmap">
-    {
-       "imports": {
-        "vue": "https://cdnjs.cloudflare.com/ajax/libs/vue/3.2.45/vue.esm-browser.min.js",
-        "@vue/devtools-api": "https://unpkg.com/@vue/devtools-api@6.2.1/lib/esm/index.js",
-        "vue-router": "https://cdnjs.cloudflare.com/ajax/libs/vue-router/4.1.6/vue-router.esm-browser.min.js",
-        "graffiti-vue": "./graffiti-js/plugins/vue/plugin.js",
-        "vue-prism-editor": "https://cdn.jsdelivr.net/npm/vue-prism-editor@2.0.0-alpha.2/dist/prismeditor.esm.js"
-      }
-    }
-  </script>
+</head>
+<body>
+  <div id="app"></div>
   <script type="module">
     import * as Vue from 'vue'
     import { createRouter, createWebHashHistory, createWebHistory } from 'vue-router'
-    import GraffitiPlugin from 'graffiti-vue'
-    import GraffitiPlayground from './components/graffiti-playground.js'
+    import '@graffiti-garden/actor-client/client.css'
+    import GraffitiPlugin from '@graffiti-garden/graffiti-p2p/plugins/vue'
+    import Playground from './components/Playground.vue'
+    import App from './components/App.vue'
+    import './style.css'
+    import 'prismjs/themes/prism-tomorrow.min.css'
+    import 'vue-prism-editor/dist/prismeditor.min.css'
 
-    function lazyDoc(name, path=null) { return {
-      path: path?path:`/${name}`,
-      component: async ()=> {
-        const response = await fetch(`./html/${name}.html`)
-        return { template: `<main>${await response.text()}</main>` }
+    function lazyDoc(name, path=null) { 
+      // Convert name from
+      // kebab-case to PascalCase
+      const namePascal =
+       name.split('-').map(word => word.charAt(0).toUpperCase() + word.slice(1)).join('');
+      
+      return {
+        path: path?path:`/${name}`,
+        component: () => import(`./components/${namePascal}.vue`)
       }
-    }}
+    }
 
     const sections = {
       'high-level': [
         'motivation',
-        'overview',
-        //'implimentation'
+        'overview'
       ],
       reference: [
-        'vanilla-JS',
+        'vanilla-js',
         'vue-plugin'
-      ],
-      // 'guide': [
-      //   'introduction',
-      //   'install',
-      //   'logging-in',
-      //   'object-basics',
-      //   'context',
-      //   'privacy',
-      //   'media',
-      //   'reference'
-      // ],
-      // 'examples': [
-      //   'chatting',
-        //'profile-creator',
-        //'commenting',
-        //'moderation',
-        //'ordered-lists',
-        //'spatial-contexts'
-      // ]
+      ]
     }
 
     const Router = createRouter({
       history: ["localhost","127.0.0.1"].includes(window.location.hostname)?
         createWebHashHistory() : createWebHistory(),
       routes: [
-        lazyDoc('graffiti', '/'),
-        ...Object.values(sections).flat().map(
-          s=> lazyDoc(s.toLowerCase()))
+        lazyDoc('home', '/'),
+        ...Object.values(sections).flat().map(s=> lazyDoc(s))
       ],
       scrollBehavior (to, from, savedPosition) {
         return {left: 0, top: 0, behavior: 'smooth'}
       }
     })
 
-    function title(section) {
-      return section
-        // Dashes to spaces
-        .replace(/-/g, ' ')
-        // Capitalize first letter of word
-        .replace(/\b\w/g, x=> x.toUpperCase())
-    }
-
-    function sectionHTML(section, path=null) {
-      path = path?path:`/${section}`
-
-      return `
-        <li>
-          <router-link to="${path.toLowerCase()}">
-            ${title(section)}
-          </router-link>
-        </li>`
-    }
-
-    const TOC = {
-      template: `<ul>
-      ${Object.keys(sections).map(
-        s=>`
-          <li>${title(s)}
-          <ul>
-            ${sections[s].map(
-              ss=> sectionHTML(ss))
-            .join('')}
-          </ul></li>`)
-      .join('')}</ul>`
-    }
-
-    const app = {
-      data: ()=> ({
-        navOpen: false
-      }),
-      watch:{
-        $route (to, from){
-          this.navOpen = false
-        }
-      } 
-    }
-
-    Vue.createApp(app)
-      .use(GraffitiPlugin(Vue))
-      .component('GraffitiPlayground', GraffitiPlayground)
-      .component('toc', TOC)
+    Vue.createApp(App)
       .use(Router)
+      .use(GraffitiPlugin(Vue))
+      .component('Playground', Playground)
+      .provide('sections', sections)
       .mount('#app')
   </script>
-</head>
-
-<body id="app">
-  <header>
-    <label class="hamburger">
-      <input v-model="navOpen" type="checkbox">
-      <div></div>
-    </label>
-    <h1>
-      <router-link to="/">
-        Graffiti
-      </router-link>
-    </h1>
-  </header>
-  <div>
-    <nav :class="navOpen?'open':''">
-      <h1 v-if="!navOpen">
-        <router-link to="/">
-          Graffiti
-        </router-link>
-      </h1>
-      <toc></toc>
-      <ul>
-        <li>
-          <a target="_blank" class="logo" href="https://github.com/graffiti-garden">
-            <img src="./pics/github.png"/>
-            Github
-          </a>
-        </li>
-      </ul>
-    </nav>
-    <router-view v-slot="{ Component }">
-      <transition name="slide-right" mode="out-in">
-        <component :is="Component" />
-      </transition>
-    </router-view>
-  </div>
 </body>
 </html>

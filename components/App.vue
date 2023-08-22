@@ -39,13 +39,10 @@ watch(route, ()=> navOpen.value=false)
         </li>
       </ul>
     </nav>
-    <main>
-      <RouterView />
-      <!-- <RouterView v-slot="{ Component }">
-        <transition name="slide-right" mode="out-in">
-          <component :is="Component" />
-        </transition>
-      </RouterView> -->
-    </main>
+    <RouterView v-slot="{ Component }">
+      <transition name="slide-right" mode="out-in">
+        <component :is="Component" />
+      </transition>
+    </RouterView>
   </div>
 </template>

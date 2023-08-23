@@ -8,7 +8,7 @@
     Graffiti lets you integrate custom social features into any static website with just a few lines of HTML and JavaScript. These features can be as relatively simple, as in the demo below, or amount to full-fledged applications like Facebook or Google Docs.
     </p>
 
-    <!--<GraffitiPlayground path="introduction" :hide-source=true />-->
+    <Playground path="introduction" :hide-source=true />
 
     <p>
       Applications within the Graffiti ecosystem also interoperate. If your friends use a Graffiti application that you don't like, you can either modify it, create your own from scratch, or switch to an application that someone else has already built — all without losing your friends! You can change pretty much anything including the moderation system, privacy settings, feed sorting algorithm, site layout, and color scheme.

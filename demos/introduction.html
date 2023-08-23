@@ -1,0 +1,24 @@
+<GraffitiPosts v-slot="{posts: waves}"
+  context="uri:graffiti.garden"
+  :filter="post=> post.type == 'Wave'
+">
+
+  <button v-if="!$gf.me" @click="$gf.selectActor()">
+    Log in to wave!
+  </button>
+  <template v-else>
+    <button v-if="waves.by($gf.me).length"
+      class="waving" @click="$gf.delete(...waves.by($gf.me))">
+      👋
+    </button>
+    <button v-else @click="waves.post({ type: 'Wave' })">
+      👋
+    </button>
+  </template>
+
+  <p>
+    {{waves.actors.length}}
+    people have waved from this page!
+  </p>
+
+</GraffitiPosts>

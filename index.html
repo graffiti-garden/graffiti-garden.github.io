@@ -16,12 +16,13 @@
 <body>
   <div id="app"></div>
   <script type="module">
-    import * as Vue from 'vue'
+    import { createApp } from 'vue'
     import { createRouter, createWebHashHistory, createWebHistory } from 'vue-router'
-    import '@graffiti-garden/actor-client/client.css'
-    import GraffitiPlugin from '@graffiti-garden/graffiti-p2p/plugins/vue/plugin'
+    import GraffitiVue from '@graffiti-garden/plugin-vue'
     import Playground from './components/Playground.vue'
     import App from './components/App.vue'
+
+    import '@graffiti-garden/actor-client/client.css'
     import './style.css'
     import 'prismjs/themes/prism-tomorrow.min.css'
     import 'vue-prism-editor/dist/prismeditor.min.css'
@@ -61,9 +62,9 @@
       }
     })
 
-    Vue.createApp(App)
+    createApp(App)
       .use(Router)
-      .use(GraffitiPlugin(Vue))
+      .use(GraffitiVue)
       .component('Playground', Playground)
       .provide('sections', sections)
       .mount('#app')

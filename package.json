@@ -19,7 +19,7 @@
     "vite": "^4.4.9"
   },
   "dependencies": {
-    "@graffiti-garden/graffiti-p2p": "^1.1.0",
+    "@graffiti-garden/plugin-vue": "^1.0.4",
     "prismjs": "^1.29.0",
     "vue": "^3.3.4",
     "vue-prism-editor": "^2.0.0-alpha.2",

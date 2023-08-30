@@ -1,8 +1,19 @@
-<script type="module">
-  import * as Vue from 'https://cdnjs.cloudflare.com/ajax/libs/vue/3.2.45/vue.esm-browser.min.js'
-  import GraffitiPlugin from 'https://graffiti.garden/graffiti-js/plugins/vue/plugin.js'
+<script type="importmap">
+  {
+    "imports": {
+      "vue":
+       "https://cdn.jsdelivr.net/npm/vue/dist/vue.esm-browser.js"
+      "@graffiti-garden/plugin-vue":
+       "https://cdn.jsdelivr.net/npm/@graffiti-garden/plugin-vue"
+    }
+  }
+</script>
 
-  Vue.createApp()
-     .use(GraffitiPlugin(Vue))
-     .mount('#app')
+<script type="module">
+  import { createApp } from 'vue'
+  import GraffitiVue from '@graffiti-garden/plugin-vue'
+
+  createApp()
+    .use(GraffitiVue)
+    .mount('#app')
 </script>

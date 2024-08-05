@@ -1,24 +1,42 @@
-<GraffitiPosts v-slot="{posts: waves}"
-  context="uri:graffiti.garden"
-  :filter="post=> post.type == 'Wave'
-">
+<GraffitiQuery
+    v-slot="{ results: waves, poll }"
+    :channels="[ 'uri:graffiti.garden' ]"
+    :pods="[ 'https://pod.graffiti.garden' ]"
+    :query="{
+        properties: {
+            value: {
+                properties: {
+                    type: { enum: ['Wave'] }
+                },
+                required: ['type']
+            }
+        }
+    }"
+>
+    <template v-if="$graffitiSessionInfo.isSessionReady">
+        <button
+            v-if="!waves.some(wave => wave.webId === $graffitiSessionInfo.webId)"
+            @click="$graffiti.put({
+                value: { type: 'Wave' },
+                channels: ['uri:graffiti.garden']
+            }) && poll()"
+        >
+            👋
+        </button>
+        <button
+            v-else
+            class="waving"
+            @click="$graffiti.delete(
+                waves.filter(wave => wave.webId === $graffitiSessionInfo.webId)[0]
+            ) && poll()"
+        >
+            👋
+        </button>
+    </template>
+    <template v-else>
+        <p>To wave 👋 you need to be logged in.</p>
+        <p>Open the session manager below.</p>
+    </template>
 
-  <button v-if="!$gf.me" @click="$gf.selectActor()">
-    Log in to wave!
-  </button>
-  <template v-else>
-    <button v-if="waves.by($gf.me).length"
-      class="waving" @click="$gf.delete(...waves.by($gf.me))">
-      👋
-    </button>
-    <button v-else @click="waves.post({ type: 'Wave' })">
-      👋
-    </button>
-  </template>
-
-  <p>
-    {{waves.actors.length}}
-    people have waved from this page!
-  </p>
-
-</GraffitiPosts>
+    <p>{{ waves.length }} people have waved from this page!</p>
+</GraffitiQuery>

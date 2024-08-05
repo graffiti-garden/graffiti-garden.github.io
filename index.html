@@ -1,73 +1,20 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
-<head>
-  <meta charset="utf-8">
-  <title>Graffiti</title>
-  <base target="_blank">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <script>
-    const redirect = sessionStorage.redirect;
-    delete sessionStorage.redirect;
-    if (redirect && redirect !== location.href) {
-      history.replaceState(null, null, redirect);
-    }
-  </script>
-</head>
-<body>
-  <div id="app"></div>
-  <script type="module">
-    import { createApp } from 'vue'
-    import { createRouter, createWebHashHistory, createWebHistory } from 'vue-router'
-    import GraffitiVue from '@graffiti-garden/plugin-vue'
-    import Playground from './components/Playground.vue'
-    import App from './components/App.vue'
-
-    import '@graffiti-garden/actor-client/client.css'
-    import './style.css'
-    import 'prismjs/themes/prism-tomorrow.min.css'
-    import 'vue-prism-editor/dist/prismeditor.min.css'
-
-    function lazyDoc(name, path=null) { 
-      // Convert name from
-      // kebab-case to PascalCase
-      const namePascal =
-       name.split('-').map(word => word.charAt(0).toUpperCase() + word.slice(1)).join('');
-      
-      return {
-        path: path?path:`/${name}`,
-        component: () => import(`./components/${namePascal}.vue`)
-      }
-    }
-
-    const sections = {
-      'high-level': [
-        'motivation',
-        'overview'
-      ],
-      reference: [
-        'vanilla-js',
-        'vue-plugin'
-      ]
-    }
-
-    const Router = createRouter({
-      history: ["localhost","127.0.0.1"].includes(window.location.hostname)?
-        createWebHashHistory() : createWebHistory(),
-      routes: [
-        lazyDoc('home', '/'),
-        ...Object.values(sections).flat().map(s=> lazyDoc(s))
-      ],
-      scrollBehavior (to, from, savedPosition) {
-        return {left: 0, top: 0, behavior: 'smooth'}
-      }
-    })
-
-    createApp(App)
-      .use(Router)
-      .use(GraffitiVue)
-      .component('Playground', Playground)
-      .provide('sections', sections)
-      .mount('#app')
-  </script>
-</body>
+    <head>
+        <meta charset="utf-8" />
+        <title>Graffiti</title>
+        <base target="_blank" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <script>
+            const redirect = sessionStorage.redirect;
+            delete sessionStorage.redirect;
+            if (redirect && redirect !== location.href) {
+                history.replaceState(null, null, redirect);
+            }
+        </script>
+    </head>
+    <body>
+        <div id="app"></div>
+        <script type="module" src="./main.ts"></script>
+    </body>
 </html>

@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import Renderer from "./PlaygroundRenderer.vue";
-import { ref, onErrorCaptured, onBeforeMount } from "vue";
+import { ref, watch, onErrorCaptured, onBeforeMount } from "vue";
 import Prism from "prismjs";
 import { PrismEditor } from "vue-prism-editor";
 import {
@@ -41,17 +41,20 @@ onBeforeMount(async () => {
     code.value = response.default;
 });
 
-function highlighter(code) {
+function highlighter(code: string) {
     return Prism.highlight(
         code,
         props.language == "html" ? Prism.languages.markup : Prism.languages.js,
     );
 }
 
+const errorMessage = ref<string | null>(null);
 onErrorCaptured((e) => {
-    console.log("from playground");
-    console.error(e);
+    errorMessage.value = e.message;
     return false;
+});
+watch(code, () => {
+    errorMessage.value = null;
 });
 
 const sessionInfo = useSessionInfo();
@@ -61,7 +64,8 @@ const sessionInfo = useSessionInfo();
     <div class="demo">
         <fieldset v-if="render" :class="['demo-render', state ? '' : 'alone']">
             <legend>Demo</legend>
-            <Renderer :code="code" :data="data" />
+            <div v-if="errorMessage" class="error">{{ errorMessage }}</div>
+            <Renderer v-else :code="code" :data="data" />
             <menu>
                 <li>
                     <button

@@ -1,16 +1,16 @@
 <script setup lang="ts">
-import {
-    computed,
-    h,
-    compile,
-    watch,
-    onErrorCaptured,
-    type ComponentPublicInstance,
-    type Component,
-    ref,
-} from "vue";
+import { computed, h, compile, watch, onErrorCaptured, ref } from "vue";
 
-const props = defineProps(["code", "data"]);
+const props = defineProps({
+    code: {
+        type: String,
+        required: true,
+    },
+    data: {
+        type: Object,
+        default: () => ({}),
+    },
+});
 
 onErrorCaptured((...args) => {
     console.log("error captured in renderer");

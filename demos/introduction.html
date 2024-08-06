@@ -13,13 +13,15 @@
         }
     }"
 >
-    <template v-if="$graffitiSessionInfo.isSessionReady">
+    <template v-if="$graffitiSession.isReady">
         <button
-            v-if="!waves.some(wave => wave.webId === $graffitiSessionInfo.webId)"
+            v-if="!waves.some(
+                wave => wave.webId === $graffitiSession.webId
+            )"
             @click="$graffiti.put({
                 value: { type: 'Wave' },
-                channels: ['uri:graffiti.garden']
-            }) && poll()"
+                channels: [ 'uri:graffiti.garden' ]
+            }).then(poll)"
         >
             👋
         </button>
@@ -27,8 +29,10 @@
             v-else
             class="waving"
             @click="$graffiti.delete(
-                waves.filter(wave => wave.webId === $graffitiSessionInfo.webId)[0]
-            ) && poll()"
+                waves.filter(
+                    wave => wave.webId === $graffitiSession.webId
+                )[0]
+            ).then(poll)"
         >
             👋
         </button>

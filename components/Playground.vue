@@ -4,7 +4,7 @@ import { ref, watch, onErrorCaptured, onBeforeMount } from "vue";
 import Prism from "prismjs";
 import { PrismEditor } from "vue-prism-editor";
 import {
-    useSessionInfo,
+    useGraffitiSession,
     GraffitiSessionManager,
 } from "@graffiti-garden/client-vue";
 import "@graffiti-garden/client-vue/dist/style.css";
@@ -57,7 +57,7 @@ watch(code, () => {
     errorMessage.value = null;
 });
 
-const sessionInfo = useSessionInfo();
+const graffitisession = useGraffitiSession();
 </script>
 
 <template>

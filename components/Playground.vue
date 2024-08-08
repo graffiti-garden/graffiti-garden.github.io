@@ -3,10 +3,7 @@ import Renderer from "./PlaygroundRenderer.vue";
 import { ref, watch, onErrorCaptured, onBeforeMount } from "vue";
 import Prism from "prismjs";
 import { PrismEditor } from "vue-prism-editor";
-import {
-    useGraffitiSession,
-    GraffitiSessionManager,
-} from "@graffiti-garden/client-vue";
+import { GraffitiSessionManager } from "@graffiti-garden/client-vue";
 import "@graffiti-garden/client-vue/dist/style.css";
 
 const props = defineProps({
@@ -38,7 +35,7 @@ onBeforeMount(async () => {
     const response = await import(
         `../demos/${props.path}.${props.language}?raw`
     );
-    code.value = response.default;
+    code.value = response.default.trim();
 });
 
 function highlighter(code: string) {
@@ -56,16 +53,19 @@ onErrorCaptured((e) => {
 watch(code, () => {
     errorMessage.value = null;
 });
-
-const graffitisession = useGraffitiSession();
 </script>
 
 <template>
     <div class="demo">
         <fieldset v-if="render" :class="['demo-render', state ? '' : 'alone']">
             <legend>Demo</legend>
-            <div v-if="errorMessage" class="error">{{ errorMessage }}</div>
-            <Renderer v-else :code="code" :data="data" />
+            <template v-if="$graffitiSession.isInitializing">
+                <div class="loading">Loading...</div>
+            </template>
+            <template v-else>
+                <div v-if="errorMessage" class="error">{{ errorMessage }}</div>
+                <Renderer v-else :code="code" :data="data" />
+            </template>
             <menu>
                 <li>
                     <button

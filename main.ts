@@ -28,7 +28,7 @@ function lazyDoc(name: string, path: string | null = null) {
 
 const sections = {
   "high-level": ["motivation", "overview"],
-  reference: ["vanilla-js", "vue-plugin"],
+  "API Reference": ["vanilla-js", "vue-plugin"],
 };
 
 const Router = createRouter({

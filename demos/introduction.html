@@ -1,7 +1,6 @@
 <GraffitiQuery
-    v-slot="{ results: waves, poll }"
+    v-slot="{ results: waves, poll, isPolling }"
     :channels="[ 'uri:graffiti.garden' ]"
-    :pods="[ 'https://pod.graffiti.garden' ]"
     :query="{
         properties: {
             value: {
@@ -42,5 +41,6 @@
         <p>Open the session manager below.</p>
     </template>
 
-    <p>{{ waves.length }} people have waved from this page!</p>
+    <p v-if="isPolling">Loading...</p>
+    <p v-else>{{ waves.length }} people have waved from this page!</p>
 </GraffitiQuery>

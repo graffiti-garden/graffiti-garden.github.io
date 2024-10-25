@@ -4,10 +4,10 @@
     :schema="{
         properties: {
             value: {
+                required: ['activity'],
                 properties: {
-                    type: { enum: ['Wave'] }
-                },
-                required: ['type']
+                    activity: { enum: ['Wave'] }
+                }
             }
         }
     }"
@@ -18,7 +18,7 @@
                 wave => wave.webId === $graffitiSession.value.webId
             )"
             @click="$graffiti.put({
-                value: { type: 'Wave' },
+                value: { activity: 'Wave' },
                 channels: [ 'https://graffiti.garden' ]
             }, $graffitiSession.value)"
         >

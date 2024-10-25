@@ -1,0 +1,45 @@
+<p v-if="!$graffitiSession.value">
+    To post a comment, you need to be logged in.
+</p>
+<GraffitiDiscover
+    v-else
+    v-slot="{ results: posts, isPolling }"
+    :channels="[ $graffitiSession.value.webId ]"
+    :schema="{
+        properties: {
+            value: {
+                required: ['content', 'createdAt'],
+                properties: {
+                    content: { type: 'string' },
+                    createdAt: { type: 'string' },
+                    inReplyTo: { type: 'string' }
+                }
+            },
+            webId: {
+                type: 'string',
+                enum: [$graffitiSession.value.webId]
+            }
+        }
+    }"
+>
+    <h2>My Feed</h2>
+    <ul>
+        <li v-if="isPolling">Loading...</li>
+        <li
+            v-for="post of posts.sort(
+                (a, b) =>
+                    new Date(b.value.createdAt).getTime() -
+                    new Date(a.value.createdAt).getTime()
+            )"
+            :key="$graffiti.objectToUrl(post)"
+        >
+            <p>{{ post.value.content }}</p>
+            <p v-if="post.value.inReplyTo">
+                <em> Replying to: {{ post.value.inReplyTo }} </em>
+            </p>
+            <button @click="$graffiti.delete(post, $graffitiSession.value)">
+                delete this post
+            </button>
+        </li>
+    </ul>
+</GraffitiDiscover>

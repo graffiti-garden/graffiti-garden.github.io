@@ -1,9 +1,5 @@
 import { createApp } from "vue";
-import {
-  createRouter,
-  createWebHashHistory,
-  createWebHistory,
-} from "vue-router";
+import { createRouter, createWebHistory } from "vue-router";
 import GraffitiPlugin from "@graffiti-garden/client-vue";
 import Playground from "./components/Playground.vue";
 import App from "./components/App.vue";
@@ -28,6 +24,7 @@ function lazyDoc(name: string, path: string | null = null) {
 
 const sections = {
   "high-level": ["motivation", "overview"],
+  demos: ["context"],
   "API Reference": ["vanilla-js", "vue-plugin"],
 };
 

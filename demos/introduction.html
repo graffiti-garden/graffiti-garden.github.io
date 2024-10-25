@@ -36,10 +36,9 @@
     </template>
     <template v-else>
         <p>To wave 👋 you need to be logged in.</p>
-        <p>Open the session manager below.</p>
+        <p>Open the login manager below.</p>
     </template>
 
     <p v-if="isPolling">Loading...</p>
-
     <p v-else>{{ waves.length }} people have waved from this page!</p>
 </GraffitiDiscover>

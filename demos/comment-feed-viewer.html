@@ -1,0 +1,51 @@
+<h2>Comment Feed</h2>
+<label for="inReplyTo"> Choose a URI to view comments about: </label>
+<input
+    list="inReplyToOptions"
+    id="inReplyTo"
+    v-model="inReplyTo"
+    placeholder="click here for options"
+/>
+<datalist id="inReplyToOptions">
+    <option value="http://info.cern.ch/hypertext/WWW/TheProject.html"></option>
+    <option value="https://xanadu.com/"></option>
+    <option value="https://activitypub.rocks/"></option>
+</datalist>
+
+<GraffitiDiscover
+    v-slot="{ results: posts, isPolling }"
+    :channels="[ inReplyTo ]"
+    :schema="{
+        properties: {
+            value: {
+                required: ['content', 'createdAt', 'inReplyTo'],
+                properties: {
+                    content: { type: 'string' },
+                    createdAt: { type: 'string' },
+                    inReplyTo: { type: 'string', enum: [inReplyTo] }
+                }
+            },
+        }
+    }"
+>
+    <ul>
+        <li v-if="isPolling">Loading...</li>
+        <li
+            v-for="post of posts.sort(
+                (a, b) =>
+                    new Date(b.value.createdAt).getTime() -
+                    new Date(a.value.createdAt).getTime()
+            )"
+            :key="$graffiti.objectToUrl(post)"
+        >
+            <p>{{ post.value.content }}</p>
+            <p><em>By {{ post.webId }}</em></p>
+            <button
+                v-if="post.webId === $graffitiSession.value?.webId"
+                @click="$graffiti.delete(post, $graffitiSession.value)"
+            >
+                delete this post
+            </button>
+        </li>
+    </ul>
+</GraffitiDiscover>

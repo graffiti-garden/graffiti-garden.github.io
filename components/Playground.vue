@@ -72,7 +72,7 @@ watch(code, () => {
                     <button
                         @click="state = state === 'session' ? null : 'session'"
                     >
-                        {{ state === "session" ? "Hide" : "Show" }} Session
+                        {{ state === "session" ? "Hide" : "Show" }} Login
                         Manager
                     </button>
                 </li>
@@ -105,6 +105,31 @@ watch(code, () => {
             background: var(--halfback);
             font-size: 100%;
         }
+    }
+
+    input[type="checkbox"] {
+        margin-right: 0.5rem;
+    }
+
+    input:disabled {
+        background: grey;
+    }
+
+    input:disabled:hover {
+        cursor: not-allowed;
+        background: grey;
+    }
+
+    form {
+        width: 100%;
+        text-align: left;
+        display: flex;
+        flex-direction: column;
+        gap: 0.5rem;
+    }
+
+    ul {
+        text-align: left;
     }
 }
 

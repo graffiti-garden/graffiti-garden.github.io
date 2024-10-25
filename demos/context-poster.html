@@ -1,0 +1,61 @@
+<p v-if="!$graffitiSession.value">
+    To post a comment, you need to be logged in.
+</p>
+<form
+    v-else
+    @submit.prevent="$graffiti.put({
+        value: {
+            content,
+            inReplyTo,
+            createdAt: new Date().toISOString(),
+        },
+        channels,
+    }, $graffitiSession.value); content = ''"
+>
+    <label for="inReplyTo"> Choose a URI to comment on: </label>
+    <input
+        list="inReplyToOptions"
+        id="inReplyTo"
+        v-model="inReplyTo"
+        placeholder="click here for options"
+    />
+    <datalist id="inReplyToOptions">
+        <option
+            value="http://info.cern.ch/hypertext/WWW/TheProject.html"
+        ></option>
+        <option value="https://xanadu.com/"></option>
+        <option value="https://activitypub.rocks/"></option>
+    </datalist>
+
+    <label for="content">Your comment:</label>
+    <input id="content" v-model="content" placeholder="My hot take is..." />
+
+    <fieldset>
+        <legend>Who do you want to see this?</legend>
+
+        <div>
+            <input
+                type="checkbox"
+                id="friends"
+                :value="$graffitiSession.value.webId"
+                v-model="channels"
+            />
+            <label for="friends">My friends/followers</label>
+        </div>
+        <div>
+            <input
+                type="checkbox"
+                id="readers"
+                :value="inReplyTo"
+                v-model="channels"
+            />
+            <label for="readers"> People reading the article </label>
+        </div>
+    </fieldset>
+
+    <input
+        type="submit"
+        value="Post!"
+        :disabled="!inReplyTo | !content | !channels.length"
+    />
+</form>

@@ -1,19 +1,17 @@
 <script type="importmap">
-  {
-    "imports": {
-      "vue":
-       "https://cdn.jsdelivr.net/npm/vue/dist/vue.esm-browser.js"
-      "@graffiti-garden/plugin-vue":
-       "https://cdn.jsdelivr.net/npm/@graffiti-garden/plugin-vue"
+    {
+      "imports": {
+        "vue":
+         "https://cdn.jsdelivr.net/npm/vue/dist/vue.esm-browser.js"
+        "@graffiti-garden/plugin-vue":
+         "https://cdn.jsdelivr.net/npm/@graffiti-garden/plugin-vue"
+      }
     }
-  }
 </script>
 
 <script type="module">
-  import { createApp } from 'vue'
-  import GraffitiVue from '@graffiti-garden/plugin-vue'
+    import { createApp } from "vue";
+    // import GraffitiVue from '@graffiti-garden/plugin-vue'
 
-  createApp()
-    .use(GraffitiVue)
-    .mount('#app')
+    createApp().use(GraffitiVue).mount("#app");
 </script>

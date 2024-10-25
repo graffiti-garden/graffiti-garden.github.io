@@ -1,7 +1,7 @@
-<GraffitiQuery
+<GraffitiDiscover
     v-slot="{ results: waves, isPolling }"
     :channels="[ 'https://graffiti.garden' ]"
-    :query="{
+    :schema="{
         properties: {
             value: {
                 properties: {
@@ -12,15 +12,15 @@
         }
     }"
 >
-    <template v-if="$graffitiSession.isReady">
+    <template v-if="$graffitiSession.value?.webId">
         <button
             v-if="!waves.some(
-                wave => wave.webId === $graffitiSession.webId
+                wave => wave.webId === $graffitiSession.value.webId
             )"
             @click="$graffiti.put({
                 value: { type: 'Wave' },
                 channels: [ 'https://graffiti.garden' ]
-            })"
+            }, $graffitiSession.value)"
         >
             👋
         </button>
@@ -28,8 +28,8 @@
             v-else
             class="waving"
             @click="waves.filter(
-                wave => wave.webId === $graffitiSession.webId
-            ).map(wave => $graffiti.delete(wave))"
+                wave => wave.webId === $graffitiSession.value.webId
+            ).map(wave => $graffiti.delete(wave, $graffitiSession.value))"
         >
             👋
         </button>
@@ -42,4 +42,4 @@
     <p v-if="isPolling">Loading...</p>
 
     <p v-else>{{ waves.length }} people have waved from this page!</p>
-</GraffitiQuery>
+</GraffitiDiscover>

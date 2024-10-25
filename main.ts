@@ -32,9 +32,7 @@ const sections = {
 };
 
 const Router = createRouter({
-  history: ["localhost", "127.0.0.1"].includes(window.location.hostname)
-    ? createWebHashHistory()
-    : createWebHistory(),
+  history: createWebHistory(),
   routes: [
     lazyDoc("home", "/"),
     ...Object.values(sections)
@@ -48,7 +46,14 @@ const Router = createRouter({
 
 createApp(App)
   .use(Router)
-  .use(GraffitiPlugin)
+  .use(GraffitiPlugin, {
+    registerSolidSession: {
+      onSessionRestore: (href: string) => {
+        const url = new URL(href);
+        Router.replace(url.pathname + url.search + url.hash);
+      },
+    },
+  })
   .component("Playground", Playground)
   .provide("sections", sections)
   .mount("#app");

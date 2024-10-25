@@ -3,8 +3,7 @@ import Renderer from "./PlaygroundRenderer.vue";
 import { ref, watch, onErrorCaptured, onBeforeMount } from "vue";
 import Prism from "prismjs";
 import { PrismEditor } from "vue-prism-editor";
-import { GraffitiSessionManager } from "@graffiti-garden/client-vue";
-import "@graffiti-garden/client-vue/dist/style.css";
+import { GraffitiIdentityProviderLogin } from "@graffiti-garden/client-vue";
 
 const props = defineProps({
     path: String,
@@ -59,13 +58,8 @@ watch(code, () => {
     <div class="demo">
         <fieldset v-if="render" :class="['demo-render', state ? '' : 'alone']">
             <legend>Demo</legend>
-            <template v-if="$graffitiSession.isInitializing">
-                <div class="loading">Loading...</div>
-            </template>
-            <template v-else>
-                <div v-if="errorMessage" class="error">{{ errorMessage }}</div>
-                <Renderer v-else :code="code" :data="data" />
-            </template>
+            <div v-if="errorMessage" class="error">{{ errorMessage }}</div>
+            <Renderer v-else :code="code" :data="data" />
             <menu>
                 <li>
                     <button
@@ -91,7 +85,7 @@ watch(code, () => {
         </Transition>
         <Transition name="stretch" :duration="700">
             <fieldset v-if="state === 'session'">
-                <GraffitiSessionManager clientName="Graffiti Garden" />
+                <GraffitiIdentityProviderLogin client-name="Graffiti Garden" />
             </fieldset>
         </Transition>
     </div>
@@ -111,6 +105,16 @@ watch(code, () => {
             background: var(--halfback);
             font-size: 100%;
         }
+    }
+}
+
+.graffiti-session-manager {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+
+    label {
+        font-size: 1.25rem;
     }
 }
 </style>

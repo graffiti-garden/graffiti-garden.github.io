@@ -67,24 +67,24 @@ export default defineConfig({
   // assetsInclude: ["**/*.html"],
   plugins: [
     vue(),
-    {
-      name: "watch-and-convert-latex-to-html",
-      configureServer(server) {
-        const paperInputDirectoryResolved = path.resolve(
-          server.config.root,
-          paperInputDirectory,
-        );
-        buildAllPaperFiles(paperInputDirectoryResolved, server);
+    // {
+    //   name: "watch-and-convert-latex-to-html",
+    //   configureServer(server) {
+    //     const paperInputDirectoryResolved = path.resolve(
+    //       server.config.root,
+    //       paperInputDirectory,
+    //     );
+    //     buildAllPaperFiles(paperInputDirectoryResolved, server);
 
-        // Watch for any subsequent changes
-        server.watcher.on("change", async (file) => {
-          const fileRelative = path.relative(server.config.root, file);
-          if (fileRelative.split("/")[0] === paperInputDirectory) {
-            buildAllPaperFiles(paperInputDirectoryResolved, server);
-          }
-        });
-      },
-    },
+    //     // Watch for any subsequent changes
+    //     server.watcher.on("change", async (file) => {
+    //       const fileRelative = path.relative(server.config.root, file);
+    //       if (fileRelative.split("/")[0] === paperInputDirectory) {
+    //         buildAllPaperFiles(paperInputDirectoryResolved, server);
+    //       }
+    //     });
+    //   },
+    // },
   ],
   resolve: {
     alias: {

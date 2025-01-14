@@ -26,9 +26,9 @@
       <code class="language-js">$gf</code>.
       This property can be accessed via <code class="language-js">this.$gf</code> in components or as simply <code class="language-js">$gf</code> Vue templates.
     </p>
-    
+
     <p>
-      The following properties of <code class="language-js">$gf</code> are identitcal to their 
+      The following properties of <code class="language-js">$gf</code> are identitcal to their
       <RouterLink to="/vanilla-js">
         vanilla counterparts</RouterLink>:
       <ul>

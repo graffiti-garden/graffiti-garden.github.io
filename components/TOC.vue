@@ -11,7 +11,14 @@ function toTitle(kebab: string) {
 </script>
 
 <template>
-    <ul v-if="sections">
+    <ul>
+        <li>
+            <a href="https://api.graffiti.garden/classes/Graffiti.html">
+                API Reference
+            </a>
+        </li>
+    </ul>
+    <!-- <ul v-if="sections">
         <li v-for="sectionHeader in Object.keys(sections)">
             {{ toTitle(sectionHeader) }}
             <ul>
@@ -22,5 +29,5 @@ function toTitle(kebab: string) {
                 </li>
             </ul>
         </li>
-    </ul>
+    </ul> -->
 </template>

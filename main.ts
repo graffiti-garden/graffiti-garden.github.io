@@ -1,6 +1,7 @@
 import { createApp } from "vue";
 import { createRouter, createWebHistory } from "vue-router";
-import GraffitiPlugin from "@graffiti-garden/client-vue";
+import { GraffitiPlugin } from "@graffiti-garden/wrapper-vue";
+import { GraffitiPouchDB } from "@graffiti-garden/implementation-pouchdb";
 import Playground from "./components/Playground.vue";
 import App from "./components/App.vue";
 
@@ -25,6 +26,7 @@ function lazyDoc(name: string, path: string | null = null) {
 const sections = {
   "high-level": ["motivation", "overview"],
   demos: ["context"],
+  system: ["system"],
   "API Reference": ["vanilla-js", "vue-plugin"],
 };
 
@@ -41,15 +43,22 @@ const Router = createRouter({
   },
 });
 
+// Horrible, I know
+// this is just for testing
+const one = "Sandbank8803";
+const two = "hb#&6CQBx!ua%q";
+const three = "tracker.graffiti.garden";
+const four = "graffiti";
+
 createApp(App)
   .use(Router)
   .use(GraffitiPlugin, {
-    registerSolidSession: {
-      onSessionRestore: (href: string) => {
-        const url = new URL(href);
-        Router.replace(url.pathname + url.search + url.hash);
-      },
-    },
+    useGraffiti: () =>
+      new GraffitiPouchDB({
+        pouchDBOptions: {
+          name: `https://${encodeURIComponent(one)}:${encodeURIComponent(two)}@${three}/${four}`,
+        },
+      }),
   })
   .component("Playground", Playground)
   .provide("sections", sections)

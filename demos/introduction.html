@@ -12,10 +12,10 @@
         }
     }"
 >
-    <template v-if="$graffitiSession.value?.webId">
+    <template v-if="$graffitiSession.value?.actor">
         <button
             v-if="!waves.some(
-                wave => wave.webId === $graffitiSession.value.webId
+                wave => wave.actor === $graffitiSession.value.actor
             )"
             @click="$graffiti.put({
                 value: { activity: 'Wave' },
@@ -28,7 +28,7 @@
             v-else
             class="waving"
             @click="waves.filter(
-                wave => wave.webId === $graffitiSession.value.webId
+                wave => wave.actor === $graffitiSession.value.actor
             ).map(wave => $graffiti.delete(wave, $graffitiSession.value))"
         >
             👋

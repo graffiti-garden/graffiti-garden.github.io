@@ -3,7 +3,7 @@ import Renderer from "./PlaygroundRenderer.vue";
 import { ref, watch, onErrorCaptured, onBeforeMount } from "vue";
 import Prism from "prismjs";
 import { PrismEditor } from "vue-prism-editor";
-import { GraffitiIdentityProviderLogin } from "@graffiti-garden/client-vue";
+import { useGraffiti, useGraffitiSession } from "@graffiti-garden/wrapper-vue";
 
 const props = defineProps({
     path: String,
@@ -24,6 +24,9 @@ const props = defineProps({
         default: "html",
     },
 });
+
+const graffiti = useGraffiti();
+const graffitiSession = useGraffitiSession();
 
 const code = ref("");
 const state = ref<"source" | "session" | null>(
@@ -85,7 +88,24 @@ watch(code, () => {
         </Transition>
         <Transition name="stretch" :duration="700">
             <fieldset v-if="state === 'session'">
-                <GraffitiIdentityProviderLogin client-name="Graffiti Garden" />
+                <div class="graffiti-session-manager">
+                    <template v-if="graffitiSession">
+                        <div>
+                            Logged in as:
+                            <input
+                                type="text"
+                                v-model="graffitiSession.actor"
+                                readonly
+                            />
+                        </div>
+                        <button @click="graffiti.logout(graffitiSession)">
+                            Log out
+                        </button>
+                    </template>
+                    <template v-else>
+                        <button @click="graffiti.login()">Log in</button>
+                    </template>
+                </div>
             </fieldset>
         </Transition>
     </div>
@@ -136,10 +156,10 @@ watch(code, () => {
 .graffiti-session-manager {
     display: flex;
     flex-direction: column;
-    gap: 0.5rem;
+    gap: 1rem;
 
-    label {
-        font-size: 1.25rem;
+    input {
+        width: 100%;
     }
 }
 </style>

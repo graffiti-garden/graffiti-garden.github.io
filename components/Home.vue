@@ -23,20 +23,20 @@
             layout, and color scheme.
         </p>
 
-        <p>
+        <!-- <p>
             On this site, you can find a high-level description of the Graffiti
             system, a guide to building your own Graffiti apps, and a series of
             guided examples on replicating common social media patterns with
             Graffiti.
-        </p>
+        </p> -->
 
         <p>
             All of the code behind Graffiti is open source on
             <a href="https://github.com/graffiti-garden">Github</a>.
         </p>
 
-        <footer>
+        <!-- <footer>
             <RouterLink to="/motivation"> Motivation </RouterLink>
-        </footer>
+        </footer> -->
     </main>
 </template>

@@ -64,7 +64,7 @@ function buildAllPaperFiles(searchDirectory: string, server: ViteDevServer) {
 }
 
 export default defineConfig({
-  assetsInclude: ["**/*.html"],
+  // assetsInclude: ["**/*.html"],
   plugins: [
     vue(),
     {

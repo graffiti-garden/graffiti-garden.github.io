@@ -1,7 +1,7 @@
 import { createApp } from "vue";
 import { createRouter, createWebHistory } from "vue-router";
 import { GraffitiPlugin } from "@graffiti-garden/wrapper-vue";
-import { GraffitiPouchDB } from "@graffiti-garden/implementation-pouchdb";
+import { GraffitiRemote } from "@graffiti-garden/implementation-remote";
 import Playground from "./components/Playground.vue";
 import App from "./components/App.vue";
 
@@ -43,22 +43,10 @@ const Router = createRouter({
   },
 });
 
-// Horrible, I know
-// this is just for testing
-const one = "Sandbank8803";
-const two = "hb#&6CQBx!ua%q";
-const three = "tracker.graffiti.garden";
-const four = "graffiti";
-
 createApp(App)
   .use(Router)
   .use(GraffitiPlugin, {
-    useGraffiti: () =>
-      new GraffitiPouchDB({
-        pouchDBOptions: {
-          name: `https://${encodeURIComponent(one)}:${encodeURIComponent(two)}@${three}/${four}`,
-        },
-      }),
+    graffiti: new GraffitiRemote(),
   })
   .component("Playground", Playground)
   .provide("sections", sections)

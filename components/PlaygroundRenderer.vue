@@ -1,77 +1,88 @@
 <script setup lang="ts">
 import { computed, h, compile, watch, onErrorCaptured, ref } from "vue";
 
-const props = defineProps({
-    code: {
-        type: String,
-        required: true,
-    },
-    data: {
-        type: Object,
-        default: () => ({}),
-    },
-});
-
-onErrorCaptured((...args) => {
-    console.log("error captured in renderer");
-    console.log(args);
-    return false;
-});
-
-const errorMessageRef = ref<string | null>(null);
-watch(
-    () => props.code,
-    () => {
-        errorMessageRef.value = null;
+const props = withDefaults(
+    defineProps<{
+        code: string;
+        data?: {};
+    }>(),
+    {
+        data: () => ({}),
     },
 );
 
+const errorMessage = ref<string | undefined>();
+
+// Reset the error message when the code changes
+watch(
+    () => props.code,
+    () => (errorMessage.value = undefined),
+);
+
+onErrorCaptured((error) => {
+    errorMessage.value = "Internal error: " + error.message;
+    return false;
+});
+
+const errorCache = new Map<string, string>();
+
 const hyperscript = computed(() => {
-    let errorMessage: string | null = null;
-    const renderBare = compile(props.code, {
+    const code = props.code;
+
+    const renderBare = compile(code, {
         onError(error) {
-            errorMessage = error.message;
+            errorCache.set(code, error.message);
         },
     });
 
+    if (errorCache.has(code)) {
+        return h("p", {
+            class: "error",
+            innerHTML: "Compile Error: " + errorCache.get(code),
+        });
+    }
+
     const render = new Proxy(renderBare, {
-        apply(target, thisArg, args) {
-            let result: any;
+        apply(target, thisArg, args: Parameters<typeof renderBare>) {
+            let result: ReturnType<typeof renderBare>;
             try {
                 result = target.apply(thisArg, args);
             } catch (e) {
-                errorMessage = e.toString();
+                return h("p", {
+                    class: "error",
+                    innerHTML:
+                        "Render function error: " +
+                        (e instanceof Error ? e.message : JSON.stringify(e)),
+                });
             }
-
-            if (errorMessage) {
-                const innerHTML = "Compilation Error: " + errorMessage;
-                errorMessage = null;
-                return h("div", { class: "error", innerHTML });
-            } else {
-                return result;
-            }
+            return result;
         },
     });
 
     try {
-        return h({
+        const out = h({
             render,
             data: () => props.data,
             errorCaptured(e) {
-                errorMessageRef.value = e.toString();
+                errorMessage.value =
+                    "Runtime Error: " +
+                    (e instanceof Error ? e.message : JSON.stringify(e));
                 return false;
             },
         });
+        return out;
     } catch (e) {
-        return h("div", {
+        return h("p", {
             class: "error",
-            innerHTML: e.toString(),
+            innerHTML:
+                "Setup error: " +
+                (e instanceof Error ? e.message : JSON.stringify(e)),
         });
     }
 });
 </script>
 
 <template>
-    <div class="error" v-if="errorMessageRef">{{ errorMessageRef }}</div>
+    <p class="error" v-if="errorMessage">{{ errorMessage }}</p>
     <hyperscript v-else />
 </template>

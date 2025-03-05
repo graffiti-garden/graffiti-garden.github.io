@@ -47,21 +47,20 @@ function highlighter(code: string) {
     );
 }
 
-const errorMessage = ref<string | null>(null);
+const errorMessage = ref<string | undefined>();
 onErrorCaptured((e) => {
-    errorMessage.value = e.message;
+    errorMessage.value = "Render error: " + e.message;
     return false;
 });
-watch(code, () => {
-    errorMessage.value = null;
-});
+// Reset the error whenever the code changes
+watch(code, () => (errorMessage.value = undefined));
 </script>
 
 <template>
     <div class="demo">
         <fieldset v-if="render" :class="['demo-render', state ? '' : 'alone']">
             <legend>Demo</legend>
-            <div v-if="errorMessage" class="error">{{ errorMessage }}</div>
+            <p v-if="errorMessage" class="error">{{ errorMessage }}</p>
             <Renderer v-else :code="code" :data="data" />
             <menu>
                 <li>

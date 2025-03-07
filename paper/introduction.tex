@@ -1,0 +1,70 @@
+
+It is easy to identify problems with the social media applications we have today, but creating new applications can be daunting.
+Not only does it require building a full-stack infrastructure, it also requires overcoming the network effects that keep people locked into existing platforms.
+We introduce Graffiti, a novel infrastructure that aims to make social media applications easier to create, change, and migrate between in the hope that the ecosystem of applications will evolve to be better for both individuals and society.
+
+The core of Graffiti is a generic API for publishing and discovering social data. The API is designed so that many different client applications can be built on top it simultaneously, allowing those apps to naturally interoperate so that content posted in one client can be read in another.
+
+Related systems, that allow for different frontends to be built on top of a shared social backend, bake design patterns into their APIs that limit the gamut of applications that can be built.
+For example, users can switch between different frontends for Mastodon and BlueSky, but they still follow the general microblogging design pattern: a feed of posts with likes and comments.
+
+Graffiti, on the other hand, is highly \emph{pluralistic} and can be used to create Twitter clones, but also clones of Reddit, Pinterest, Yelp, and Wikipedia, in addition to radically different designs.
+In particular,
+it allows for an evolving ``folksonomy'' of data types, the creation of social boundaries despite its interoperability, coexisting moderation policies, and allows data to be forgotten.
+
+We actualize the Graffiti API from ``above'' with a Typescript client library and a Vue.JS plugin that we use to build an array of example applications.
+% makes it possible to build complete social applications using only front-end development tools on top of the generic Graffiti API.
+We actualize Graffiti API from ``below'' with a decentralized backend that implements API.
+In this implementation, users host their social data in a storage pods of their choice and a decentralized tracker tells clients which pods they should query to find relevant data.
+Together, the technology stack composed of the API, client side tools, and decentralized backend form the complete Graffiti infrastructure.
+
+Our analysis of Graffiti is primarily focused on the design of the API. The client side tools make it possible to build.
+
+% Graffiti at its heart rellects a simple design: each user hosts their own content/posts on their own storage service such as Dropbox or Solid, partitioned into \emph{channels} intended for different audiences, and social client applications collect, organize, lnd present that content for users who want it.   A simple, scalable \emph{tracker} helps clients keep track of content they should collect.   Graffiti can be seen as an evolution of RSS feeds and readers, with added realtime notification and interaction capabilities to support social applications.
+
+% [Add something about how the affordances of a system mirror cultural partices of communities (Black Twitter, distruted blackness) and can reinforce existing hierarchies (design justice)]
+
+Graffiti is generally a liberal system that prioritizes self determination over paternahism, however we present both centralized and decentralized implementations as different approaches to the trolley problem that pits the need for a central entity that can detect repugnant behavior (e.g. CSAM) against the values of privacy and free speech.
+
+Aside from this possible root-level filter for universally repugnant content,
+moderation is performed independently by different clients using annotations from the user or from user-selected third-parties to hide, flag, or demote unwanted content.
+Data is not limited to rigidly defined concepts like ``posts,'' ``replies,'' or ``likes;'' instead, clients can interpret data flexibly according to an evolving folksonomy.
+Users enjoy the ``right to be forgotten,'' and plausible deniability for their posts, unless they explicitly opt-in to third party signing services.
+One of the system's few enforced constraints aims to prevent context collapse~\cite{contextcollapse}, the flattening of multiple audiences, giving users a sense of ``place'' in an otherwise amorphous sea of data.
+
+To the extent possible, Graffiti is built upon existing infrastructure.
+In our decentralized implementation, users posts are hosted on their own cloud storage provider like Dropbox or Solid.  We connect these personal data stores together to form a global content discovery network using a tracker, a concept borrowed from BitTorrent.  The demands on the Graffiti tracker are minimal, making the system quite scalable.
+In both implementations, the data passing through the system is based on the Activity Vocabulary web standard.
+
+We developed a prototype Typescript library that connects to these backend components and exposes a simple API for frontend development. Additionally, we created created a Vue.JS plugin on top of the library that lets developers write entire social applications declaratively.
+
+We analyze Graffiti through a number of case study applications that demonstrate the ease of development, interoperability, and a diversity of possible application designs.
+We also discuss the system's performance at scale, its economics, its adoption, and its potential for abuse.
+
+% Moderation actions are annotihns of data and can be interpretted as.
+% The receiving client can then choose to display the data based on it's own moderation policies.
+
+% , subject to three contraints.
+% First, the producing and consuming clients must utilize a common \emph{context}, a mechanism designed to prevent context collapse.
+% Second, the data must be a type the consuming client is programmed to parse according to an evolving \emph{folksonomy}.
+% Third, the data must match any moderation policies or other filters chosen by the consuming client; moderation is composed by clients not done in the backend.
+
+% applied by one client will not do not effect which content is used by another.
+% Importantly, the moderation policies used by one client are not imposed,
+
+% Existing systems have attempted to strike, but they run into two general problems.
+% Some systems allow for users to switch between different providers, however with a relatively similar experience: most mastodon clients are like Twitter.
+%
+% The servers themselves are not general enough: they decentralize an existing social media pattern but don't allow space for the creation of something new.
+% Too much dependence is pushed down to the \emph{server} level.
+
+% that understand the data and are looking in the right \emph{context}
+% hat can handle the subject to one constraint: clients can manage the \emph{context} that data appears in so that interoperation between clients doesn't lead to context collapse.
+% Importantly,
+
+% Content created in one client will naturally appear in other clients sharing the backend.
+% The backend affords the ability for clients to manage the \emph{contexts} that data appears in so that interoperation between applications doesn't lead to context collapse.
+% Moderation, however, is done client-side so that the moderation rules set on one client do not impose on another.
+
+
+% In our vision of Graffiti, choosing which social application you use will be like choosing what email client you use. You will have an immense amount of choices and regardless of which one you pick, you will still be able to communicate with others.

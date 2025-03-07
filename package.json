@@ -15,6 +15,7 @@
   "author": "Theia Henderson",
   "license": "GPL-3.0-or-later",
   "devDependencies": {
+    "@types/prismjs": "^1.26.5",
     "@vitejs/plugin-vue": "^4.6.2",
     "@vue/typescript-plugin": "^2.1.6",
     "vite": "^4.5.5"

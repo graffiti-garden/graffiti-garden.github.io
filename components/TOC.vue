@@ -12,22 +12,71 @@ function toTitle(kebab: string) {
 
 <template>
     <ul>
-        <li>
-            <a href="https://api.graffiti.garden/classes/Graffiti.html">
-                API Reference
-            </a>
-        </li>
-    </ul>
-    <!-- <ul v-if="sections">
-        <li v-for="sectionHeader in Object.keys(sections)">
-            {{ toTitle(sectionHeader) }}
+        <!-- <li>
+            Guide
             <ul>
-                <li v-for="section in sections[sectionHeader]">
-                    <RouterLink :to="`/${section}`">
-                        {{ toTitle(section) }}
+                <li>
+                    <a>Coming Soon</a>
+                </li>
+            </ul>
+        </li> -->
+        <!-- Only show the Paper section if the user is on a paper page -->
+        <li v-if="$route.path.startsWith('/paper')">
+            Paper
+            <ul>
+                <!-- <li>
+                    <RouterLink to="/paper/abstract"> Abstract </RouterLink>
+                </li>
+                <li>
+                    <RouterLink to="/paper/introduction">
+                        Introduction
                     </RouterLink>
+                </li> -->
+                <li>
+                    <RouterLink to="/paper/requirements">
+                        Requirements
+                    </RouterLink>
+                </li>
+                <!-- <li>
+                    <RouterLink to="/paper/related-work">
+                        Related Work
+                    </RouterLink>
+                </li>
+                <li>
+                    <RouterLink to="/paper/concepts"> Concepts </RouterLink>
+                </li>
+                <li>
+                    <RouterLink to="/paper/api"> API </RouterLink>
+                </li>
+                <li>
+                    <RouterLink to="/paper/system"> System </RouterLink>
+                </li>
+                <li>
+                    <RouterLink to="/paper/case-studies">
+                        Case Studies
+                    </RouterLink>
+                </li>
+                <li>
+                    <RouterLink to="/paper/discussion"> Discussion </RouterLink>
+                </li> -->
+            </ul>
+        </li>
+        <li>
+            Documentation
+            <ul>
+                <li>
+                    <a href="https://api.graffiti.garden/classes/Graffiti.html">
+                        API
+                    </a>
+                </li>
+                <li>
+                    <a
+                        href="https://vue.graffiti.garden/variables/GraffitiPlugin.html"
+                    >
+                        Vue Plugin
+                    </a>
                 </li>
             </ul>
         </li>
-    </ul> -->
+    </ul>
 </template>

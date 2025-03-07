@@ -39,7 +39,10 @@ watch(route, () => (navOpen.value = false));
                 </li>
             </ul>
         </nav>
-        <RouterView v-slot="{ Component }">
+        <main v-if="$graffitiSession.value === undefined">
+            <p>Loading...</p>
+        </main v-if>
+        <RouterView v-else v-slot="{ Component }">
             <transition name="slide-right" mode="out-in">
                 <component :is="Component" />
             </transition>

@@ -1,0 +1,313 @@
+\newtheorem{requirement}{Requirement}
+
+\section{Design Requirements}
+
+The Graffiti design arises from a set of \emph{requirements}.
+The first and foundational requirement is,
+
+\begin{requirement}
+\label{req:easy}
+   It should be feasible for most communities to build
+   their own social media applications.
+\end{requirement}
+
+Over the past several years,
+works including
+\emph{\href{https://publicinfrastructure.org/2023/03/29/the-three-legged-stool/}{The Three-Legged Stool}},
+\href{https://runyourown.social}{runyourown.social},
+and \href{https://pluriverse.world/}{pluriverse.world}
+have opined the importance of relatively small,
+community-built social applications.
+Existing examples of such applications include the fanfiction
+repository \href{https://archiveofourown.org/}{Archive of Our Own},
+the hypermedia curation platform \href{https://www.are.na}{are.na},
+the movie review site \href{https://letterboxd.com/}{Letterboxd},
+and Vermont's local \href{https://frontporchforum.com/}{front porch forum}.
+
+% In most cases, the application developers are community members themselves
+% and listen closely
+% and listen closely to the preferences, to guide the design of the application
+
+% Most importantly these applications are iterated on with feedback from the community,
+
+From their styling, to the features they include (and the ones they omit),
+to their moderation policies, to their social norms, these applications
+are tailored to the communities they serve and
+they have distict sense of being \emph{lived-in}
+that one-size-fits-all platforms lack.
+Most importantly these applications are iterated on with feedback from the community,
+giving community members autonomy over their shared space, a sense of ownership and control,
+and the ability to make their own future~\cite{threeleggedstool, runyourownsocial, archiveoftheirown}.
+
+% % they give autonomy to the communities that they are serving
+% % Proponents argue that these such small applications create healthier communities,
+% % can provide benefits to civic society, and
+% % Most of all they respect the \emph{autonomy} of community
+
+% platforms
+% could benefit civic discussion,
+% provide better onboarding conflict resolution
+
+The issue is that such applications are difficult to build and maintain,
+requiring either signifigant technical expertise or the money to outsource the work.
+Unpriveleged communities must resort to other means like creating group chats,
+Discord servers, Subreddits, Facebook groups, or Mastodon instances.
+While these services host many thriving communities,
+users are often faced with rigid and inadequate feature sets,
+and (in with centralized services) shifting platform policies.
+
+
+autonomy
+% evolving platform policies, rigid and inadequate feature sets,
+% may users resort to hacking in features, suggesting a need for
+% to have greater autonomy over their spaces.
+
+% they do not offer the same
+% freedom and malleability as having full design control over an application.
+% Many users resort to hacking in features, suggesting a need for greater control.
+
+Before the WWW, only established publishing companies could
+produce content, effecting the type of media that was.
+The WWW and Web 2.0 democratized this process, allowing users to choose what was
+"publishable" and a much.
+What would it look like if users were given similar control?
+
+% The world wide web gave people the ability to publish websites
+% and later Web 2.0 lowered the barrier.
+% But what if people had the ability to shape the ecosystem as well?
+% Curating the virtual environments their social interaction exists
+% in, like designing a public space.
+
+% With a system like Graffiti, hopefully many more such social applications will exist and evolve to genuinely support the needs of their users.
+% We believe user-guided evolution is not possible when only a small handful of technically savvy people have the means to create and change the social application landscape.
+
+\begin{requirement}[Adverserial Interoperability]
+\label{req:adverserial-interop}
+Any application $A$ can be built to interoperate with an application $B$ without any compliance from application $B$.
+\end{requirement}
+
+Communities are not monoliths, they are composed of individuals
+with different and evolving preferences.
+With interoperability, it becomes possible for individual users and groups of users to explore new application designs
+without breaking from their existing communities.
+
+For example, it should be possible for a group of users to
+modify an application so that it only shows 5 posts per day (to combat screen addiction)
+without imposing this feature on all other users of the application.
+The original application may eventually include this feature in a configuration panel,
+or the applications may drift further apart as their users' needs diverge. However, this
+evolution can be driven entirely by users rather than by external pressures
+to either conform to a particular design or abandon community altogether.
+
+% - the scope of such features will be discussed in
+% requirement~\ref{}.
+
+We use the term ``adverserial interoperability''~\cite{adverserialinterop} because it is may not be in the
+interest of a large existing application to interoperate with a new application that may coopt some of its market share.
+For example, Facebook, Twitter/X, and Reddit all have a history of intentionally breaking
+the interoperability of third-party applications by either changing or limiting access to their APIs.
+While the power dynamics at play in small social applications are certainly
+different,
+it should still not be possible for one individual or group to hold users
+and their data hostage to a particular instance.
+Users should have \emph{autonomy} over their applications.
+
+
+% Smaller services like Del.icious,  Tumblr, all have a history of making changes
+% When disagreements occur it should not be up to the application developers
+% to hold their users (and their data) hostage.
+
+% Even on a small scale, dis
+% such disagreements can occur.
+% moderation policies are too harsh. One application may believe the
+% moderation policies are too harsh
+
+% This requirement for interoperability is in support requirement~\ref{req:easy}.
+% This can aid with experimentation too.
+% A user may want to
+% In addition to the technical difficulties of a building a social application,
+% developers are faced with the social cold start problem
+% of building up a critical mass of users. If a new application can choose to interoperate with a popular existing application
+% then it gets a user base ``for free.''
+
+
+% In simple cases this might be changing the layout of the website,
+% or. We will
+% losing all of their friends.
+% It also becomes possible for a user to "try out" a new feature without
+% requiring that everyone commit to it.
+% Interoperability gives the ecosystem the ability to naturally
+% split off with different ideas.
+
+% This is particularly important when one user wants to take an existing application
+% and modify it a little. In a system without in
+
+% However, adverserial interoperability provides enourmous value to \emph{users}, allowing them to freely migrate between applications without pressure to "lock-in" to any one just
+% because it is the one all of their friends use.
+% It may be the case the users use different applications to interact with
+% different communities that may offer different
+% even a little interoperability, like being able to
+% update one's profile photo once can be of benefit.
+
+
+% The business model of many exising social applications is dependent on their
+% ability to "lock-in" a particular user base, and so we discuss economic implications
+% and hypothesis at the end of this document.
+
+% Many of the small social applications we imagine will interoperate with each other.
+% Sometimes that interoperability will be comprehensive, for example if one application forks
+% another only to change minor styling, all of the data shown in one application will be
+% available in the other. Other times the interoperability may be subtle, for example
+% a user's name and profile photo set in one application is visible in another, but otherwise the data between them is different.
+
+% Finally, an application may intentionally not interoperate with existing applications:
+
+\begin{requirement}
+    Users should be protected from context collapse.
+\end{requirement}
+
+Context collapse is a phenomenon that describes the negative consequences of flattening
+a person's multiple audiences into a single context.
+Context collapse is a well known problem of existing social applications.
+For example, if a person's family holds different political beliefs than their friends
+but both groups follow them on Facebook, that person may choose to self-supress their political
+speech to avoid angering either side of their collapsed audience.
+Either self-supressing to appeal to the "lowest-common deminator" or ignoring the collapse
+and simply posting to an "imagined audience" can lead to harm for both
+the users involved and society at large~\cite{contextcollapse, contextcollapseimpact, contextcollapsequeer, spiralofsilencesocialmedia}.
+
+Interoperability between applications as required by \ref{req:adverserial-interop} introduces the possiliby
+of \emph{much more} context collapse.
+For example, both Tinder, a dating app, and Linkedin, a professional networking app, involve the authoring
+and browsing of user profiles.
+These user profiles have many semantic similarities (name, biography, interests, employment status) and so
+it would not be unreasonable to imagine that in a system of interoperable applications,
+the profile a user created in one application
+naturally shows up in the other.
+Of course, this could be confusing, highly embarassing, and might get someone fired.
+
+Therefore, Graffiti must give application developers affordances to mitigate traditional sources
+of context collapse (\emph{e.g.} the ability to post to Subreddit-like scopes)
+as well affordances to mitigate new sources of inter-application context collapse.
+
+% While some users are not conscious of collapsed contexts, leading to accidental disclosures like the
+% father's or the priest's, others self-suppress their speech to appeal to the ``lowest common denominator.''
+% This suppression can be isolating and a constant source of paranoia for some
+% individuals~\cite{contextcollapseimpact}, for example for queer youth who may experience
+% violence if they accidentally out themselves~\cite{contextcollapsequeer}.
+
+% Suppression can also lead to a ``spiral of silence.'' The theory was developed in 1974 to describe the phenomenon that people are more willing to share their opinions to people they believe will agree with them~\cite{spiralofscience}. The phenomenon also occurs online and effects can bleed over into the real world.
+% % Facebook users were more willing to share their opinions about the Snowden leaks if they thought their followers agreed with them.
+% For example, Facebook users with more diverse followers were less likely to share their opinion online
+% \emph{and in face-to-face discussion}~\cite{spiralofsilencesocialmedia}.
+
+% Boundary-less applications, like Twitter, will inevitably have their niche as they are key to building `bridging capital' which provides widespread benefits to individuals and society as a whole [38, 49].
+% But to permit a broader range of applications, a pluralistic infrastructure should add affordances to protect against context collapse.
+
+% Shibboleth
+
+% Specifically, pluralistic infrastructures must deal with context collapse of \emph{public} contexts.
+% Unix style access-control lists provide a general and well understood solution to private contexts: posts or conversations that are only accessible to a select set of users or groups of users.
+% However, access control will not solve the reply dillema where a user wants their interaction to be "public" but only to one of their audiences.
+
+% In the real world, boundaries between public contexts can be shaped by walls and distance, and those contexts can acquire different norms and expectations, like the difference between a library, a bar, a church, and a public park.
+% Online, other examples of public contexts include topic-based discussions like (SubReddits), location based communication (Nextdoor), media-centric communication (LetterBoxd). In our current ecosystem of monolithic infrastructures, application boundaries also serve as contextual boundaries: while Discord and Slack have similar affordances, one is often used for play and the other for work. And the existence of distinct non-interoperating Discord serves means that contexts can be separated even in the same application.   But this ability to jerry-rig context separation through partitioned applications is lost if we implement a single shared infrastructure; we need new design affordances to recover it.
+
+% Monolithic social media infrastructures can also create contextual boundaries around public data by simply choosing where or where not to show data in their interfaces, as Instagram did when it removed its Following tab.
+% It is not as immediately clear how pluralistic infrastructures, designed to accommodate many different designs could also enforce such boundaries.
+
+% ActivityPub creates some boundaries around reply threads or subreddit-like topics by the selective forwarding of messages, but this forwarding depends on side effects that are server-dependent and violate data reification.
+% The At Protocol and Nostr do not put any boundaries around public content.
+% Most compelling is Matrix's `rooms,' concept to which we will return.
+
+% One method that existing infrastructures have is to create \emph{private} data that, like standard Unix access control, is only available to a specific set of users or groups of users.
+% However this does not cover cases where data is public.
+% However, the case outlined at the beginning of this section about public spaces must be captured as well.
+% For lack of a better phrase `don't ask don't tell' scenarios. Alcoholics Anonymous is a public space.
+
+% We provide two possible solutions: near-misses which are extremely general but complicated, and channels which are not so general but we conjecture are good enough for practical uses.
+% We include the near-miss concept because it frames context as coming from within data as opposed to an external phenomenon, which explains the differences between our channels and Matrix's rooms.
+
+% Context collapse is the "flattening of multiple audiences".
+% It occurs in existing applications, for example when posting.
+% But it is particularly important in a highly interoperable environment.
+% It is particularly important, and the reason this is our third requirement, in a highly interoperable environment.
+% For example, consider an application like Tinder and another one like LinkedIn. Both involve constructing detailed user profiles that include a name, bio, interests, and current employment. However there is a clear social signal attached to the fact that the profiles are in the apps themselves. Even just \emph{having} a public tinder profile is a sign that someone is interested in dating.
+
+% Some system models might make interoperation \emph{too} easy. For example, on platforms like BlueSky and Nostr data lives in a shared public database. Queries for datatypes could easily appear in the other.
+
+% However one is for dating and the other for networking.
+
+% So while (2) allows applications to interoperate with each other, this implies that developers need to be \emph{intentional} about their interoperability.
+
+% an application can put guardrails in place to prevent an applciation from interoperating with it unintentionally. In other words to prevent context collapse. An application like Tinder and Linkedin bleed together. This is what could happen if it was just one big database. Also.
+
+\begin{requirement}[Autonomous Extensibility]
+\label{req:autonomous-extensibility}
+    An application should be able to freely introduce new social features without requiring compliance from existing applications or the system as a whole.
+\end{requirement}
+
+In classic internet forums, users might reply to a post with ``+1'' to signal their support.
+In 2009, Facebook created the like button and in 2016 expanded it to a set of five reactions.
+Messaging clients like Signal now allow users to react to a message with any single emoji and
+Slack allows for users to react with multiple emojis including ones with custom animated icons.
+
+Social applications will inevitably evolve in unpredictable ways,
+therefore to avoid becoming instantly obselete, Graffiti must be highly extensible,
+allowing for new features (\emph{e.g.} being able to react to reactions)
+to be developed with relative ease.
+Importantly, it should be possible for a single application to introduce a new feature
+without requiring compliance from other interoperating applications, as this has the potential to
+lock applications into a particular set of features,
+just as an ecosystem without interoperability (see requirement~\ref{req:adverserial-interop}) can lock users into a
+particular set of applications.
+
+For example, in the ActivityPub standard (the protocol underlying Mastodon),
+when user $A$ replies to a post by user $OP$, $A$'s appliction
+sends $A$'s reply to $OP$'s server, which then automatically forwards
+it to users who wish to view the replies to $OP$'s post.
+This setup make it impossible to reply to posts that are hosted on servers
+that without automatic reply forwarding;
+the introduction of the reply feature (or any similar feature) requires \emph{compliance}
+from interoperating applications.
+% It is also not possible to introduce other features that require similar
+% ``side effects'' without all existing applications from complying.
+
+Notably, we also require that \emph{moderation} features are also extensible.
+For example, it should be possible for one application to introduce the feature
+``certain users (moderators) can delete other users' posts.''
+This allows moderation policies to evolve flexibly according to user needs
+but there is an obvious tension between this requirement
+and our requirement for interoperability (\ref{req:adverserial-interop}).
+What happens when two interoperating applications have conflicting moderation policies?
+This tension is resolved by our design concept ``Interaction Relativity.''
+
+\begin{requirement}[Serverless]
+    It should be possible to build a new social application without writing or deploying any server code.
+\end{requirement}
+
+Arguably the most difficult part about writing a novel
+social application is writing, deploying,
+and maintaining server code.
+As Signal's cofounder wrote
+``people don’t want to run their own servers, and never will''~\cite{moxieweb3}.
+
+Of course, Graffiti must involve servers \emph{somewhere} to store data
+and pass it around, but we require that all such servers are \emph{generic}
+and not tied to any one particular application.
+For example, an RSS reader is a ``serverless'' application since
+no new server needs to be built specifically for it to function.
+The reader simply polls existing RSS servers, each of which outputs data in a generic format.
+In Graffiti, both reading \emph{and writing} content must be done serverlessly.
+
+The extent to which this requirement can be applied is potentially limited
+by the compute and storage capacities of modern devices.
+For example, constructing something like TikTok's For You feed requires
+analyzing billions of posts, well beyond the capability of any user's personal device.
+However, it is certainly possible for even mobile devices to handle multiple thousands of posts.
+We discuss this in detail later on.
+
+Relying on generic servers also rules out the possibility that
+the ecosystem inadvertently relies on server side effects,
+like ActivityPub's reply forwarding which, as mentioned in
+requirement~\ref{req:autonomous-extensibility}, can impede extensibility.

@@ -44,6 +44,7 @@ function highlighter(code: string) {
     return Prism.highlight(
         code,
         props.language == "html" ? Prism.languages.markup : Prism.languages.js,
+        props.language,
     );
 }
 

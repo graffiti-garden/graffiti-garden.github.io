@@ -4,42 +4,38 @@ import { GraffitiPlugin } from "@graffiti-garden/wrapper-vue";
 import { GraffitiRemote } from "@graffiti-garden/implementation-remote";
 import Playground from "./components/Playground.vue";
 import App from "./components/App.vue";
+import Paper from "./components/Paper.vue";
+import Home from "./components/Home.vue";
 
 import "./style.css";
 import "prismjs/themes/prism-tomorrow.min.css";
 import "vue-prism-editor/dist/prismeditor.min.css";
 
-function lazyDoc(name: string, path: string | null = null) {
-  // Convert name from
-  // kebab-case to PascalCase
-  const namePascal = name
-    .split("-")
-    .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
-    .join("");
-
-  return {
-    path: path ? path : `/${name}`,
-    component: () => import(`./components/${namePascal}.vue`),
-  };
-}
-
-const sections = {
-  "high-level": ["motivation", "overview"],
-  demos: ["context"],
-  system: ["system"],
-  "API Reference": ["vanilla-js", "vue-plugin"],
-};
-
 const Router = createRouter({
   history: createWebHistory(),
   routes: [
-    lazyDoc("home", "/"),
-    ...Object.values(sections)
-      .flat()
-      .map((s) => lazyDoc(s)),
+    {
+      path: "/",
+      component: Home,
+    },
+    {
+      path: "/paper/:path(.*)",
+      component: Paper,
+      props: true,
+    },
   ],
-  scrollBehavior(to, from, savedPosition) {
-    return { left: 0, top: 0, behavior: "smooth" };
+  scrollBehavior(to) {
+    if (to.hash) {
+      return new Promise((resolve) => {
+        setTimeout(
+          () => resolve({ el: to.hash, behavior: "smooth" }),
+          // wait for the page to render before scrolling
+          0,
+        );
+      });
+    } else {
+      return { left: 0, top: 0, behavior: "smooth" };
+    }
   },
 });
 
@@ -49,5 +45,4 @@ createApp(App)
     graffiti: new GraffitiRemote(),
   })
   .component("Playground", Playground)
-  .provide("sections", sections)
   .mount("#app");

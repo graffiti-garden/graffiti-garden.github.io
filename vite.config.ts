@@ -7,8 +7,8 @@ import { exec } from "child_process";
 const paperInputDirectory = "paper";
 const htmlOutputDirectory = "paper-html";
 
-function compilePaperFile(inputFile: string, server: ViteDevServer) {
-  const root = server.config.root;
+function compilePaperFile(inputFile: string) {
+  const root = import.meta.dirname;
   const inputFileRelative = path.relative(root, inputFile);
 
   if (
@@ -51,36 +51,36 @@ function compilePaperFile(inputFile: string, server: ViteDevServer) {
   }
 }
 
-function buildAllPaperFiles(searchDirectory: string, server: ViteDevServer) {
+function buildAllPaperFiles(searchDirectory: string = paperInputDirectory) {
   const files = fs.readdirSync(searchDirectory);
   for (const file of files) {
     const filePath = path.resolve(searchDirectory, file);
     if (fs.statSync(filePath).isDirectory()) {
-      buildAllPaperFiles(filePath, server);
+      buildAllPaperFiles(filePath);
     } else {
-      compilePaperFile(filePath, server);
+      compilePaperFile(filePath);
     }
   }
 }
 
+console.log("hiii");
+
 export default defineConfig({
-  // assetsInclude: ["**/*.html"],
   plugins: [
     vue(),
     {
       name: "watch-and-convert-latex-to-html",
+      buildStart() {
+        buildAllPaperFiles();
+      },
       configureServer(server) {
-        const paperInputDirectoryResolved = path.resolve(
-          server.config.root,
-          paperInputDirectory,
-        );
-        buildAllPaperFiles(paperInputDirectoryResolved, server);
+        buildAllPaperFiles();
 
         // Watch for any subsequent changes
         server.watcher.on("change", async (file) => {
           const fileRelative = path.relative(server.config.root, file);
           if (fileRelative.split("/")[0] === paperInputDirectory) {
-            buildAllPaperFiles(paperInputDirectoryResolved, server);
+            buildAllPaperFiles();
           }
         });
       },

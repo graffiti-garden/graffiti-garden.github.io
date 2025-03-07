@@ -7,7 +7,7 @@ import { exec } from "child_process";
 const paperInputDirectory = "paper";
 const htmlOutputDirectory = "paper-html";
 
-function compilePaperFile(inputFile: string) {
+async function compilePaperFile(inputFile: string) {
   const root = import.meta.dirname;
   const inputFileRelative = path.relative(root, inputFile);
 
@@ -27,8 +27,9 @@ function compilePaperFile(inputFile: string) {
     const outputFile = path.resolve(root, outputFileRelative);
     fs.mkdirSync(path.dirname(outputFile), { recursive: true });
 
-    exec(
-      `pandoc \
+    await new Promise<void>((resolve) => {
+      exec(
+        `pandoc \
       --write=html5 \
       --mathjax \
       --listings \
@@ -38,49 +39,50 @@ function compilePaperFile(inputFile: string) {
       -M link-citations=true \
       --output=${outputFile} \
       ${inputFile}`,
-      (error, stdout, stderr) => {
-        if (error) {
-          console.error(`exec error: ${error}`);
-          return;
-        } else {
-          console.log(stdout);
-          console.log(stderr);
-        }
-      },
-    );
+        (error, stdout, stderr) => {
+          if (error) {
+            console.error(`exec error: ${error}`);
+          } else {
+            console.log(stdout);
+            console.log(stderr);
+          }
+          resolve();
+        },
+      );
+    });
   }
 }
 
-function buildAllPaperFiles(searchDirectory: string = paperInputDirectory) {
+async function buildAllPaperFiles(
+  searchDirectory: string = paperInputDirectory,
+) {
   const files = fs.readdirSync(searchDirectory);
   for (const file of files) {
     const filePath = path.resolve(searchDirectory, file);
     if (fs.statSync(filePath).isDirectory()) {
       buildAllPaperFiles(filePath);
     } else {
-      compilePaperFile(filePath);
+      await compilePaperFile(filePath);
     }
   }
 }
-
-console.log("hiii");
 
 export default defineConfig({
   plugins: [
     vue(),
     {
       name: "watch-and-convert-latex-to-html",
-      buildStart() {
-        buildAllPaperFiles();
+      async buildStart() {
+        await buildAllPaperFiles();
       },
-      configureServer(server) {
-        buildAllPaperFiles();
+      async configureServer(server) {
+        await buildAllPaperFiles();
 
         // Watch for any subsequent changes
         server.watcher.on("change", async (file) => {
           const fileRelative = path.relative(server.config.root, file);
           if (fileRelative.split("/")[0] === paperInputDirectory) {
-            buildAllPaperFiles();
+            await buildAllPaperFiles();
           }
         });
       },

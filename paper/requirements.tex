@@ -3,11 +3,11 @@
 \section{Design Requirements}
 
 The Graffiti design arises from a set of \emph{requirements}.
-The first and foundational requirement is,
+The first and foundational requirement is:
 
 \begin{requirement}
 \label{req:easy}
-   It should be feasible for most communities to build
+   It should be feasible for communities to build
    their own social media applications.
 \end{requirement}
 
@@ -17,7 +17,7 @@ works including
 \href{https://runyourown.social}{runyourown.social},
 and \href{https://pluriverse.world/}{pluriverse.world}
 have opined the importance of relatively small,
-community-built social applications.
+community-specific social applications.
 Existing examples of such applications include the fanfiction
 repository \href{https://archiveofourown.org/}{Archive of Our Own},
 the hypermedia curation platform \href{https://www.are.na}{are.na},
@@ -29,15 +29,28 @@ and Vermont's local \href{https://frontporchforum.com/}{front porch forum}.
 % and listen closely to the preferences, to guide the design of the application
 
 % Most importantly these applications are iterated on with feedback from the community,
-
+%
+% These applications were all
 From their styling, to the features they include (and the ones they omit),
 to their moderation policies, to their social norms, these applications
-are tailored to the communities they serve and
-they have distict sense of being \emph{lived-in}
+are a reflection of the communities they serve and have a
+distinct sense of being \emph{lived-in}
 that one-size-fits-all platforms lack.
-Most importantly these applications are iterated on with feedback from the community,
-giving community members autonomy over their shared space, a sense of ownership and control,
-and the ability to make their own future~\cite{threeleggedstool, runyourownsocial, archiveoftheirown}.
+Most importantly these applications are designed in close cooperation with the communities themselves
+giving members a sense of empowerment and autonomy over their shared space.
+Proponents argue that such online communities are the key to a healthier
+digital public sphere and the lessons members learn by participating in such
+communities have benefits for civic society more broadly~\cite{threeleggedstool, runyourownsocial, archiveoftheirown}.
+
+The issue is that such applications are difficult to build and maintain,
+requiring either significant technical expertise or the money to outsource the work.
+Unprivileged communities must resort to other means like creating group chats,
+Discord servers, Subreddits, or Facebook groups. %, or Mastodon instances.
+While these services host many thriving communities,
+those communities are often faced with rigid and inadequate feature sets,
+limited customization options, and shifting platform designs and policies.
+We aim to empower \emph{all} communities with the ability to
+build their own applications, giving them autonomy over their digital spaces.
 
 % % they give autonomy to the communities that they are serving
 % % Proponents argue that these such small applications create healthier communities,
@@ -48,16 +61,10 @@ and the ability to make their own future~\cite{threeleggedstool, runyourownsocia
 % could benefit civic discussion,
 % provide better onboarding conflict resolution
 
-The issue is that such applications are difficult to build and maintain,
-requiring either signifigant technical expertise or the money to outsource the work.
-Unpriveleged communities must resort to other means like creating group chats,
-Discord servers, Subreddits, Facebook groups, or Mastodon instances.
-While these services host many thriving communities,
-users are often faced with rigid and inadequate feature sets,
-and (in with centralized services) shifting platform policies.
+% With Graffiti, it should be possible for these communities
+% to build their own platforms.
 
-
-autonomy
+% autonomy
 % evolving platform policies, rigid and inadequate feature sets,
 % may users resort to hacking in features, suggesting a need for
 % to have greater autonomy over their spaces.
@@ -66,11 +73,11 @@ autonomy
 % freedom and malleability as having full design control over an application.
 % Many users resort to hacking in features, suggesting a need for greater control.
 
-Before the WWW, only established publishing companies could
-produce content, effecting the type of media that was.
-The WWW and Web 2.0 democratized this process, allowing users to choose what was
-"publishable" and a much.
-What would it look like if users were given similar control?
+% Before the WWW, only established publishing companies could
+% produce content, effecting the type of media that was.
+% The WWW and Web 2.0 democratized this process, allowing users to choose what was
+% "publishable" and a much.
+% What would it look like if users were given similar control?
 
 % The world wide web gave people the ability to publish websites
 % and later Web 2.0 lowered the barrier.
@@ -80,9 +87,8 @@ What would it look like if users were given similar control?
 
 % With a system like Graffiti, hopefully many more such social applications will exist and evolve to genuinely support the needs of their users.
 % We believe user-guided evolution is not possible when only a small handful of technically savvy people have the means to create and change the social application landscape.
-
-\begin{requirement}[Adverserial Interoperability]
-\label{req:adverserial-interop}
+\begin{requirement}[Adversarial Interoperability]
+\label{req:adversarial-interop}
 Any application $A$ can be built to interoperate with an application $B$ without any compliance from application $B$.
 \end{requirement}
 
@@ -102,7 +108,7 @@ to either conform to a particular design or abandon community altogether.
 % - the scope of such features will be discussed in
 % requirement~\ref{}.
 
-We use the term ``adverserial interoperability''~\cite{adverserialinterop} because it is may not be in the
+We use the term ``adversarial interoperability''~\cite{adversarialinterop} because it may not be in the
 interest of a large existing application to interoperate with a new application that may coopt some of its market share.
 For example, Facebook, Twitter/X, and Reddit all have a history of intentionally breaking
 the interoperability of third-party applications by either changing or limiting access to their APIs.
@@ -110,8 +116,8 @@ While the power dynamics at play in small social applications are certainly
 different,
 it should still not be possible for one individual or group to hold users
 and their data hostage to a particular instance.
-Users should have \emph{autonomy} over their applications.
-
+Empowerment should not be limited to a community ``as a whole'' but
+distributed amongst its subgroups and individual members.
 
 % Smaller services like Del.icious,  Tumblr, all have a history of making changes
 % When disagreements occur it should not be up to the application developers
@@ -172,11 +178,11 @@ Context collapse is a well known problem of existing social applications.
 For example, if a person's family holds different political beliefs than their friends
 but both groups follow them on Facebook, that person may choose to self-supress their political
 speech to avoid angering either side of their collapsed audience.
-Either self-supressing to appeal to the "lowest-common deminator" or ignoring the collapse
+Either self-supressing to appeal to the "lowest-common denominator" or ignoring the collapse
 and simply posting to an "imagined audience" can lead to harm for both
 the users involved and society at large~\cite{contextcollapse, contextcollapseimpact, contextcollapsequeer, spiralofsilencesocialmedia}.
 
-Interoperability between applications as required by \ref{req:adverserial-interop} introduces the possiliby
+Interoperability between applications as required by \ref{req:adversarial-interop} introduces the possibility
 of \emph{much more} context collapse.
 For example, both Tinder, a dating app, and Linkedin, a professional networking app, involve the authoring
 and browsing of user profiles.
@@ -188,7 +194,7 @@ Of course, this could be confusing, highly embarassing, and might get someone fi
 
 Therefore, Graffiti must give application developers affordances to mitigate traditional sources
 of context collapse (\emph{e.g.} the ability to post to Subreddit-like scopes)
-as well affordances to mitigate new sources of inter-application context collapse.
+as well as affordances to mitigate new sources of inter-application context collapse.
 
 % While some users are not conscious of collapsed contexts, leading to accidental disclosures like the
 % father's or the priest's, others self-suppress their speech to appeal to the ``lowest common denominator.''
@@ -259,26 +265,26 @@ to be developed with relative ease.
 Importantly, it should be possible for a single application to introduce a new feature
 without requiring compliance from other interoperating applications, as this has the potential to
 lock applications into a particular set of features,
-just as an ecosystem without interoperability (see requirement~\ref{req:adverserial-interop}) can lock users into a
+just as an ecosystem without interoperability (see requirement~\ref{req:adversarial-interop}) can lock users into a
 particular set of applications.
 
 For example, in the ActivityPub standard (the protocol underlying Mastodon),
-when user $A$ replies to a post by user $OP$, $A$'s appliction
-sends $A$'s reply to $OP$'s server, which then automatically forwards
-it to users who wish to view the replies to $OP$'s post.
-This setup make it impossible to reply to posts that are hosted on servers
-that without automatic reply forwarding;
+when user \emph{A} replies to a post by user \emph{OP}, \emph{A}'s appliction
+sends \emph{A}'s reply to \emph{OP}'s server, which then automatically forwards
+it to users who wish to view the replies to \emph{OP}'s post.
+This setup makes it impossible to reply to posts that are hosted on servers
+without automatic reply forwarding;
 the introduction of the reply feature (or any similar feature) requires \emph{compliance}
 from interoperating applications.
 % It is also not possible to introduce other features that require similar
 % ``side effects'' without all existing applications from complying.
 
-Notably, we also require that \emph{moderation} features are also extensible.
+Notably, we also require that \emph{moderation} features are extensible.
 For example, it should be possible for one application to introduce the feature
 ``certain users (moderators) can delete other users' posts.''
 This allows moderation policies to evolve flexibly according to user needs
 but there is an obvious tension between this requirement
-and our requirement for interoperability (\ref{req:adverserial-interop}).
+and our requirement for interoperability (\ref{req:adversarial-interop}).
 What happens when two interoperating applications have conflicting moderation policies?
 This tension is resolved by our design concept ``Interaction Relativity.''
 

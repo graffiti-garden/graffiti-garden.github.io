@@ -17,10 +17,15 @@ watch(
         const parser = new DOMParser();
         const doc = parser.parseFromString(base, "text/html");
 
-        // TODO: do any parsing here
+        const heading = doc.createElement("h2");
+        heading.innerText = "References";
+        doc
+            .getElementById("refs")
+            ?.insertAdjacentElement("beforebegin", heading);
 
         html.value = doc.body.innerHTML;
 
+        // Refresh mathjax when content changes
         nextTick().then(async () => {
             if (window.MathJax) {
                 // @ts-ignore
@@ -43,11 +48,5 @@ watch(
     display: flex;
     flex-direction: column;
     gap: 1rem;
-}
-
-.references::before {
-    content: "References";
-    font-weight: bold;
-    margin-top: 2em;
 }
 </style>

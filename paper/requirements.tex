@@ -3,10 +3,87 @@
 \section{Design Requirements}
 
 The Graffiti design arises from a set of \emph{requirements}.
-The first and foundational requirement is:
+These requirements focus on the experience of social application developers
+and the users of those applications.
+We make the assumption that the system implementing these requirements is \emph{trusted}.
+Developers and users trust the system will play by the rules,
+not revealing data that is supposed to be private to third parties for example,
+and that it is reliable, not losing data, going offline or being discontinued.
+% losing data going offline, etc.
+
+% will be reliable (not lose data or go offline), and will
+% will not change or violate,
+% they trust it will be reliable and online, they trust it to
+% In other words that the system will not change the rules of the game by,
+% say, revealing information that is supposed to be private.
+% will not change the rules of the game
+% or violate the requirements by, say, revealing information
+% that is supposed to be private.
+% reliability, keeps bad actors out.
+
+Of course, historical violations of trust including
+Facebook's Cambridge Analytica scandal or Reddit and X's API
+restrictions have shown that trust does not come for free.
+We are not simply saying ``trust us.''
+Instead, we aim to prove that designing for trust can and should be
+\emph{seperated} from designing for the developer experience and moreover that
+the design of the developer experience should come \emph{first}.
+We refer to an artifact designed to shape the developer experience as an
+\emph{application programming interface} (API)\footnote{
+    Alternatively, we could call the API the ``ideal functionality.''
+    In Cryptography a protocol is considered secure if its operation is
+    indistinguishable from that of the ideal functionality even when
+    under attack from an adversary.
+} and an artifact designed
+to establish trust as a \emph{protocol}.
+
+Many of the systems we describe in Section~\ref{related-work} appear to
+have been designed in reverse with their protocols first and their APIs second.
+While their protocols include effective trust mechanisms like federation and end-to-end-encryption,
+the APIs they provide often cannot be used to fulfil basic user needs, like private messaging.
+Or, aspects of their trust mechanisms,
+like ``instances'' or ``key management,''
+have leaked through into their APIs,
+adding unnecessary complexity to developers
+who simply want to make applications.
+% Or alternatively, aspects related to establish trust leak through to the
+% API or even users, like ``instances'' or
+% We believe this is their APIs don't seem to provide user needs
+% (even basics like making private content)
+% Additionally, some of these systems were designed in such a way where mechanisms
+% related to establishing trust like `instances,' or keypair managed
+% leaked through
+
+By seperating the concerns of the API from the protocols,
+we also leave open the possibility of evolving or competing protocols.
+Our design takes inspiration from the World Wide Web
+where URLs begin with a \emph{scheme}, like \texttt{http:} or \texttt{https:}. The inclusion of the scheme
+in the URL itself allows different protocols to coexist
+while the \emph{API} of the web, which allows for users to publish and retrieve
+web pages from URLs, remains unchanged.
+
+The requirements below are for our primary contribution, our \emph{API}. The design that meets these
+requirements is covered in the following Sections~\ref{concepts} and \ref{api}.
+We also outline a set of \emph{protocols} that implement the API in Section~\ref{protocols}, each with their own
+requirements and tradeoffs, but all of which can coexist.
+% ed the web to smoothly change from
+% \texttt{http:} to \texttt{https:} as technology advanced
+% All the time the API of the web
+
+% where URLs begin \emph{scheme}.
+% like HTTP or HTTPS.
+% which allowed the web to asynchronously upgrade
+% Instead, our design is more like the World Wide Web.
+% The API of the the web affords the publishing and retreival of web pages at particular URLs.
+% URLs begin with a
+% its protocol from HTTP to HTTPS in response to a changing threat model
+% (browsing data becoming more sensitive and valuable) and technology advancements
+% (certificate authorities).
+% In the case of social media, ho
+
 
 \begin{requirement}
-\label{req:easy}
+\label{requirements:easy}
    It should be feasible for communities to build
    their own social media applications.
 \end{requirement}
@@ -88,7 +165,7 @@ build their own applications, giving them autonomy over their digital spaces.
 % With a system like Graffiti, hopefully many more such social applications will exist and evolve to genuinely support the needs of their users.
 % We believe user-guided evolution is not possible when only a small handful of technically savvy people have the means to create and change the social application landscape.
 \begin{requirement}[Adversarial Interoperability]
-\label{req:adversarial-interop}
+\label{requirements:adversarial-interop}
 Any application $A$ can be built to interoperate with an application $B$ without any compliance from application $B$.
 \end{requirement}
 
@@ -169,6 +246,7 @@ distributed amongst its subgroups and individual members.
 % Finally, an application may intentionally not interoperate with existing applications:
 
 \begin{requirement}
+\label{requirements:context-differentiation}
     Users should be protected from context collapse.
 \end{requirement}
 
@@ -182,7 +260,7 @@ Either self-supressing to appeal to the "lowest-common denominator" or ignoring 
 and simply posting to an "imagined audience" can lead to harm for both
 the users involved and society at large~\cite{contextcollapse, contextcollapseimpact, contextcollapsequeer, spiralofsilencesocialmedia}.
 
-Interoperability between applications as required by \ref{req:adversarial-interop} introduces the possibility
+Interoperability between applications as required by \ref{requirements:adversarial-interop} introduces the possibility
 of \emph{much more} context collapse.
 For example, both Tinder, a dating app, and Linkedin, a professional networking app, involve the authoring
 and browsing of user profiles.
@@ -249,7 +327,7 @@ as well as affordances to mitigate new sources of inter-application context coll
 % an application can put guardrails in place to prevent an applciation from interoperating with it unintentionally. In other words to prevent context collapse. An application like Tinder and Linkedin bleed together. This is what could happen if it was just one big database. Also.
 
 \begin{requirement}[Autonomous Extensibility]
-\label{req:autonomous-extensibility}
+\label{requirements:autonomous-extensibility}
     An application should be able to freely introduce new social features without requiring compliance from existing applications or the system as a whole.
 \end{requirement}
 
@@ -265,7 +343,7 @@ to be developed with relative ease.
 Importantly, it should be possible for a single application to introduce a new feature
 without requiring compliance from other interoperating applications, as this has the potential to
 lock applications into a particular set of features,
-just as an ecosystem without interoperability (see requirement~\ref{req:adversarial-interop}) can lock users into a
+just as an ecosystem without interoperability (see requirement~\ref{requirements:adversarial-interop}) can lock users into a
 particular set of applications.
 
 For example, in the ActivityPub standard (the protocol underlying Mastodon),
@@ -284,9 +362,12 @@ For example, it should be possible for one application to introduce the feature
 ``certain users (moderators) can delete other users' posts.''
 This allows moderation policies to evolve flexibly according to user needs
 but there is an obvious tension between this requirement
-and our requirement for interoperability (\ref{req:adversarial-interop}).
+and our requirement for interoperability (\ref{requirements:adversarial-interop}).
 What happens when two interoperating applications have conflicting moderation policies?
 This tension is resolved by our design concept ``Interaction Relativity.''
+
+(Reference "issues with mastodon paper" which cites moderation issues
+locked into particular places, work redone, etc.)
 
 \begin{requirement}[Serverless]
     It should be possible to build a new social application without writing or deploying any server code.
@@ -316,4 +397,11 @@ We discuss this in detail later on.
 Relying on generic servers also rules out the possibility that
 the ecosystem inadvertently relies on server side effects,
 like ActivityPub's reply forwarding which, as mentioned in
-requirement~\ref{req:autonomous-extensibility}, can impede extensibility.
+requirement~\ref{requirements:autonomous-extensibility}, can impede extensibility.
+
+
+\begin{requirement}[Forgving]
+    Users should be given the right to be forgotten and the right of deniability.
+\end{requirement}
+
+TODO.

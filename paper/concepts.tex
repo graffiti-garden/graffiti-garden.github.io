@@ -1,37 +1,391 @@
-\usepackage{xr-hyper}
+% \section{Design Overview and Concepts}
+\section{Design Concepts}
 
-\section{Design Overview and Concepts}
+This section outlines the high level concepts that make up the design of Graffiti
+according to the requirements we outlined in section \ref{requirements}.
+Section~\ref{api} outlines the specific API that is built out of these
+concepts and section~\ref{protocols} various protocols that implement the API.
+
+At a high level the design works as follows.
+\emph{Actors} (basically users) create \emph{objects} which can represent
+social artifacts like posts or activities like "likes".
+Objects are associated with a set of \emph{channels} and other users can
+discover an object by querying one of its channels. Channels are flexible representation
+of context which may be based around an identity, topic, piece of media, location, etc.
+Users can only modify their own objects and so to for users to interact with each other's content
+(as annotaiton, collaboration, moderation), interactions are reified into indivdual
+activies according to a principle we call \emph{interaction relativity}.
+
+\subsection{Actors}
+
+An actor is a persistent and globally unique identifier.
+In most cases an actor can be considered synonymous with a user,
+however, like an email adress, a user can own multiple actors
+or actors may be non-human entities like bots or recommendation services.
+The term \emph{actor} was originally used for this purpose
+in the ActivityPub standard.
+
+A user can ``log in'' to an actor and then publish as that actor.
+It is not possible for one user to impersonate another user's actor.
+Importantly to enable full interoperability
+(as required by \ref{requirements:adversarial-interop}),
+a Graffiti actor is not tied to any particular application so that users can freely move between
+different applications.
+
+A Graffiti actor does not include any information other than its
+global identifier. For example, an actor does not have a global
+name, profile picture, or biography associated with it.
+Instead, profiles are defined by seperate profile objects,
+allowing applications to freely introduce new profile
+metadata or for users to have multiple profiles for different contexts.
+For example, a trans person who is not publicly ``out'' may want to
+change their name within theirr queer community without
+changing their name to the broader public.
+Objects and their relation to autonomous extensibility are described next.
+
+For anonymous or meronymous~\cite{meronymous} interactions,
+a person can create `throw away' actors.
+
+\subsection{Objects}
+\label{concepts:objects}
+
+Objects are the atomic units that encapsulate \emph{all}
+of the social data in the system, including
+both social artifacts (such as posts and profiles) and social activities (such as likes and follows).
+Each Graffiti object include some structured metadata,
+such as the actor who created the object,
+but an object's value can be \emph{any} valid JSON.
+For example, a blog post object may have the value:
+
+\begin{lstlisting}[language=javascript]
+{
+  title: "My First Post",
+  content: "Hello, world!",
+  published: 1611972000, // The time in seconds
+}
+\end{lstlisting}
+
+The ActivityVocabulary~\cite{activity-vocabulary},
+whose object model inspired our own\footnote{
+    While our use of objects is similar to ActivityPub, one subtle difference is
+    that the objects are ``ducktyped'' unlike ActivityPub's use of \texttt{type} properties.
+    This allows for slightly more flexibility and interoperability.
+},
+defines many common properties that are useful for social applications including
+the ones above.
+However, application developers can freely introduce new properties as necessary
+as part of an evolving \emph{folksonomy}~\cite{folksonomy}.
+We leverage the fact that JSON can be \emph{self-describing}
+--- a message can contain structured data with arbitrary properties and
+values that are irrelevant and opaque to the delivery infrastructure but
+meaningful to specific clients.
+For example, an application for sharing recipes might introduce a new
+\texttt{ingredients} property.
+
+Because social applications
+benefit from network effects, we expect that developers will make use of
+existing properties where possible, allowing them them to benefit from pre-existing data
+made in other applications, but will introduce new properties when necessary.
+The result will inevitably be messy and inconsistent but, as with the evolution of
+particular hashtags, we expect there will be an effective balance of creativity and convergence.
+% We also provide tooling that allows users to filter data and provide human-readable
+% fallbacks for data they can't parse.
+
+Graffiti objects are also globally addressable which allows them to be
+pointed at and linked to.
+% Like URLs, these addresses start with scheme which prevents collision
+% between different protocols.
+For example, a post might have the URI \texttt{graffiti:remote:pod.graffiti.garden/123},
+enabling other users to ``like'' that post by creating a new object with the value:
+
+\begin{lstlisting}[language=javascript]
+{
+  activity: "like",
+  target: "https://graffiti.garden/123",
+}
+\end{lstlisting}
+
+This like activity is an example of \emph{reification},
+a concept introduced by the semantic web community
+which permits actions on data to be reprepresented as data themselves.
+Rather than a post object being an object that has a ``like'' method,
+the ``like'' here is a separate object that points to the post object.
+Reification allows for new interaction mechanisms to be introduced as easily as new properties,
+without changing the underlying system. In other systems only some interactions are reified,
+but in Graffiti all interactions, including moderation actions, are reified,
+a concept we call \emph{interaction relativity} which we discuss in the next section.
 
 
-\subsection{API Over Protocol}
+Finally, objects are mutable, meaning that they can be changed or deleted.
+This is necessary for the right to be forgotten requirement.
+The question of \emph{who} can mutate the objects is determined
+by interaction relativity and again discussed in the next section.
 
-\ref{req:easy}
+In summary Graffiti objects are:
 
-Readers may have noticed that there was no mention of privacy,
-or decentralization in oura document.
-These are certainly things we believe in but they can be met in many different ways.
-The tech is evolving.
+\begin{enumerate}
+\item
+Flexible: Objects can take on any value according to a self-describing folksonomy.
+\item
+Globally-Addressable: Every object has a globally unique URI that can be used to fetch it.
+\item
+Mutable: Objects can be changed or deleted.
+% we add the two following contraints on objects
+% \item
+% Proprietary: Only the creator of an object can modify or delete it.
+% \item
+% Permissioned: Objects can have an allow list of users who can view them.
+% \item
+% Ducktyped: Objects have no type.
+\end{enumerate}
 
-It's a lot like a URL. Browsers can understand multiple URL schemes: http, https, ipfs, ftp, mailto, tel, magnet, etc. Each URL is associated with a very different protocol. But I can type any of them into my browser bar and, if the browser supports that protocol, it will return the right result / open the right application, etc.
+% Mutable, proprietary, and permissioned are necessary for the right to be forgotten.
+% \item
+% Objects can be associated with one or more channels.
+% \item
+% You can either get an object by one of its channels or by its URI.
+
+\subsection{Interaction Relativity}
+\label{concepts:interaction-relativity}
+
+We define interaction relativity to mean that ``interaction between two individuals only
+exists relative to an application.''
+For example if an application is built to understand the like objects,
+it might display a counter of all likes.
+Alternatively, a user may have added a \texttt{disableLikes} property to
+the liked post which, if an application is built to understand it,
+may prevent the application from displaying the like counter.
+There is no ground truth as to whether the like actually occurred,
+only relative interpretations by different applications.
+% Whether a user has liked another users post is relative to which
+% application they use.
+
+The introduction and interpretation of new properties and objects
+that clarify whether an interaction has, or has not, occured
+is entirely up to the application developers themselves.
+This allows developers to freely introduce new interactions
+as required by \ref{requirement:autonomous-extensibility} without
+breaking interoperability as required by \ref{requirement:adversarial-interop}.
+
+This becomes unusual when considering moderation.
+For example, day that a Moderator wants to delete another user's post.
+
+
+This helps with that paper that eric gilbert sent. Moderation as data.
+For example say that Alice wants to delete a post that Bob made.
+For moderation this is like composable moderation. But also more.
+For example, one application could have a single fixed moderator,
+another could allow users to choose which moderators they would like filter their content
+like [Bluesky's stackable moderation](https://bsky.social/about/blog/03-12-2024-stackable-moderation),
+and another could implement a fully democratic system like [PolicyKit](https://policykit.org/).
+Each of these applications is one interpretation of the underlying refieid user interactions and
+users can freely switch between them.
+
+Having flexible object values that we described in section~\ref{concepts:objects} makes reifiecation \emph{possible} but
+but interaction relativity requires that not some but \emph{all} interactions
+are relative, therefore reification must be \emph{necessary}
+for interaction to take place.
+For example, it should not be possible for a user to \emph{actually}
+delete another users post because that prevents developers from
+creating applications where the delete did not occur, violating the
+``adversarial'' part of ``adversarial interoperability''
+(requirement~\ref{requirement:adversarial-interop}).
+As such, we ensure that:
+\begin{enumerate}
+\item
+Objects are \emph{proprietary}: only the creator of an object can modify or delete it.
+\end{enumerate}
+Conversly, users should not be limited from publishing new objects
+which may include new minteraction mechanisms.
+Objects are published in channels, a concept we discuss in great detail
+in the following section~\ref{concepts:channels}, and therefore
+\begin{enumerate}
+\setcounter{enumi}{1}
+\item
+Channels are \emph{ownerless}: no one can prevent others from putting objects in a particular channel.
+\end{enumerate}
+This ensures that users can always create actions.
+that effect
+
+Different applications can have different interpretations of the
+underlying state of the system based on s
+allowing them to flexibly add more features
+This aims to resolve the tension between our requirement for interoperability
+and our reqirement for
+
+
+Another example is collaboration. Say one user would like to modify
+Say a user would like to edit another user's post.
+a document but another would like to keep it the same. CRDTs.
+
+
+\subsubsection{Disabled Replies}
+
+Disabling replies a feature of Youtube and Instagram and although not
+implemented, one of the most requested features on Mastodon\footnote{
+    Mastodon's ``Disabl replies'' feature request has been actively discussed
+    for six years
+    \url{https://github.com/mastodon/mastodon/issues/8565}
+}.
+According to our system the replies would not really be disabled
+they would just be hidden in application that are built to understand
+the disabledReplies property.
+Is it possible the \emph{existence} of such replies even if they could
+not be seen is harmful?
+
+Unfortunately, if someone is trying to harass
+
+What if though, the person who disabled replies was spreading misinformation?
+Wouldn't it be nice for other users to be able to
+
+Users could use disabled replies as a `mic drop'.
+
+Alternatiely,
+people from the particular crowd start
+@-mentioning Person A in their toots, attacking them,
+but disabling replies on these toots, making it harder
+for the person to respond.
+https://github.com/mastodon/mastodon/issues/8565#issuecomment-417932002
+
+It also means a person cannot be shamed for something they really
+want to do.
+
+What about misinformation? There should be both ways for authors to
+mark that they want replies disabled or to mark ``approve'' certain comments
+and a way for communities to
+mark comments as particularly
+
+\subsubsection{Illegal Content}
+
+If moderation is reified and not actually deleting content,
+what can be done about universally repugant content such as CSAM?
+Here we come up against issues of \emph{trust} which we
+have seperated into the \emph{protocol} layer rather than
+the API layer.
+End-to-end encrypted systems, like Signal, make it impossible
+for users to be surveilled but also impossible to detect illegal content.
+In centralized unencrypted systems it may be possible to do both, but
+users must trust the system to act in their best interest.
+% In certain decentralized systems, like BitTorrent, IPFS, and Blockchain
+% it is possible to detect illegal content but impossible to delete it.
+
+At the moment this appears to be a trolley problem:
+if users can have complete trust in the system to act in their
+best interest the system will also be acting in the best interest
+of bad actors.
+perhaps technological advancements will make it possible to create
+a system that users can trust to act in their best interest,
+while also keep out users doing truly harmful things.
+We demonstrate that multiple protocols can implement the
+Graffiti API and leave it up to users to decide which they want
+and leave it up to other researchers with more knowledge of
+and for future work to find better soltions.
+
+% This works for moderation of legal content but there is the question of
+% what about content that doesn't want to exist anywhere, such as CSAM.
+% Mechanisms to delete content are dependent on the underlying implementation of the
+% system. In some systems, such as end-to-end encrypted systems like Signal,
+% and WhatsApp, it is impossible detect such content. In distributed systems
+% like BitTorrent, IPFS, or Blockchain technologies it is impossible to delete content.
+
+Interaction relativy also allows applications to introduce new sorts of interactions
+without having to coordinate with all the other existing applications,
+keeping the ecosystem flexible and interoperable.
+For example, an application could [add a "Trust" button to posts](https://social.cs.washington.edu/pub_details.html?id=trustnet)
+and use it assess the truthfulness of posts made on applications across Graffiti.
+New sorts of interactions like these can be smoothly absorbed by the broader ecosystem
+as a [folksonomy](https://en.wikipedia.org/wiki/Folksonomy).
 
 \subsection{Channels}
+\label{concepts:channels}
 
-Channels are a way for the creators of social data to express the intended audience of their
-data. When a user creates data using the {@link put} method, they
-can place their data in one or more channels.
-Content consumers using the {@link discover} method will only see data
-contained in one of the channels they specify.
+Channels are our solution to mitigating context collapse, as required by
+\ref{requirements:context-differentiation}, when still being
+interoperable as required by~\ref{requirements:adversarial-interop}.
+Like a television channel, users can publish content (in this case
+objects, see~\ref{concepts:objects}) to a particular channel
+and user watching that channel will receive it.
+Unlike a television channel, Graffiti channels are:
+\begin{enumerate}
+\item
+Bidirectional: Users can both read from and write to channels.
+\item
+Persistent: When a user publishes an object to a channel, other users can
+continue to retrieve the object from the channel until it gets deleted.
+\item
+Global: The channel namespace is global with every string (up to a certain length)
+corresponding to exactly one channel.
+\item
+Obscure: It is not possible to read from or write to a channel without knowing
+its string.
+\item
+Crosspostable: An object can be associated with more than one channel (or no channel at all).
+\end{enumerate}
 
-While many channels may be public, they partition
-the public into different "contexts", mitigating the
-phenomenon of [context collapse](https://en.wikipedia.org/wiki/Context_collapse) or the "flattening of multiple audiences."
-Any [URI](https://en.wikipedia.org/wiki/Uniform_Resource_Identifier) can be used as a channel, and so channels can represent people,
-comment threads, topics, places (real or virtual), pieces of media, and more.
+Additionally, to enable interaction relativity, we mentioned preemptively that channels are ownerless.
+Combined with obscurity,
 
-For example, consider a comment on a post. If we place that comment in the channel
-represented by the post's URI, then only people viewing the post will know to
-look in that channel, giving it visibility akin to a comment on a blog post
-or comment on Instagram ([since 2019](https://www.buzzfeednews.com/article/katienotopoulos/instagrams-following-activity-tab-is-going-away)).
+\begin{enumerate}
+\setcounter{enumi}{5}
+\item
+Ownerless: No user can prevent any other user from reading from or writing to a channel
+\emph{that they know about}.
+\end{enumerate}
+
+IRC or Slack channels and Matrix rooms are similarly bidirectional and persistent
+but are not global, obscure, ownerless, or crosspostable.
+The World Wide Web is global, obscure, and persistent
+but not bidirectional, ownerless, or crosspostable.
+
+% The fact that channels are ownerless seems ripe for harm, but it is necessary for
+% for moderation policies to be ``autonomously extensible'' as per requirement
+% \ref{requirements:autonomous-extensibility}.
+% This ownerless property is where the system gets its namesake.
+
+% Moderation and other cases of automous extensibility are resolved by our
+% notion of ``Interaction Relativity,'' \ref{concepts:interaction-relativity}.
+
+\subsubsection{Replies}
+
+\begin{table}[htbp]
+    \label{concepts:channel-replies}
+    \centering
+    \caption{Channels and Replies}
+    \begin{tabular}{c|c|c|c|}
+    \multicolumn{2}{c}{}
+    & \multicolumn{2}{c}{\textbf{Posted to reply context?}}
+    \multicolumn{2}{c|}{}
+    & \textbf{Yes} & \textbf{No}
+    \textbf{Posted to}
+    & \textbf{Yes}
+    & Twitter/X Reply & Quote Tweet
+    \textbf{self context?}
+    \\
+    & \textbf{No}
+    & Instagram Comment & N/A
+    \end{tabular}
+\end{table}
+
+To understand how channels can work to prevent context collapse, consider the example of \emph{replies}.
+Many social applications allow you to reply to posts but there are suprisingly subtle
+contextual differences between different reply designs.
+For example, currently on Instagram
+if you reply to a post that reply can only be seen by other
+people also viewing that particular post.
+However, prior to 2019 Instagram had a Following tab where a user could see
+the comments that the people they followed had posted across the application.
+The Following tab led to a priest outing himself as gay among numerous other
+examples of context collapse [CITE buzzfeed article].
+On Twitter/X it is still possible to see all of a users' replies by going
+to their Replies tab.
+
+With channels, it is possible to implement replies that allow users to
+prevent context collapse with the X, while still Y.
+
+To make an Instagram-style reply, that reply should be posted to the channel
+containing the original post's URI.
+Applications displaying that post will know to query this particular channel
+but they will not
 If we also place the comment in the channel represented by the commenter's URI (their
 {@link GraffitiObjectBase.actor | `actor` URI}), then people viewing the commenter's profile
 will also see the comment, giving it more visibility, like a reply on Twitter.
@@ -40,19 +394,127 @@ it becomes like a quote tweet ([prior to 2020](https://x.com/Support/status/1300
 where the comment is only visible to the commenter's followers but not the audience
 of the original post.
 
-The channel model differs from other models of communication such as the
-[actor model](https://www.w3.org/TR/activitypub/#Overview) used by ActivityPub,
-the protocol underlying Mastodon, or the [firehose model](https://bsky.social/about/blog/5-5-2023-federation-architecture)
-used by the AT Protocol, the protocol underlying BlueSky.
+Importantly context is preserved across interoperation. If a user posts their reply in
+an Instagram-like app they should expect that their reply will not be leaked even if
+a user is using Twitter.
+
+\subsubsection{Other Uses of Channels}
+
+We've seen how channels can represent \emph{people} and \emph{posts}
+which covers most microblogging uses of channels, but channels can also represent,
+
+\begin{enumerate}
+\item
+External Media: for applications like Letterboxd, GoodReads, Genius, last.fm
+\item
+User-Created Media: for applications like Soundcloud, Youtube, Medium
+\item
+User-Generated Topics: for applications like Reddit, Discord, Slack, IRC
+\item
+User-Generated Collections: for applications like are.na, Pinterest, Spotify playlists
+\item
+Website: for applications like Hypothes.is, Pinboard, Delicious
+\item
+Physical Locations: for location-based apps like Tinder, Nextdoor, Craigslist, and YikYak.
+\item
+Virtual Locations: for applications like VRChat, Second Life, Minecraft
+\item
+Events: for applications like Meetup, Partiful, Facebook Events
+\item
+Products and Services: Amazon reviews, Yelp,
+\item
+Collaborative documents: Wikipedia, google Docs
+\end{enumerate}
+
+Channels can also represent \emph{application types themselves}.
+For example, to avoid the issue of Linkedin and Tinder.
+Channels can also be concatenated.
+For example, `dating+location' would prevent other people from seeing th post.
+Concatenation may also happen in natural language.
+For example, on Reddit when one wants to post programming-related memes they post to \texttt{r/programmerhumor} rather than \texttt{r/programming+funny}.
+These concatenations may themselves take on new meaning.
+
+Locations are interesting because they are a continuous space.
+Something like what-three-words, or a "resolution pyramid".
+Locations are also an example of when users without any prior interaction
+post to the same channel.
+
+Websites make it possible for everyone to annotate the web.
+In fact, Graffiti's namesake comes from an article
+describing an early web annotation system, Third Voice,
+as Graffiti on the web.
+The authors meant it as a slur, but we believe graffiti
+can be a beautiful art form and a powerful tool for social change.
+
+\subsubsection{Notes}
+
+One particular benefit of the channel concept over near misses, is that channels more naturally allow for BCCing.
+While many of the channels a user posts to are presumably related to properties of the data itself, it is also possible to post data to multiple channels without revealing those channels to each other.
+For example, a user may be part of several different contexts invite them to a party with a universal thread, but doesn't want to inundate one with another by including them directly.
+
+\subsubsection{Comparison to Other models}
+
+While channels are a relatively simple, they are subtly differences from other established concepts:
+
+The channel model is clearly different from the Firehose Model used by BlueSky
+which.
+The firehose model dumps all user data into one public database,
+which doesn't allow for the carving out of different contexts that we did in our comment
+example above. In the firehose model a comment will always be visible to *both* the original post's audience and
+the commenter's followers.
+It also has subtle differences.
+There are several other contextual models.
+
+\paragraph{Actor}
+
+We use actors to describe identities in the system,
+but ActivityPub uses the actor model to describe the system itself.
+As mentioned the actor model used by ActivityPub is a fusion of
+direct messaging (like Email) and broadcasting like RSS.
+Having channels
+
+Compared to the Actor Model it removes the need for Server-Side effects
 The actor model is a fusion of direct messaging (like Email) and broadcasting
 (like RSS) and works well for follow-based communication but struggles
 to pass information via other rendez-vous.
 In the actor model, even something as simple as comments can be
 [very tricky and require server "side effects"](https://seb.jambor.dev/posts/understanding-activitypub-part-3-the-state-of-mastodon/).
-The firehose model dumps all user data into one public database,
-which doesn't allow for the carving out of different contexts that we did in our comment
-example above. In the firehose model a comment will always be visible to *both* the original post's audience and
-the commenter's followers.
+
+\paragraph{Bidirectional Links}
+
+On the World Wide Web, hyperlinks point in one direction from one website to another.
+However earlier hypermedia systems, like Xanadu and Dexter, included \emph{bidirectional} links:
+from one document you could see all the other documents that link to it.
+Bidirecitonal links are now currently possible in personal information management systems like Roam and Notion.
+
+Channels can be seen as a way to \emph{selectively} create bidirectional links.
+A reply object will have pointers to the object it is replying to and the actor who created the reply.
+Adding the object's URI or the actor's URI as channels selectively adds backlinks to those entities
+making it possible to go \emph{from} the original post \emph{to} the reply (in the case of Instagram-like comments)
+or \emph{from} the actor \emph{to} the reply (in the case of Twitter/X-like comments).
+Of course, channels also make it possible to create "links" from non-digital artifacts like topics or locations.
+
+\paragraph{Object Capabilities}
+
+Object capability security (OCaps) is a security model where rights to perform an action
+can be transferred to another user by giving that user a reference to that action.
+Channels can be thought of as a capability mechanism where
+capability read or write to a particular channel
+can be transferred to another user by telling them the channel's string.
+
+However Graffiti isn't a purely capability-based system because it
+is also possible to add an "allow" list to each object.
+For example a group chat could use a private string as a channel
+and if that string is sufficiently long and random so as not to be guessed
+the conversation would remain private.
+However this makes it possible for any member of the group to share (or accidentally leak) the
+channel and let anyone else in.
+Allow lists provide more long term privacy.
+
+Allow lists are managed by applications.
+If allow lists are especially enourmous then is it really public?
+
+\subsubsection{Social Access Control}
 
 In some sense, channels provide a sort of "social access control" by forming
 expectations about the audiences of different online spaces.
@@ -73,71 +535,30 @@ that message in the channel that represents them (their {@link GraffitiObjectBas
 so they can find it, *and* set the `allowed` field to only include the recipient,
 so only they can read it.
 
-The channel concept lets users to post data to one or more channels and lets users to fetch all the data associated with a particular channel.
-Channels do not need to be created and are not owned by anyone. Instead, a channel can be represented by any URI: a user identifier, a post, a topic, a place, etc.
-
-In our running example, Alice would post her reply to the channel \texttt{inReplyTo:example.com/posts/12345} so that users interested in replies to the target post could find it.
-If Alice wanted her post to be Twitter-like, she would also post their data to the channel \texttt{actor:alice@example.com}.
-If we complete the square and consider what happens if Alice posts to her actor channel, but not the reply channel, her post becomes like a Quote Tweet, as shown in figure 1.
-
-\begin{table}[htbp]
-    \centering
-    \caption{Context and Replies}
-    \label{tab:reply_dimensions}
-    \begin{tabular}{c|c|c|c|}
-    \multicolumn{2}{c}{}
-    & \multicolumn{2}{c}{\textbf{Posted to reply context?}}
-    \\ \cline{3-4}
-    \multicolumn{2}{c|}{}
-    & \textbf{Yes} & \textbf{No}
-    \\ \cline{2-4}
-    \textbf{Posted to}
-    & \textbf{Yes}
-    & Twitter/X Reply & Quote Tweet
-    \\ \cline{2-4}
-    \textbf{self context?}
-    & \textbf{No}
-    & Instagram Comment & N/A
-    \\ \cline{2-4}
-    \end{tabular}
-\end{table}
+\subsubsection{Near Misses}
 
 Compared to near misses, the channel concept allows data recipients to only make queries on the \emph{union} of attributes --- a query can be for posts by Alice \emph{or} in reply to the target post but not for posts by Alice \emph{and} in reply to the target post. The recipient is left to do further filtering and in our implementation section we discuss the consequences this has on performance and client-side only design.
 
+It is possible to \emph{intersect} channels by concatenating them.
+For example, if we only want a message to be seen by people interested in dating at a particular
+location the channel would be
+The order of the concatentation is ambiguous and there is the potential.
+
 These union queries also limit the options that a poster has to specify where they want data to appear. However, we believe that in most cases where a user wants content to only be available in the intersection of two channels, it is appropriate to create a new channel through either automated or natural language concatenation.
-For example, on Reddit when one wants to post programming-related memes they post to \texttt{r/programmerhumor} rather than an intersection of \texttt{r/programming} and \texttt{r/funny}.
 
-One particular benefit of the channel concept over near misses, is that channels more naturally allow for BCCing.
-While many of the channels a user posts to are presumably related to properties of the data itself, it is also possible to post data to multiple channels without revealing those channels to each other.
-For example, a user may be part of several different contexts invite them to a party with a universal thread, but doesn't want to inundate one with another by including them directly.
+One possible generalization of `Channels' is near misses.
+The concept is hard to develop and the scope in which such logical interections
+might be useful is limited. However for completness we thought it is worth mentioning.
 
-While channels are a relatively simple, they are subtly differences from other established concepts:
-
-
-\paragraph{Rooms}
-
-Channels are similar to the concept of \emph{rooms} used by Matrix and also by the teleconfrencing platform, Zoom.
-However unlike rooms, which have an owner that can kick people out, channels are public. This is because channels are a way for senders to limit who their recipients are not necessarily for recipients to limit who their senders are. The latter falls under moderation, which we address in the next subsection.
-
-\paragraph{Bidirectional Linking}
-
-% Channels can be thought as a selective form of bidirectional linking
-% Cite Xanadu, Dexter, Third Voice, PXSI.
-
-\paragraph{Object Capabilities}
-
-% Object Capabilities are a security model where rights to an perform an action can be transferred to another user by giving that user a reference to that action.
-% For example to read
-% We rely on standard access control for long term.
-% Channels are a form of object capability. They are a \emph{handle} to underlying content: knowing the ``right question to ask.''
-
-\subsubsection{Near Misses}
+BCCs don't work with near misses.
 
 One way to operationalize public contexts is similar to how people set boundaries in natural language.
 When asked a general question, like ``How are you?'', many people respond with a general answer, ``Good, and you?''
 When asked a more specific question, like ``What did you think of the game last night?'', many people respond with a more specific answer.
 
-Asking a more specific question signals the querier's interests which can give the responder confidence they are not oversharing. A more specific question may also signal whether the querier is part of some in-group, allowing the responder to disclose information that may technically be public but not readily shared (``Are you a friend of Dorothy's?'').
+Asking a more specific question can be a shibolleth
+signals the querier's interests
+which can give the responder confidence they are not oversharing. A more specific question may also signal whether the querier is part of some in-group, allowing the responder to disclose information that may technically be public but not readily shared (``Are you a friend of Dorothy's?'').
 
 This natural language analogy is a far cry from how database queries work.
 For example, in the Nostr infrastructure that allows users to make general queries on each others social data, a simple query for a users ID returns everything they've ever posted. This is the equivalent of asking someone ``How are you?'' and then sitting through their entire life history.
@@ -176,52 +597,3 @@ Importantly, queries for posts that are both by Alice \emph{and} replies to the 
 This system is quite general and with multiple near misses it can be used to qualify ``how specific'' a query is with arbitrary logical intersections.
 However, we found in initial prototypes that its contrapositive formulation is extremely confusing.
 Moreover, aside from some contrived examples, all use cases could be described by a simpler concept: \emph{channels}.
-
-\subsection{Interaction Relativity}
-
-Interaction relativity posits that "interaction between two individuals only
-exists relative to an observer," or equivalently, all interaction is [reified](https://en.wikipedia.org/wiki/Reification_(computer_science)).
-For example, if one user creates a post and another user wants to "like" that post,
-their like is not modifying the original post, it is simply another data object that points
-to the post being liked, via its {@link locationToUri | URI}.
-
-```json
-{
-  activity: 'like',
-  target: 'uri-of-the-post-i-like',
-  actor: 'my-user-id'
-}
-```
-
-In Graffiti, all interactions including *moderation* and *collaboration* are relative.
-This means that applications can freely choose which interactions
-they want to express to their users and how.
-For example, one application could have a single fixed moderator,
-another could allow users to choose which moderators they would like filter their content
-like [Bluesky's stackable moderation](https://bsky.social/about/blog/03-12-2024-stackable-moderation),
-and another could implement a fully democratic system like [PolicyKit](https://policykit.org/).
-Each of these applications is one interpretation of the underlying refieid user interactions and
-users can freely switch between them.
-
-Interaction relativy also allows applications to introduce new sorts of interactions
-without having to coordinate with all the other existing applications,
-keeping the ecosystem flexible and interoperable.
-For example, an application could [add a "Trust" button to posts](https://social.cs.washington.edu/pub_details.html?id=trustnet)
-and use it assess the truthfulness of posts made on applications across Graffiti.
-New sorts of interactions like these can be smoothly absorbed by the broader ecosystem
-as a [folksonomy](https://en.wikipedia.org/wiki/Folksonomy).
-
-Interactivy relativity is realized in Graffiti through two design decisions:
-1. The creators of objects can only modify their own objects. It is important for
-   users to be able to change and delete their own content to respect their
-   [right to be forgotten](https://en.wikipedia.org/wiki/Right_to_be_forgotten),
-   but beyond self-correction and self-censorship all other interaction is reified.
-   Many interactions can be reified via pointers, as in the "like" example above, and collaborative
-   edits can be refieid via [CRDTs](https://en.wikipedia.org/wiki/Conflict-free_replicated_data_type).
-2. No one owns channels. Unlike IRC/Slack channels or [Matrix rooms](https://matrix.org/docs/matrix-concepts/rooms_and_events/),
-   anyone can post to any channel, so long as they know the URI of that channel.
-   It is up to applications to hide content from channels either according to manual
-   filters or in response to user action.
-   For example, a user may create a post with the flag `disableReplies`.
-   Applications could then filter out any content from the replies channel
-   that the original poster has not specifically approved.

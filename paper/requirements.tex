@@ -364,7 +364,8 @@ This allows moderation policies to evolve flexibly according to user needs
 but there is an obvious tension between this requirement
 and our requirement for interoperability (\ref{requirements:adversarial-interop}).
 What happens when two interoperating applications have conflicting moderation policies?
-This tension is resolved by our design concept ``Interaction Relativity.''
+This tension is resolved by our design concept ``Interaction Relativity,''
+discussed in section~\ref{concepts:interaction-relativity}.
 
 (Reference "issues with mastodon paper" which cites moderation issues
 locked into particular places, work redone, etc.)
@@ -400,8 +401,48 @@ like ActivityPub's reply forwarding which, as mentioned in
 requirement~\ref{requirements:autonomous-extensibility}, can impede extensibility.
 
 
-\begin{requirement}[Forgving]
-    Users should be given the right to be forgotten and the right of deniability.
+\begin{requirement}[Forgiving]
+\label{requirements:forgiving}
+    Users should be able to delete, mutate, and repudiate content they post.
 \end{requirement}
 
-TODO.
+Shortly before Elon Musk initiated his acquisition of Twitter, now X,
+he created a poll that asked users whether Twitter should add an edit button.
+Out of over four million respondents, 73.6\% voted ``yse'' [sic] and 26.4\% ``no.''\footnote{
+  X now lets users edit their tweets within 30 minutes of posting but only
+  if they pay for X Premium.
+} These results are not suprising as many users of Twitter and Facebook regret
+their posts for a variety of reasons
+including misjudging social norms, posting while extremely emotional or inebriated,
+or posting to an unintended audience~\cite{regret, regrettwitter}.
+
+The ability to delete one's data was inshrined into law in the European Union's
+General Data Protection Regulation as
+the \emph{right to erasure}, previously called the \emph{right to be forgotten}~\cite{gdpr}.
+We require a stronger claim, that users should also be able to both \emph{mutate} (i.e. edit)
+and \emph{repudiate} content that they've posted. Repudiation is the ability to \emph{disown}
+as one might do when they say ``that screenshot has been photoshopped,''
+or more recently ``that's AI.'' Repudiation is usually possible in centralized platforms
+but can be limited by technologies employed in some decentralized platforms,
+like public key signatures~\cite{offtherecord}.
+
+The fact that we require erasure, mutability, and repudiation does not rule
+out the possibility that users can \emph{opt-in} to services that make their content more permanent.
+Technologies exist to make a ``forgiving'' system unforgiving but not the other way around.
+For example:
+\begin{enumerate}
+\item
+A user may choose to sign their messages with a PGP signature,
+as some people do with their emails, to make them non-repudiable.
+\item
+When a user replies to a post, their application could include the hash
+of that post in their reply. The application (and other interoperating applications)
+may hide or put a warning over replies to posts that have since been edited,
+causing a hash mismatch.
+\item
+A post could contain a link to content stored on an immutable storage service like IPFS
+or a blockchain to prevent erasure.
+\end{enumerate}
+Some users, like politicians, may face social pressure to use applications
+that employ some of these technologies as a form of accountability.
+However, to give users as much autonomy as possible, the API must be forgiving by default.

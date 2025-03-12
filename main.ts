@@ -24,13 +24,15 @@ const Router = createRouter({
       props: true,
     },
   ],
-  scrollBehavior(to) {
-    if (to.hash) {
+  scrollBehavior(to, from, savedPosition) {
+    if (savedPosition) {
+      return savedPosition;
+    } else if (to.hash) {
       return new Promise((resolve) => {
         setTimeout(
           () => resolve({ el: to.hash, behavior: "smooth" }),
           // wait for the page to render before scrolling
-          0,
+          100,
         );
       });
     } else {

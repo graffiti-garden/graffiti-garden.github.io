@@ -238,7 +238,6 @@ strong * {
     color: var(--frontbold) !important;
 }
 
-pre,
 .prism-editor__textarea {
     line-height: 1.2em !important;
     padding: 0em !important;
@@ -248,9 +247,32 @@ code {
     font-family: Menlo, Monaco, Consolas, "Courier New", monospace !important;
 }
 
+code:not(:has(span)) {
+    background: var(--halfback);
+    padding: 0.3rem;
+    border-radius: 0.3rem;
+}
+
 pre code {
     font-size: 80% !important;
     line-height: 0em !important;
+}
+
+pre {
+    padding: 1rem;
+}
+
+table {
+    width: 100%;
+}
+
+thead {
+    background: var(--halfback);
+}
+
+th,
+td {
+    padding-left: 0.5rem;
 }
 
 pre,

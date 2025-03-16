@@ -4,11 +4,16 @@
 
 The Graffiti design arises from a set of \emph{requirements}.
 These requirements focus on the experience of social application developers
-and the users of those applications.
-We assume, for now, that the system implementing these requirements is a ``\emph{trusted computing base}''
-In other words, the system will not misbhave,
-for example revealing data that is supposed to be private to third parties,
-and it will be reliable and free from bugs.
+and the users of their applications.
+We assume, for now, that the system implementing these requirements is a
+``\emph{trusted computing base}''~\cite{tcb}.
+In other words, such a system will not misbehave,
+for example revealing data that is supposed to be private to third parties.
+% or
+% In other words, the system will not misbhave,
+% for example revealing data that is supposed to be private to third parties
+
+% and it will be reliable and free from bugs.
 % Developers and users trust the system will play by the rules,
 % not revealing data that is supposed to be private to third parties for example,
 % and that it is reliable, not losing data, going offline or being discontinued.
@@ -24,12 +29,26 @@ and it will be reliable and free from bugs.
 % that is supposed to be private.
 % reliability, keeps bad actors out.
 
-Of course, historical violations of trust including
-Facebook's Cambridge Analytica scandal or Reddit and X's API
-restrictions have shown that trust does not come for free.
-We are not simply saying ``trust us.''
-Instead, we aim to prove that designing for trust can and should be
-\emph{seperated} from designing for the developer experience and moreover that
+Of course, trust will not come for free.
+There must be mechanisms in place to prevent situations like
+the Cambridge Analytica scandal, where Facebook blatantly violated the
+privacy and autonomy of its users,
+or situations like those involving X and Reddit, which violated
+the (unspoken) expectation that third-party API access would
+remain a free and reliable service.
+% Facebook's violations of user's trust and pricy
+% % Facebook misbehaved when it violated its own terms of service
+% in the Cambridge Analytica scandal and both X and Reddit
+% violated the assumed trust of their users when they restricted API
+% to third party applications
+% and both X and Reddit
+% Of course, historical violations of trust including
+% Facebook's Cambridge Analytica scandal or Reddit and X's API
+% restrictions have shown that trust does not come for free.
+% We are not simply saying ``trust us.''
+
+However, we aim to prove that designing mechanisms to establish trust can and should be
+\emph{separated} from designing for the developer experience and moreover that
 the design of the developer experience should come \emph{first}.
 We refer to an artifact designed to shape the developer experience as an
 \emph{application programming interface} (API)\footnote{
@@ -43,12 +62,15 @@ to establish trust as a \emph{protocol}.
 Many of the systems we describe in Section~\ref{related-work} appear to
 have been designed in reverse with their protocols first and their APIs second.
 While their protocols include effective trust mechanisms like federation and end-to-end-encryption,
-the APIs they provide often cannot be used to fulfil basic user needs, like private messaging.
+the APIs they provide often cannot be used to fulfil basic user needs, like private messaging~\cite{bluesky}.
 Or, aspects of their trust mechanisms,
 like ``instances'' or ``key management,''
 have leaked through into their APIs,
 adding unnecessary complexity to developers
 who simply want to make applications.
+% We also leave open the possibility of establishing trust through
+% non-technical means, like legal regulation, as argued for by
+% some scholars~\cite{}.
 % Or alternatively, aspects related to establish trust leak through to the
 % API or even users, like ``instances'' or
 % We believe this is their APIs don't seem to provide user needs
@@ -57,7 +79,7 @@ who simply want to make applications.
 % related to establishing trust like `instances,' or keypair managed
 % leaked through
 
-By seperating the concerns of the API from the protocols,
+By separating out the concerns of the API from the protocols,
 we also leave open the possibility of evolving or competing protocols.
 Our design takes inspiration from the World Wide Web
 where URLs begin with a \emph{scheme}, like \texttt{http:} or \texttt{https:}. The inclusion of the scheme

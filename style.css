@@ -238,6 +238,7 @@ strong * {
     color: var(--frontbold) !important;
 }
 
+.prism-editor__editor,
 .prism-editor__textarea {
     line-height: 1.2em !important;
     padding: 0em !important;

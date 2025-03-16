@@ -2,13 +2,26 @@
 
 \section{Design Requirements}
 
-The Graffiti design arises from a set of \emph{requirements}.
+The design of Graffiti,
+a system for building social applications,
+arises from a set of \emph{requirements}.
 These requirements focus on the experience of social application developers
 and the users of their applications.
-We assume, for now, that the system implementing these requirements is a
-``\emph{trusted computing base}''~\cite{tcb}.
-In other words, such a system will not misbehave,
-for example revealing data that is supposed to be private to third parties.
+We assume, for now, that the system implementing these requirements
+will not misbehave, for example revealing data that is supposed to be private to third parties.
+Using language from cryptography literature,
+our requirements describe the
+``\emph{ideal functionality}''~\cite{universallycomposable}
+of the system or, using language from computer security literature,
+we assume that the system implementing these requirements is a ``\emph{trusted computing base}''~\cite{tcb}.
+% equivalently we assume that the system implementing these
+% these requirements is a ``\emph{trusted computing base}''~\cite{tcb}\footnote{
+%     The terms ``ideal functionality'' and ``trusted computing base''
+%     are borrowed from cryptography and computer security
+%     literature respectively.
+% }.
+% In other words, such a system will not misbehave,
+% for example revealing data that is supposed to be private to third parties.
 % or
 % In other words, the system will not misbhave,
 % for example revealing data that is supposed to be private to third parties
@@ -46,17 +59,12 @@ remain a free and reliable service.
 % Facebook's Cambridge Analytica scandal or Reddit and X's API
 % restrictions have shown that trust does not come for free.
 % We are not simply saying ``trust us.''
-
 However, we aim to prove that designing mechanisms to establish trust can and should be
 \emph{separated} from designing for the developer experience and moreover that
 the design of the developer experience should come \emph{first}.
 We refer to an artifact designed to shape the developer experience as an
-\emph{application programming interface} (API)\footnote{
-    Alternatively, we could call the API the ``ideal functionality.''
-    In Cryptography a protocol is considered secure if its operation is
-    indistinguishable from that of the ideal functionality even when
-    under attack from an adversary.
-} and an artifact designed
+\emph{application programming interface} (API)
+and an artifact designed
 to establish trust as a \emph{protocol}.
 
 Many of the systems we describe in Section~\ref{related-work} appear to

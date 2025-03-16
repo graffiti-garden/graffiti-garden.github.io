@@ -1,0 +1,134 @@
+\section{API}
+
+We now describe the API that fulfills the requirements
+outlined in Section~\ref{requirements} and builds upon the concepts
+discussed in Section~\ref{concepts}.
+The API is designed to be externally consistent when possible,
+featuring a series of standard CRUD methods for manipulating objects:
+\texttt{put}, \texttt{get}, \texttt{patch}, and \texttt{delete},
+as well as straightforward methods for \texttt{login} and \texttt{logout}.
+Most of the novel functionality is packaged into the \texttt{discover} method, which allows
+users to query for objects from a set of channels.
+Finally, there are two specialized methods included for completeness:
+\texttt{recoverOrphans} and \texttt{channelStats},
+which prevent users from ``losing'' objects or channels, respectively.
+
+We wrote API as an abstract Typescript class, that can
+take on different implementations decribed in Section~\ref{protocols}.
+Typescript provides type safety to those who want it, but
+but it can also be used by regular Javascript developers
+it can be used as regular Javascript.
+Additionally, the API builds on existing JSON Schema standard~\cite{jsonschema}.
+This is a well established method and we use a library that
+provides strong typing based on schemas.
+
+Overall, as much complexity is pushed \emph{below} the API
+while as much functionality is pushed \emph{above}.
+Self-describing objects and channels push a lot of expressive
+power above the API, while URLs, our login, continue push
+things below
+
+The full API is available online, but an abbridged version covering
+is included here for reference.
+
+\subsection{Login}
+
+We describe login and out of first as they are necessary
+to perform many of the other operations.
+In general, logging in securely is complicated and we would
+like to hide as much of that complexity as possible, both
+for the sake of the developer and for future proofing to
+developing new log in procedures.
+
+The goal of the log in procedure is for a user to
+get a persistent user ID and then to be able to both
+create data and retreive access controlled data.
+
+Provides a `session' which can be used to perform access controlled operations.
+The seperate sesssion helps with type-safety and also allows the possibility of multiple logins
+at once, if a user.
+The session might contain a token, or it might contain cababilities, or it might include a private key.
+
+In the future the session may be updated to include scoping information as well for help with typing.
+
+A user clicks a "log in" button in an application which trigger the login() method
+    A user interface appears, either as a dialog or a redirect, and asks for some user credentials.
+        In our federated implementation, we use Solid OIDC. First, a dialog opens and the user is asked to choose an identity provider, for example https://login.inrupt.com or https://solidcommunity.net. Then, they are redirected to that provider and must enter a username and password. After submitting, they are redirected back to the application.
+        In our local implementation (where the operations store and fetch data from local storage), a popup appears that asks what username a user would like. They do not need to supply any additional information.
+        In a distributed implementation (which we have not implemented), the user might be prompted to select a certificate containing a public keypair. They would not need to interface with a remote server because the certificate authenticates itself.
+    Once a user enters and submits their information, if successful, a GraffitiLoginEvent will fire. This will contain the GraffitiSession object. The session object contains, at the very least, an "actor" field which is a URI identifying the user. It may also include additional information. For example:
+        In our federated implementation, the "actor" field is their webId, a globally unique URL. For example mine is https://solid.theias.place/profile/card#me. The session also contains a token that the user can use to authenticate with any storage server. So regardless of whether I try to contact https://pod.graffiti.garden or https://graffiti.theias.place, both servers will be able to correctly verify that I am indeed https://solid.theias.place/profile/card#me. They can use that identity to know whether I am allowed to access access-controlled information, etc.
+        In our local implementation, the "actor" field just includes the username that the user specified. The session doesn't contain any other information because there is no other entity that needs proof that the user owns that username - everything is local, so they own everything.
+        In a (hypothetical) distributed implementation, the "actor" field could be the hash of the user's public key. The session would also include the the user's private key (or more securely a "signing function" and "decrypt function" so that client applications don't have direct access to the private key). The session can be used to sign objects the user creates to prove they own them, or decrypt objects that only the user is allowed to see.
+
+Identities should be portable between applicaiton but ideally they
+should be portable between protocols. A universal protocol DIDs
+seem like they will fit this, although currently they do not have authentication.
+Graffiti is built on Solid OIDC as portable identity but others can be in the future.
+Alternatively, non-interoperating identities are possible (e.g. dropbox) but this is restricting.
+Ideally, identities should be portable regar
+Importantly, identities should be portable regardless of
+
+They provide strong typing even in an object of flexible envireonemtn
+We would like to rely on an existing standard for identity,
+but none so far exist and we point to future work in that
+area.
+As we are building on JSON Schema, it would be nice to also build on
+an existing standard for login. Unfortunately, one does not currently
+exist that suits are needs.
+As mentioned, it would be nice to build on an existing and
+well used standard for login. There is an emerging specification
+called DID, however it lets the user authenticate with \emph{one}
+service. We would like different services or even protocols.
+In our implementations we use an older speicification Solid OIDC,
+which has some serious usability limitations and is not flexible,
+but at least provides the high level functionality we would like.
+However we can not say with confidence that the
+
+\subsection{Objects}
+
+Includes the properties
+\texttt{value}, \texttt{channels}, \texttt{allowed},
+\texttt{url}, \texttt{actor}, \texttt{lastModified}.
+and JSONPatch~\cite{jsonpatch}.
+
+\subsection{CRUD}
+
+When a user calls \emph{put} it creates an object with a URL.
+Then it
+
+\subsection{Discover}
+
+The choice to not keep it live was intentional.
+
+At the end it returns a cursor and continue method.
+These hide the complexity of state management below the API.
+Also leaves open the possibility of different protocols having different state to maintain.
+This continuation is the only situation where tombstones are returned.
+They only contain the URL of the object in question, preserving the users right to be forgotten.
+
+discover needs to be polled for new data because live updates to an application can be visually distracting or lead to toxic engagement. If and when an application wants real-time updates, such as in a chat application, application authors must be intentional about their polling.
+
+Implementers should be aware that some users may applications may try to poll discover repetitively. They can deal with this by rate limiting or preemptively fetching data via a bidirectional channel, like a WebSocket. Additionally, implementers should probably index the lastModified field to speed up responses to schemas like the one above.
+
+\subsection{Recovery Methods}
+
+One key component of Graffiti is that users cannot get objects
+unless they know either their URLs or one the channels the object
+is contained in.
+However this can lead to users losing objects if their applications
+lose their URLs. It is also possible for a channel to have a typo.
+
+Therefore the two methods \texttt{recoverOrphans} and \texttt{channelStats}
+allow a user to get a global view of their \emph{own} Graffiti usage.
+\texttt{recoverOrphans} works much like discover but finds objects
+a user has created that are not contained in \emph{any} channel.
+\texttt{channelStats} gives a user a high level overview of all the
+channels that they've posted in.
+
+\subsection{Hiding Complexity}
+
+Hidden by the "URL" concept, not having to think about where stuff is stored.
+Might open popup on first time to ask "where to store this?"
+Hidden by discover returning just a "cursor" rather than new polling functionality.
+Hidden by login() logout() functions with the flow.

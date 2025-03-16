@@ -1,0 +1,83 @@
+
+While our use of objects is similar to ActivityPub, one subtle difference is
+    that the objects are ``ducktyped'' unlike ActivityPub's use of \texttt{type} properties.
+    This allows for slightly more flexibility and interoperability.
+},
+
+\subsubsection{Notes}
+
+One particular benefit of the channel concept over near misses, is that channels more naturally allow for BCCing.
+While many of the channels a user posts to are presumably related to properties of the data itself, it is also possible to post data to multiple channels without revealing those channels to each other.
+For example, a user may be part of several different contexts invite them to a party with a universal thread, but doesn't want to inundate one with another by including them directly.
+
+
+\subsubsection{Near Misses}
+
+Compared to near misses, the channel concept allows data recipients to only make queries on the \emph{union} of attributes --- a query can be for posts by Alice \emph{or} in reply to the target post but not for posts by Alice \emph{and} in reply to the target post. The recipient is left to do further filtering and in our implementation section we discuss the consequences this has on performance and client-side only design.
+
+It is possible to \emph{intersect} channels by concatenating them.
+For example, if we only want a message to be seen by people interested in dating at a particular
+location the channel would be
+The order of the concatentation is ambiguous and there is the potential.
+
+These union queries also limit the options that a poster has to specify where they want data to appear. However, we believe that in most cases where a user wants content to only be available in the intersection of two channels, it is appropriate to create a new channel through either automated or natural language concatenation.
+
+One possible generalization of `Channels' is near misses.
+The concept is hard to develop and the scope in which such logical interections
+might be useful is limited. However for completness we thought it is worth mentioning.
+
+BCCs don't work with near misses.
+
+One way to operationalize public contexts is similar to how people set boundaries in natural language.
+When asked a general question, like ``How are you?'', many people respond with a general answer, ``Good, and you?''
+When asked a more specific question, like ``What did you think of the game last night?'', many people respond with a more specific answer.
+
+Asking a more specific question can be a shibolleth
+signals the querier's interests
+which can give the responder confidence they are not oversharing. A more specific question may also signal whether the querier is part of some in-group, allowing the responder to disclose information that may technically be public but not readily shared (``Are you a friend of Dorothy's?'').
+
+This natural language analogy is a far cry from how database queries work.
+For example, in the Nostr infrastructure that allows users to make general queries on each others social data, a simple query for a users ID returns everything they've ever posted. This is the equivalent of asking someone ``How are you?'' and then sitting through their entire life history.
+
+What we are suggesting is that somehow when a user posts data, they should also be able to outline \emph{how specific} a query must be in order to retrieve that data.
+This way, while the data is still public, it won't be found by users not asking the ``right question.''
+Again, this is not about absolute privacy, which can be handled via standard access control, but about giving a content creator situational privacy about the audience that will consume their data.
+
+A first attempt would be for users to mask out fields they don't want queried.
+For example, suppose a user \texttt{alice@example.com} wants to reply to a post that can be identified with the URL \texttt{example.com/posts/12345}.
+Using the Activity Vocabulary, we can represent Alice's reply as follows:
+
+\begin{verbatim}
+{
+   type: 'Note',
+   content: "Thank you for a great post!",
+   inReplyTo: example.com/posts/12345,
+   actor: alice@example.com
+}
+\end{verbatim}
+
+Alice masks out all fields except for \texttt{inReplyTo} and gives the redacted post to an indexer.
+When someone queries for \texttt{\{ actor: alice@example.com \}} they won't be able to find the data, but when they query for \texttt{\{ inReplyTo: example.com/posts/12345 \}} they will.
+Unfortunately, if a friend of Alice's is only interested in her replies and queries for the appropriate actor \emph{and} reply fields, they won't see Alice's reply.
+
+One way to solve this generally and consistently by borrowing the concept of \emph{near misses} from classical artificial intelligence.
+When training a classifier, a near miss is something that is very close to being an example of a class of the concept without \emph{actually} being an example of that class.
+We can apply this to queries: to retrieve a piece of data a query must match the data, but must \emph{not} match the near misses.
+
+In our example, Alice's near miss should be examply the same as her post data, only
+the \texttt{inReplyTo} field should be changed to a random URL.
+A query for Alice's actor will match both will match both the reply \emph{and} its near miss, and so the reply \emph{will not} be returned.
+A query for posts \texttt{inReplyTo} the target post will match the reply but \emph{not} its near miss and so the reply \emph{will} be returned.
+Importantly, queries for posts that are both by Alice \emph{and} replies to the target post will also match the reply, but not its near miss and so will be returned.
+
+This system is quite general and with multiple near misses it can be used to qualify ``how specific'' a query is with arbitrary logical intersections.
+However, we found in initial prototypes that its contrapositive formulation is extremely confusing.
+Moreover, aside from some contrived examples, all use cases could be described by a simpler concept: \emph{channels}.
+
+
+Websites make it possible for everyone to annotate the web.
+In fact, Graffiti's namesake comes from an article
+describing an early web annotation system, Third Voice,
+as Graffiti on the web.
+The authors meant it as a slur, but we believe graffiti
+can be a beautiful art form and a powerful tool for social change.

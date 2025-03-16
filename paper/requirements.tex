@@ -5,10 +5,13 @@
 The Graffiti design arises from a set of \emph{requirements}.
 These requirements focus on the experience of social application developers
 and the users of those applications.
-We make the assumption that the system implementing these requirements is \emph{trusted}.
-Developers and users trust the system will play by the rules,
-not revealing data that is supposed to be private to third parties for example,
-and that it is reliable, not losing data, going offline or being discontinued.
+We assume, for now, that the system implementing these requirements is a ``\emph{trusted computing base}''
+In other words, the system will not misbhave,
+for example revealing data that is supposed to be private to third parties,
+and it will be reliable and free from bugs.
+% Developers and users trust the system will play by the rules,
+% not revealing data that is supposed to be private to third parties for example,
+% and that it is reliable, not losing data, going offline or being discontinued.
 % losing data going offline, etc.
 
 % will be reliable (not lose data or go offline), and will
@@ -367,9 +370,6 @@ What happens when two interoperating applications have conflicting moderation po
 This tension is resolved by our design concept ``Interaction Relativity,''
 discussed in section~\ref{concepts:interaction-relativity}.
 
-(Reference "issues with mastodon paper" which cites moderation issues
-locked into particular places, work redone, etc.)
-
 \begin{requirement}[Serverless]
     It should be possible to build a new social application without writing or deploying any server code.
 \end{requirement}
@@ -436,7 +436,7 @@ A user may choose to sign their messages with a PGP signature,
 as some people do with their emails, to make them non-repudiable.
 \item
 When a user replies to a post, their application could include the hash
-of that post in their reply. The application (and other interoperating applications)
+of that post in their reply. Their application (and other interoperating applications)
 may hide or put a warning over replies to posts that have since been edited,
 causing a hash mismatch.
 \item

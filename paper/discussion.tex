@@ -1,0 +1,77 @@
+
+\subsubsection{Illegal Content}
+
+If moderation is reified and not actually deleting content,
+what can be done about universally repugant content such as CSAM?
+Here we come up against issues of \emph{trust} which we
+have seperated into the \emph{protocol} layer rather than
+the API layer.
+End-to-end encrypted systems, like Signal, make it impossible
+for users to be surveilled but also impossible to detect illegal content.
+In centralized unencrypted systems it may be possible to do both, but
+users must trust the system to act in their best interest.
+% In certain decentralized systems, like BitTorrent, IPFS, and Blockchain
+% it is possible to detect illegal content but impossible to delete it.
+
+At the moment this appears to be a trolley problem:
+if users can have complete trust in the system to act in their
+best interest the system will also be acting in the best interest
+of bad actors.
+perhaps technological advancements will make it possible to create
+a system that users can trust to act in their best interest,
+while also keep out users doing truly harmful things.
+We demonstrate that multiple protocols can implement the
+Graffiti API and leave it up to users to decide which they want
+and leave it up to other researchers with more knowledge of
+and for future work to find better soltions.
+
+% This works for moderation of legal content but there is the question of
+% what about content that doesn't want to exist anywhere, such as CSAM.
+% Mechanisms to delete content are dependent on the underlying implementation of the
+% system. In some systems, such as end-to-end encrypted systems like Signal,
+% and WhatsApp, it is impossible detect such content. In distributed systems
+% like BitTorrent, IPFS, or Blockchain technologies it is impossible to delete content.
+
+Interaction relativy also allows applications to introduce new sorts of interactions
+without having to coordinate with all the other existing applications,
+keeping the ecosystem flexible and interoperable.
+For example, an application could [add a "Trust" button to posts](https://social.cs.washington.edu/pub_details.html?id=trustnet)
+and use it assess the truthfulness of posts made on applications across Graffiti.
+New sorts of interactions like these can be smoothly absorbed by the broader ecosystem
+as a [folksonomy](https://en.wikipedia.org/wiki/Folksonomy).
+
+\subsubsection{Disabled Replies}
+
+Disabling replies a feature of Youtube and Instagram and although not
+implemented, one of the most requested features on Mastodon\footnote{
+    Mastodon's ``Disabl replies'' feature request has been actively discussed
+    for six years
+    \url{https://github.com/mastodon/mastodon/issues/8565}
+}.
+According to our system the replies would not really be disabled
+they would just be hidden in application that are built to understand
+the disabledReplies property.
+Is it possible the \emph{existence} of such replies even if they could
+not be seen is harmful?
+
+Unfortunately, if someone is trying to harass
+
+What if though, the person who disabled replies was spreading misinformation?
+Wouldn't it be nice for other users to be able to
+
+Users could use disabled replies as a `mic drop'.
+
+Alternatiely,
+people from the particular crowd start
+@-mentioning Person A in their toots, attacking them,
+but disabling replies on these toots, making it harder
+for the person to respond.
+https://github.com/mastodon/mastodon/issues/8565#issuecomment-417932002
+
+It also means a person cannot be shamed for something they really
+want to do.
+
+What about misinformation? There should be both ways for authors to
+mark that they want replies disabled or to mark ``approve'' certain comments
+and a way for communities to
+mark comments as particularly

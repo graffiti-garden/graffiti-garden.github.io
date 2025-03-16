@@ -6,16 +6,24 @@ A number of systems provide
         \toprule
         \textbf{System} & \textbf{Accessible Design} & \textbf{Adversarial Interoperability} & \textbf{Context Differentiation} & \textbf{Autonomous Extensibility} & \textbf{Serverless} \\
         \midrule
-        ActivityPub  & ✓ & ✓ & ✓ & ✓ & ✗ \\
-        Matrix       & ✓ & ✓ & ✗ & ✓ & ✗ \\
-        At Protocol  & ✓ & ✗ & ✓ & ✗ & ✗ \\
-        Nostr        & ✗ & ✓ & ✗ & ✓ & ✓ \\
+        Firebase     & ● & ○ & ◐ & ○ & ● \\
+        Deja Vue     & ● & ○ & ◐ & ○ & ◐ \\
+        ActivityPub  & ○ & ○ & ◐ & ○ & ◐ \\
+        Matrix       & ○ & ○ & ● & ○ & ◐ \\
+        At Protocol  & ● & ● & ○ & ○ & ◐ \\
+        Nostr        & ○ & ● & ○ & ○ & ◐ \\
         \bottomrule
     \end{tabular}
     \caption{Comparison of properties across different systems}
     \label{tab:systems_properties}
 \end{table}
 
+This differs from ActivityPub, where actors are associated with a particular `instance.'
+
+One type of evolution that is required is evolution in data schemas.
+This evolution rules out designs that have a fixed set of features, like diaspora*, or even designs that allow users to compose applications out of a pre-defined set of concepts, like
+Déjà vu.
+In either case, these functionalities can't be easily expanded. For example the `scoring' concept in Déjà Vu couldn't be expanded to include reactions without changing the core implementation of the concept itself or creating a new, and therefore backwards-incompatible concept.
 
 \subsection{Pluralistic Infrastructures for Social Applications}
 
@@ -171,6 +179,7 @@ As of 2020 Matrix uses public key encryption to sign all messages.
 %https://matrix.org/blog/2020/12/18/introducing-cerulean/
 
 \subsubsection{At Protocol}
+https://docs.bsky.app/docs
 
 Released in 2022, the At Protocol is the protocol underlying the Bluesky social network.
 All posts in the At Protocol are public --- as of March 2024, there is not even private messaging.
@@ -295,3 +304,13 @@ The legislation does not extend to include more general social media~\cite{digit
 % By moving computation to client side, Graffiti reduces the complexity of building apps and our Vue plugin is just a start to the marketplace of development tools that could be built on top.
 % With regard to the loyal client, The IDPI imagines these clients need to perform "adverserial interoperation", as done with the Gobo platform CITE - Graffiti may need to too, to acheive more widespread adoption.
 % Moreover, aggregation will move beyond feed-based systems.
+
+The At Protocol has flexible schemas but servers will only handle certain types of objects,
+breaking our serverless requirement.
+At proto is not serverless since it restricts the type of objects that can be placed on it.
+While there may need to be some filtering for spam and illegal content, no strict set of schemas
+The At Protocol, to our knowledge does not add such side effects and has invented its own vocabulary, similar to the Activity Vocabulary, and lexicon for extensible object definitions, similar to JSON Schema.
+Our design is similar, starting from Activity Vocabulary rather than the At Protocol's syntax, but we do not \emph{require} applications to specify schemas for the data they produce. Doing so would put up more barriers to less-technical users; the semantic web's slow adoption has made it clear that users don't like to add metadata~\cite{semanticwebtwodecadeson}.
+% The Activity Vocabulary is an essential step in this direction that provides an extensive and extensible vocabulary for objects and activities.
+% However, the ActivityPub protocol that builds on  the vocabulary undercuts the reification benefits by adding \emph{side effects} to the creation or reception of various activities and object, that undoes the reification.
+% As mentioned, these side effected are implemented inconsistently across servers and changing or adding new functionality requires changing servers, violating our server-less design

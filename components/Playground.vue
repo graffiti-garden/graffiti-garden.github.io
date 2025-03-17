@@ -29,9 +29,9 @@ const graffiti = useGraffiti();
 const graffitiSession = useGraffitiSession();
 
 const code = ref("");
-const state = ref<"source" | "session" | null>(
-    props.hideSource ? null : "source",
-);
+const state = ref<"source" | null>(props.hideSource ? null : "source");
+
+const logInOutWorking = ref(false);
 
 onBeforeMount(async () => {
     const response = await import(
@@ -73,10 +73,28 @@ watch(code, () => (errorMessage.value = undefined));
                 </li>
                 <li>
                     <button
-                        @click="state = state === 'session' ? null : 'session'"
+                        v-if="$graffitiSession.value"
+                        @click="
+                            logInOutWorking = true;
+                            graffiti.logout($graffitiSession.value).then(() => {
+                                logInOutWorking = false;
+                            });
+                        "
+                        :disabled="logInOutWorking"
                     >
-                        {{ state === "session" ? "Hide" : "Show" }} Login
-                        Manager
+                        {{ logInOutWorking ? "Logging out..." : "Log out" }}
+                    </button>
+                    <button
+                        v-else
+                        @click="
+                            logInOutWorking = true;
+                            graffiti.login().then(() => {
+                                logInOutWorking = false;
+                            });
+                        "
+                        :disabled="logInOutWorking"
+                    >
+                        {{ logInOutWorking ? "Logging in..." : "Log in" }}
                     </button>
                 </li>
             </menu>
@@ -84,28 +102,6 @@ watch(code, () => (errorMessage.value = undefined));
         <Transition name="stretch" :duration="700">
             <fieldset v-if="state === 'source'" class="demo-code">
                 <PrismEditor v-model="code" :highlight="highlighter" />
-            </fieldset>
-        </Transition>
-        <Transition name="stretch" :duration="700">
-            <fieldset v-if="state === 'session'">
-                <div class="graffiti-session-manager">
-                    <template v-if="graffitiSession">
-                        <div>
-                            Logged in as:
-                            <input
-                                type="text"
-                                v-model="graffitiSession.actor"
-                                readonly
-                            />
-                        </div>
-                        <button @click="graffiti.logout(graffitiSession)">
-                            Log out
-                        </button>
-                    </template>
-                    <template v-else>
-                        <button @click="graffiti.login()">Log in</button>
-                    </template>
-                </div>
             </fieldset>
         </Transition>
     </div>

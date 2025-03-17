@@ -11,14 +11,15 @@ At a high level the design works as follows.
 social artifacts like posts or activities like "likes".
 Objects are associated with a set of \emph{channels} and other users can
 discover an object by querying one of its channels. Channels a are flexible representation
-of different \emph{contexts} which may include identities, topics, piece of media, locations, etc.
-Users can only modify their own objects and so for users to interact with each other's content
+of different \emph{contexts} which may include identities, topics, piece of media, locations,
+and more.
+Users can not modify other user's objects and so for users to interact with each other's content
 those interactions must be \emph{reified} into indivdual
 activities.
 
 \subsection{Actors}
 
-An actor is a persistent and globally unique identifier.
+An actor is a persistent identity represented by a globally unique string or \emph{URI}.
 In most cases an actor can be considered synonymous with a user,
 however, like an email address, a user can own multiple actors
 or actors may be non-human entities like bots or recommendation services.
@@ -32,8 +33,8 @@ as required by \ref{requirements:adversarial-interop},
 a Graffiti actor is not tied to any particular application so that users can freely move between
 different applications.
 
-A Graffiti actor does not include any information other than its
-global identifier. For example, an actor does not have a global
+A Graffiti actor does not embody any identifiable information other than its
+URI. For example, an actor does not includ a
 name, profile picture, or biography associated with it.
 Instead, profiles are defined by seperate profile \emph{objects}
 (described in the following Section~\ref{concepts:objects}),
@@ -79,7 +80,7 @@ We leverage the fact that JSON can be \emph{self-describing}
 --- a message can contain structured data with arbitrary properties and
 values that are irrelevant and opaque to the delivery infrastructure but
 meaningful to specific clients.
-For example, the developer of an application for sharing recipes might want to introduce a new
+For example, the developer of an application for sharing recipes can freely introduce a new
 \texttt{ingredients} property to objects.
 
 Social applications
@@ -95,9 +96,16 @@ which some argue contributed to the failure of the semantic web~\cite{semanticwe
 % We also provide tooling that allows users to filter data and provide human-readable
 % fallbacks for data they can't parse.
 
-Graffiti objects also have URLs, which can be used to retrieve or reference them.
+Graffiti objects also have URLs, which
+% can be used to retrieve or reference them.
+as alluded to in Section~\ref{requirements},
+start with a \emph{scheme} just like URLs on the World Wide Web,
+enabling objects to be served by different \emph{coexisting} protocols.
 For example, a post might have the URL \texttt{graffiti:remote:pod.graffiti.garden/123},
-enabling other users to ``like'' that post by creating a new object with the value:
+where the scheme \texttt{graffiti:remote:} will be overviewed in Section~\ref{protocols}.
+URLs also allow objects to be pointed at by other objects as with the
+``like'' activity below.
+% enabling other users to ``like'' that post by creating a new object with the value:
 
 \begin{lstlisting}[language=javascript]
 {
@@ -128,7 +136,7 @@ total reification which,
 again, we discuss in the following
 Section~\ref{concepts:total-reification}.
 Access controls enables some affordances that mitigate context collapse,
-like private messages, while others arise from the channels concept
+like private messages, while others arise from the \emph{channels} concept
 which we discuss in Section~\ref{concepts:channels}.
 
 In summary Graffiti objects are:
@@ -161,7 +169,7 @@ Access-Controllable: Objects can be made private and only visible to a limited s
 \label{concepts:total-reification}
 
 Within Graffiti, not some but \emph{all} interactions between actors
-is reified.
+are reified.
 This allows developers to freely introduce new interactions
 as required by \ref{requirement:autonomous-extensibility} without
 breaking interoperability as required by \ref{requirement:adversarial-interop}.
@@ -194,7 +202,7 @@ breaking interoperability as required by \ref{requirement:adversarial-interop}.
 
 Total reification is powerful when applied to moderation.
 For example, suppose a developer would like to introduce a new application
-that interoperates with an existing microblogging application,
+that interoperates with an existing application,
 but that allows certain actors (moderators) to delete other actors' posts.
 If the moderators' deletions are reified into \texttt{"delete"} activities,
 then the original application can simply ignore the delete activities
@@ -261,7 +269,7 @@ As such, we ensure that:
 \item
 Objects are \emph{proprietary}: Only the creator of an object can modify or delete it.
 \end{enumerate}
-Conversely, developers should not be restricted from publishing new
+Conversely, actors should not be restricted from publishing new
 activities.
 % as this limits the
 % from creating new objects and activities,

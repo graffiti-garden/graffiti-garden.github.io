@@ -4,23 +4,23 @@
 This section outlines the high level concepts that make up the design of Graffiti
 according to the requirements we outlined in section \ref{requirements}.
 Section~\ref{api} outlines the specific API that is built out of these
-concepts and section~\ref{protocols} various protocols that implement the API.
+concepts and Section~\ref{protocols} outlines various protocols that implement the API.
 
 At a high level the design works as follows.
 \emph{Actors} (basically users) create \emph{objects} which can represent
 social artifacts like posts or activities like "likes".
 Objects are associated with a set of \emph{channels} and other users can
-discover an object by querying one of its channels. Channels are flexible representation
+discover an object by querying one of its channels. Channels a are flexible representation
 of different \emph{contexts} which may include identities, topics, piece of media, locations, etc.
-Users can only modify their own objects and so to for users to interact with each other's content
-those interactions are \emph{reified} into indivdual
-activies according to a principle we call \emph{interaction relativity}.
+Users can only modify their own objects and so for users to interact with each other's content
+those interactions must be \emph{reified} into indivdual
+activities.
 
 \subsection{Actors}
 
 An actor is a persistent and globally unique identifier.
 In most cases an actor can be considered synonymous with a user,
-however, like an email adress, a user can own multiple actors
+however, like an email address, a user can own multiple actors
 or actors may be non-human entities like bots or recommendation services.
 The term \emph{actor} was originally used for this purpose
 in the ActivityPub standard~\cite{activitypub}.
@@ -38,7 +38,7 @@ name, profile picture, or biography associated with it.
 Instead, profiles are defined by seperate profile \emph{objects}
 (described in the following Section~\ref{concepts:objects}),
 allowing applications to freely introduce new profile
-metadata or for users to have multiple profiles for different contexts
+metadata or for users to have multiple profiles for different contexts,
 making profiles autonomously extensible as required by \ref{requirements:autonomous-extensibility}.
 For example, a trans person who is not publicly ``out'' may want to
 % add pronoun metadat to their profile and
@@ -46,7 +46,7 @@ change their name within theirr queer community without
 changing their name to the broader public.
 % Objects and their relation to autonomous extensibility are described next.
 
-All interactions must be associated with an actor, but
+All data in Graffiti must be associated with an actor, but
 for anonymous or meronymous~\cite{meronymous} interactions,
 a person can create ``throw away'' actors.
 
@@ -58,7 +58,7 @@ of the social data in the system, including
 both social artifacts (such as posts and profiles) and social activities (such as likes and follows).
 Each Graffiti object includes some structured metadata,
 such as the actor who created the object,
-but an object's value can be \emph{any} valid JSON.
+but an object's value can be \emph{any} valid JSON object.
 For example, a blog post object may have the value:
 
 \begin{lstlisting}[language=javascript]
@@ -71,32 +71,32 @@ For example, a blog post object may have the value:
 
 The ActivityVocabulary~\cite{activityvocab},
 whose object model inspired our own,
-defines many common properties that are useful for social applications including
+defines many common properties that are useful for social applications, including
 the ones above.
-However, application developers can freely introduce new properties as necessary
+However, Graffiti application developers can freely introduce new properties as necessary
 as part of an evolving \emph{folksonomy}~\cite{folksonomy}.
 We leverage the fact that JSON can be \emph{self-describing}
 --- a message can contain structured data with arbitrary properties and
 values that are irrelevant and opaque to the delivery infrastructure but
 meaningful to specific clients.
-For example, an application for sharing recipes might introduce a new
-\texttt{ingredients} property.
+For example, the developer of an application for sharing recipes might want to introduce a new
+\texttt{ingredients} property to objects.
 
-Because social applications
-benefit from network effects, we expect that developers will make use of
-existing properties where possible, allowing them them to benefit from pre-existing data
+Social applications
+benefit from network effects, and so we expect that developers will make use of
+existing properties where possible, allowing them to benefit from pre-existing data
 made in other applications, but will introduce new properties when necessary.
 The result will inevitably be messy and inconsistent but, as with the evolution of
 particular hashtags, we expect there will be an effective balance of creativity and convergence.
+Importantly, the barrier to participating in the folksonomy is low
+and does not require a precise ontological agreement
+which some argue contributed to the failure of the semantic web~\cite{semanticwebtwodecades}.
 % This folksonomy is an effective mean of ensuring that objects are autonomously extensible.
 % We also provide tooling that allows users to filter data and provide human-readable
 % fallbacks for data they can't parse.
 
-Graffiti objects are also globally addressable which allows them to be
-pointed at and linked to.
-% Like URLs, these addresses start with scheme which prevents collision
-% between different protocols.
-For example, a post might have the URI \texttt{graffiti:remote:pod.graffiti.garden/123},
+Graffiti objects also have URLs, which can be used to retrieve or reference them.
+For example, a post might have the URL \texttt{graffiti:remote:pod.graffiti.garden/123},
 enabling other users to ``like'' that post by creating a new object with the value:
 
 \begin{lstlisting}[language=javascript]
@@ -112,18 +112,21 @@ which permits actions on data to be reprepresented as data themselves.
 Rather than a post object being an object that has a ``like'' method,
 the ``like'' here is a separate object that points to the post object.
 Reification allows for new interaction mechanisms to be introduced as easily as new properties,
-without changing the underlying system. In other systems only some interactions are reified,
-but in Graffiti all interactions, including moderation actions, are reified,
-a concept we call \emph{interaction relativity} which we discuss in the following
-Section~\ref{concepts:interaction-relativity}.
+without changing the underlying system.
+In other systems only some interactions are reified,
+but Graffiti employs \emph{total reification} where
+all interactions, including moderation actions, are reified,
+which we discuss in the following
+Section~\ref{concepts:total-reification}.
 
 
 Finally, objects are mutable, meaning that they can be changed or deleted,
 and they can be access-controlled, visable to only a limited set of actors.
 Mutability is necessary for the system to be forgiving as required by \ref{requirements:forgiving}.
 The question of \emph{who} can mutate the objects is relevant to
-interaction relativity which, again, we discuss in the following
-Section~\ref{concepts:interaction-relativity}.
+total reification which,
+again, we discuss in the following
+Section~\ref{concepts:total-reification}.
 Access controls enables some affordances that mitigate context collapse,
 like private messages, while others arise from the channels concept
 which we discuss in Section~\ref{concepts:channels}.
@@ -134,7 +137,7 @@ In summary Graffiti objects are:
 \item
 Flexible: Objects can take on any value according to a self-describing folksonomy.
 \item
-Globally-Addressable: Every object has a globally unique URI that can be used to fetch it.
+Globally-Addressable: Every object has a globally unique URL that can be used to fetch it.
 \item
 Mutable: Objects can be changed or deleted.
 \item
@@ -154,14 +157,20 @@ Access-Controllable: Objects can be made private and only visible to a limited s
 % \item
 % You can either get an object by one of its channels or by its URI.
 
-\subsection{Interaction Relativity}
-\label{concepts:interaction-relativity}
+\subsection{Total Reification}
+\label{concepts:total-reification}
 
-We define interaction relativity to mean that ``interaction between two individuals only
-exists relative to an application'' or equivalently that not some but \emph{all} interactions
-are \emph{reified}.
-For example, a like is not a method on an object.
-So if an application does not underatnd the action and users don't see it, did the like really occur?
+Within Graffiti, not some but \emph{all} interactions between actors
+is reified.
+This allows developers to freely introduce new interactions
+as required by \ref{requirement:autonomous-extensibility} without
+breaking interoperability as required by \ref{requirement:adversarial-interop}.
+
+% We define interaction relativity to mean that ``interaction between two individuals only
+% exists relative to an application'' or equivalently that not some but \emph{all} interactions
+% are \emph{reified}.
+% For example, a like is not a method on an object.
+% So if an application does not underatnd the action and users don't see it, did the like really occur?
 
 % if a person likes another person's post
 
@@ -179,42 +188,33 @@ So if an application does not underatnd the action and users don't see it, did t
 % Whether a user has liked another users post is relative to which
 % application they use.
 
-The introduction and interpretation of new properties and objects
-that clarify whether an interaction has, or has not, occured
-is entirely up to the application developers themselves.
-This allows developers to freely introduce new interactions
-as required by \ref{requirement:autonomous-extensibility} without
-breaking interoperability as required by \ref{requirement:adversarial-interop}.
+% The introduction and interpretation of new properties and objects
+% that clarify whether an interaction has, or has not, occured
+% is entirely up to the application developers themselves.
 
-This concept is powerful when applied to moderation.
+Total reification is powerful when applied to moderation.
 For example, suppose a developer would like to introduce a new application
 that interoperates with an existing microblogging application,
-but that allows certain users (moderators) to delete other users' posts.
-If the deletes are reified, as shown below, the new application
-can remove posts that the delete activities point to while the original
-application simply ignores the delete activities.
+but that allows certain actors (moderators) to delete other actors' posts.
+If the moderators' deletions are reified into \texttt{"delete"} activities,
+then the original application can simply ignore the delete activities
+while the new application removes ``deleted'' posts from the display.
 
-\begin{lstlisting}[language=javascript]
-{
-  activity: "delete",
-  target: "graffiti:remote:pod.graffiti.garden/123",
-}
-\end{lstlisting}
-
-Moderation could evolve further as applications introduce new objects and properties
+Moderation can evolve even further under total reification
+as applications introduce new objects and properties
 or new procedures to interpret those objects.
 For example,
-perhaps the set of moderators is elected by the users whose votes are reified activities.
-Or, perhaps an application might remove posts that exceed a certain threshold of deletes activities,
-regardless of whether the deleting users are considered moderators.
+perhaps the set of moderators is elected by actors who vote with reified ``vote'' activities.
+Or, perhaps an application might remove posts that exceed a certain threshold of delete activities,
+regardless of whether the deleting actors are considered moderators.
 Applications may also consider authors of posts to be the defacto moderators of the replies to their
 own posts or allow them to disable replies altogether by adding a \texttt{disableReplies}
 property to their post objects.
-A fully democratic system that allows users to introduce and ratify new moderation proposals,
+A fully democratic system that allows actors to introduce and ratify new moderation proposals,
 as described by the PolicyKit project~\cite{policykit}, could also be reified into
-individual user actions.
+individual actor activities.
 Importantly, all of these moderations systems can coexist in different interoperating
-applications and users can freely opt in or out of different systems simply by switching
+applications and actors can freely opt in or out of different systems simply by switching
 the application they use.
 % can evolve independently and
 % users can freely opt in or out of different
@@ -247,22 +247,27 @@ the application they use.
 % Say a user would like to edit another user's post.
 % a document but another would like to keep it the same. CRDTs.
 
-Having flexible object values that we described in Section~\ref{concepts:objects} makes reifiecation \emph{possible}
-but interaction relativity requires that not some but \emph{all} interactions
-are relative, therefore reification must be \emph{necessary}
-for interaction to take place.
-For example, it should not be possible for a user to \emph{actually}
-delete another user's post because that prevents different interpretations
-from coexisting.
-This violates the ``adversarial'' part of ``adversarial interoperability,''
+Having the flexible object values that we described in Section~\ref{concepts:objects}
+makes reifiecation \emph{possible} but to be ``totally reified,''
+reification must be \emph{necessary} for interactions between
+actors to occur.
+For example, it should not be possible for an actor to \emph{actually}
+delete another actor's post because that prevents
+an application that does not recognize the deleting actor as a moderator from existing.
+This violate the ``adversarial'' part of ``adversarial interoperability,''
 from requirement~\ref{requirement:adversarial-interop}.
 As such, we ensure that:
 \begin{enumerate}
 \item
-Objects are \emph{proprietary}: only the creator of an object can modify or delete it.
+Objects are \emph{proprietary}: Only the creator of an object can modify or delete it.
 \end{enumerate}
-Conversely, developers should not be restricted from creating new objects and activities,
-as this could hinder the introduction of new interactions.
+Conversely, developers should not be restricted from publishing new
+activities.
+% as this limits the
+% from creating new objects and activities,
+% as this limits the extensibility of the system.
+% hinder the creation of new reified activities.
+% introduction of new interactions.
 Objects are published in channels, a concept we discuss in detail
 in the following Section~\ref{concepts:channels}, and therefore
 \begin{enumerate}
@@ -276,7 +281,7 @@ has consequences for illegal content, like CSAM.
 However, it is possible for some implementations under the API to detect
 and prevent this content which we discuss in both
 Section~\ref{protocols} and Section~\ref{discussion}.
-There is also some subtlety in how collaborative editing might be done under interaction relativity,
+There is also some subtlety in how collaborative editing might be done under total reification,
 for systems like Wikipedia or Google Docs,
 but we demonstrate in Section~\ref{case-studies} that
 it is possible with the use of conflict-free replicated data types (CRDTs)~\cite{crdts}.
@@ -292,12 +297,12 @@ it is possible with the use of conflict-free replicated data types (CRDTs)~\cite
 \label{concepts:channels}
 
 Channels are our solution to mitigating context collapse, as required by
-\ref{requirements:context-differentiation}, when still being
+\ref{requirements:context-differentiation}, while still being
 interoperable as required by~\ref{requirements:adversarial-interop}.
-Like a television channel, users can publish content (in Graffiti's case
-the content is \emph{objects}, see~\ref{concepts:objects}) to a particular channel
+Like a television channel, users can publish content to a particular channel
 and user watching that channel will receive it.
 Unlike a television channel, Graffiti channels are:
+
 \begin{enumerate}
 \item
 Bidirectional: Users can both read from and write to channels.
@@ -314,7 +319,7 @@ its string.
 Crosspostable: An object can be associated with more than one channel (or no channel at all).
 \end{enumerate}
 
-Additionally, to enable interaction relativity, we mentioned preemptively that channels are ownerless.
+Additionally, to enable total reification, we mentioned preemptively that channels are ownerless.
 Given the obscurity property, we should clarify:
 
 \begin{enumerate}
@@ -340,16 +345,16 @@ but not bidirectional, ownerless, or crosspostable.
 \subsubsection{Replies}
 
 To understand how channels can work to prevent context collapse, consider the example of \emph{replies}.
-Many social applications allow you to reply to posts but there are suprisingly subtle
-contextual differences between different reply designs.
+Most social applications allow you to reply to posts, but there are surprisingly subtle
+contextual differences between different designs.
 For example, currently on Instagram
-if you reply to a post that reply can only be seen by other
+if you reply to a post, that reply can only be seen by other
 people also viewing that particular post.
-However, prior to 2019 Instagram had a Following tab where a user could see
-the comments that the people they followed had posted across the application.
+However, prior to 2019, Instagram had a Following tab where a user could see
+the replies that the people they follow had posted across the application.
 The Following tab led to a priest outing himself as gay among numerous other
 examples of context collapse~\cite{instagramfollowingtab}.
-On Twitter/X it is still possible to see all of a user's replies by going
+On Twitter/X, it is still possible to see all of a user's replies by going
 to their Replies tab.
 
 With channels, it is possible for \emph{both} to designs to \emph{co}exist.
@@ -358,51 +363,81 @@ With channels, it is possible for \emph{both} to designs to \emph{co}exist.
 % the choice
 % is up to the \emph{replier} rather than viewers of those replies.
 To make an Instagram-style reply,
-an application should post a user's reply to the channel
+an application should post that actor's reply to the channel
 represented by the original post's URL.
-Applications displaying the original post know its URL and therefore,
-by convention, they can know to query that channel for replies.
+Applications displaying the original post implicitly know that post's
+URL and therefore,
+by convention, they know to query the channel represented by that URL
+for replies to the post.
 % for replies but it won't be exposed to the rest of the user's followers.
-To make an Twitter/X-style reply, the user would post their reply to \emph{both}
-the channel represented by the original post's URL and
-the channel represented by their own actor URI.
-A user's followers all know a user's actor URI and so
-(by convetion), they can know
-A user's followers know to use a user's actor URI to see content related to that actor.
+To make an Twitter/X-style reply, an application should post the
+actor's reply to \emph{both} the channel represented by the original post's URL
+and the channel represented by the replier's actor URI.
+An actor's followers all implicitly know the actor's URI and so
+again, by convention, their applications know to query the channel represented by that URI
+for content related to that actor.
+
+Finally, what happens if the reply is \emph{only} posted to the
+channel represented by the actor's URI?
+Then the reply becomes like a quote tweet
+(prior to 2020\footnote{
+    \url{https://x.com/Support/status/1300555325750292480}
+})
+where the reply is only visible to the replier's followers but
+not the audience of the original post.
+A summary of these different designs is shown in Table~\ref{concepts:channel-replies}.
 
 \begin{table}[htbp]
     \label{concepts:channel-replies}
-    \begin{tabular}{c|c|c|c}
-        \multicolumn{2}{c}{} & \multicolumn{2}{c}{\textbf{Post URL}} \\
-        % \cline{3-4}
-        \multicolumn{2}{c|}{} & \textbf{Yes} & \textbf{No} \\
-        \hline
-        \multirow{2}{*}{\textbf{Actor URI}} & \textbf{Yes} & Twitter/X Reply & Quote Tweet \\
-        \cline{2-4}
-        & \textbf{No} & Instagram Comment & N/A \\
-        \hline
-    \end{tabular}
     \caption{Channels and Replies}
+    \begin{tabular}{c|c|c|c}
+        \textbf{The reply's channels include...} & & \multicolumn{2}{c}{\textbf{...the original post's URL?}} \\
+        & & ✔︎ & ✘ \\
+        \multirow{2}{*}{\textbf{...the replier's actor URI?}} & ✔︎ & Twitter/X Reply & Quote Tweet \\
+        & ✘ & Instagram Comment & N/A \\
+    \end{tabular}
 \end{table}
 
-Importantly context is preserved across interoperation.
-If a user posts their reply in
-an Instagram-like app they should expect that their reply will not be leaked even if
-a user is using Twitter.
-The choice is up to the user rather than
+Importantly, these reply designs interoperate in a way that provides content producers with
+a consistent \emph{audience} regardless of the applications those audience members choose to use.
+A Twitter-like application will still only show replies
 
-To make an Instagram-style reply, that reply should be posted to the channel
-containing the original post's URI.
-If we also place the comment in the channel represented by the commenter's URI (their
-{@link GraffitiObjectBase.actor | `actor` URI}), then people viewing the commenter's profile
-will also see the comment, giving it more visibility, like a reply on Twitter.
-If we *only* place the comment in the channel represented by the commenter's URI, then
-it becomes like a quote tweet ([prior to 2020](https://x.com/Support/status/1300555325750292480)),
-where the comment is only visible to the commenter's followers but not the audience
-of the original post.
+This can be seen as a limit on extensibility in the system. It is \emph{not} possible for an
+application to find all a user's replies if they have not been posted to channels that
+the application knows to query.
+Unlike total reification, which gives autonomy to \emph{see} what they like this is
+a limit on what applications \emph{cannot} see.
+% Here the choice of a person to
+% It is possible for a user to
+% It is not possible to require that a person does not read something and give them the ability to read it.
+% Unlike deletes, it is not possible for one person to not
+% This is because it is not possible for someone
+
+
+% A user who posts a reply in an Instagram-like application can be sure that their reply
+% will only be surfaced to users viewing that particular post, re
+% can be sure that their reply will
+% only be seen by
+
+% should expect that their reply will not be leaked
+
+% Importantly context is preserved across interoperation.
+% If a user posts their reply in
+% an Instagram-like app they should expect that their reply will not be leaked even if
+% a user is using Twitter.
+% The choice is up to the user rather than
+
+% To make an Instagram-style reply, that reply should be posted to the channel
+% containing the original post's URI.
+% If we also place the comment in the channel represented by the commenter's URI (their
+% {@link GraffitiObjectBase.actor | `actor` URI}), then people viewing the commenter's profile
+% will also see the comment, giving it more visibility, like a reply on Twitter.
+% If we *only* place the comment in the channel represented by the commenter's URI, then
+% it becomes like a quote tweet ([prior to 2020](https://x.com/Support/status/1300555325750292480)),
+% where the comment is only visible to the commenter's followers but not the audience
+% of the original post.
 
 \subsubsection{Other Uses of Channels}
-
 We've seen how channels can represent \emph{people} and \emph{posts}
 which covers the functionality of most microblogging applications,
 but channels can also represent
@@ -452,67 +487,7 @@ Concatenation may also happen in natural language.
 For example, on Reddit when one wants to post programming-related memes they post to \texttt{r/programmerhumor} rather than \texttt{r/programming+funny}.
 These concatenations may themselves take on new meaning.
 
-\subsubsection{Comparison to Other models}
 
-While channels are a relatively simple, they are subtly differences from other established concepts:
-
-The channel model is clearly different from the Firehose Model used by BlueSky
-which.
-The firehose model dumps all user data into one public database,
-which doesn't allow for the carving out of different contexts that we did in our comment
-example above. In the firehose model a comment will always be visible to *both* the original post's audience and
-the commenter's followers.
-It also has subtle differences.
-There are several other contextual models.
-
-\paragraph{Actor}
-
-We use actors to describe identities in the system,
-but ActivityPub uses the actor model to describe the system itself.
-As mentioned the actor model used by ActivityPub is a fusion of
-direct messaging (like Email) and broadcasting like RSS.
-Having channels
-
-Compared to the Actor Model it removes the need for Server-Side effects
-The actor model is a fusion of direct messaging (like Email) and broadcasting
-(like RSS) and works well for follow-based communication but struggles
-to pass information via other rendez-vous.
-In the actor model, even something as simple as comments can be
-[very tricky and require server "side effects"](https://seb.jambor.dev/posts/understanding-activitypub-part-3-the-state-of-mastodon/).
-
-\paragraph{Bidirectional Links}
-
-On the World Wide Web, hyperlinks point in one direction from one website to another.
-However earlier hypermedia systems, like Xanadu and Dexter, included \emph{bidirectional} links:
-from one document you could see all the other documents that link to it.
-Bidirecitonal links are now currently possible in personal information management systems like Roam and Notion.
-
-Channels can be seen as a way to \emph{selectively} create bidirectional links.
-A reply object will have pointers to the object it is replying to and the actor who created the reply.
-Adding the object's URI or the actor's URI as channels selectively adds backlinks to those entities
-making it possible to go \emph{from} the original post \emph{to} the reply (in the case of Instagram-like comments)
-or \emph{from} the actor \emph{to} the reply (in the case of Twitter/X-like comments).
-Of course, channels also make it possible to create "links" from non-digital artifacts like topics or locations.
-
-\paragraph{Object Capabilities}
-
-Object capability security (OCaps) is a security model where rights to perform an action
-can be transferred to another user by giving that user a reference to that action.
-Channels can be thought of as a capability mechanism where
-capability read or write to a particular channel
-can be transferred to another user by telling them the channel's string.
-
-However Graffiti isn't a purely capability-based system because it
-is also possible to add an "allow" list to each object.
-For example a group chat could use a private string as a channel
-and if that string is sufficiently long and random so as not to be guessed
-the conversation would remain private.
-However this makes it possible for any member of the group to share (or accidentally leak) the
-channel and let anyone else in.
-Allow lists provide more long term privacy.
-
-Allow lists are managed by applications.
-If allow lists are especially enourmous then is it really public?
 
 \subsubsection{Social Access Control}
 

@@ -37,19 +37,19 @@ function toTitle(kebab: string) {
                         Requirements
                     </RouterLink>
                 </li>
+                <li>
+                    <RouterLink to="/paper/concepts">Concepts </RouterLink>
+                </li>
                 <!-- <li>
-                    <RouterLink to="/paper/related-work">
-                        Related Work
-                    </RouterLink>
-                </li>
-                <li>
-                    <RouterLink to="/paper/concepts"> Concepts </RouterLink>
-                </li>
-                <li>
                     <RouterLink to="/paper/api"> API </RouterLink>
                 </li>
                 <li>
-                    <RouterLink to="/paper/system"> System </RouterLink>
+                    <RouterLink to="/paper/protocols"> Protocols </RouterLink>
+                </li>
+                <li>
+                    <RouterLink to="/paper/related-work">
+                        Related Work
+                    </RouterLink>
                 </li>
                 <li>
                     <RouterLink to="/paper/case-studies">
@@ -57,7 +57,13 @@ function toTitle(kebab: string) {
                     </RouterLink>
                 </li>
                 <li>
+                    <RouterLink to="/paper/hackathon"> Hackathon </RouterLink>
+                </li>
+                <li>
                     <RouterLink to="/paper/discussion"> Discussion </RouterLink>
+                </li>
+                <li>
+                    <RouterLink to="/paper/appendix"> Appendix </RouterLink>
                 </li> -->
             </ul>
         </li>

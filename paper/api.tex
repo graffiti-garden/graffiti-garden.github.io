@@ -132,9 +132,8 @@ multiple actors at once, which can be useful for managing pseudonyms for anonymo
 
 \subsection{Objects and CRUD}
 
-Objects, as described in section~\ref{concepts:objects} encapsulate
-all of the data in Graffiti.
-They include the following meta properties:
+Objects, as overviewed in Section~\ref{concepts:objects}, include
+the following meta properties:
 \begin{enumerate}
 \item
 \texttt{value} (object): The actual data, which can be any JSON object.
@@ -147,12 +146,12 @@ They include the following meta properties:
 \item
 \texttt{allowed} (array of strings): A list of actors URIs that are allowed to access the object.
 \item
-\texttt{lastModified} (number): A time to compare object versions.
+\texttt{lastModified} (number): The time in milliseconds the object was last modified, to compare object versions.
 \end{enumerate}
 
 Subtly, \texttt{channels} and \texttt{allowed} do not necessarily
-reflect all the channels an object is contained in, or
-all the actors that can access the object.
+reflect \emph{all} the channels an object is contained in, or
+\emph{all} the actors that are allowed access the object.
 Like a BCC email, it can be useful to send a message to multiple parties
 without revealing their existence to one another, to prevent
 context collapse.
@@ -166,7 +165,7 @@ to reveal additional information.
 Objects can be interacted through familiar CRUD methods:
 \texttt{put}, \texttt{patch}, and \texttt{delete} for modifying objects,
 and \texttt{get} for retrieving objects
-The modification methods each require a \texttt{session} while
+The modification methods each require a \texttt{session} whereas
 for \texttt{get} the \texttt{session} is optional.
 An application cannot tell the difference between an object that does not exist,
 an object that has been deleted, and an object that exists but that the retrieving actor
@@ -184,8 +183,8 @@ The \texttt{lastModified} field is updated by the underlying implementation on e
 a JSON schema, a widely used and flexible standard for describing
 the structure of JSON objects~\cite{jsonschema}.
 Any object that does not match the provided schema is rejected.
-Type inference on these schemas makes it to work with objects as
-if they were typed even though they can take on arbitrary values.
+The API includes type inference on these schemas which makes it possible to work
+with objects as if they were typed even though they can take on arbitrary values.
 % This ensures that developers can have a consistent.
 % This can also be harnassed by the underlying implementation for
 % performance benefits, which is more necessary to \texttt{discover}.
@@ -232,38 +231,21 @@ const content = object.value.content; // string
 \texttt{discover} lets an application developer query for objects
 from a particular set of channels.
 Objects are returned from \texttt{discover} as an \emph{asynchronous generator}.
-This allows the application to process objects as they come in,
-using a \texttt{for await} loop, rather than waiting for all objects
-to be fetched before processing them.
+This allows the application to process objects as they come in
+using a \texttt{for await} loop, rather than having to wait for all objects
+to be fetched. The generator also hides the potential complexity of
+pagination below the API.
 
-Like \texttt{get}, \texttt{discover} requires a JSON schema.
-In addition to providing type safety, it is critical to let developers to
-only have to process objects they are interested in. For example,
-the channel represented by an actor's URI has many overloaded uses,
-like storing a user's profile
-
-Underlying implementations can take advantage of this, too.
-
-In addition to an array of channels, like \texttt{get},
-a
-
-
-Most of the work in creating a Graffiti application is knowing the
-right \texttt{discover} cal
-
-pass in a JSON schema. This does \emph{not} need to be the same schema a user
-used when creating the object. For example, a user might be putting objects that
-have.
-As an example, here is a discover call for direct messages from
-a user with actor ID
-
-The discover call is an asynchronous generator that returns objects as they come in,
-hiding all of the "paging" below the API.
-If an application recieves too many objects, it can simply pause the iterator,
-or the developer can choose a more restrive schema. For example,
-specifying the \texttt{lastModified} field is greater than a certain date or
-only specifying objects from a certain set of \texttt{actors} etc.
-Allow lists may be reified into their own objects.
+Like \texttt{get}, \texttt{discover} can be given an optional \texttt{session}
+to access private objects, and it requires a JSON schema.
+The schema,
+in addition to providing type safety, is critical in \texttt{discover}
+as a query mechanism, limiting the objects returned to only those the developer is interested in.
+For example, the channel represented by an actor's URI has many overloaded uses,
+including being the site for the actor to broadcast Twitter-like posts,
+and the site where they receive direct messages.
+To receive only direct messages from a particular actor, with URI \texttt{"alice"}, made over
+the past day, a developer may do the following:
 
 \begin{lstlisting}[language=javascript]
 const iterator = graffiti.discover(
@@ -272,25 +254,37 @@ const iterator = graffiti.discover(
     value: {
       properties: {
         content: { type: "string" },
-        createdAt: { type: "number" },
+        published: {
+          type: "number",
+          minimum: Date.now() - 24 * 60 * 60 * 1000
+        }
         to: { enum: [session.actor] }
       }
     },
-    actor: { enum: ["alice"] }
+    actor: { enum: ["alice"] },
   },
   session
 )
 
 for await (const object of iterator) {
-  console.log(object.value.content);
+  console.log("message: ", object.value.content);
 }
 \end{lstlisting}
 
-Once
+Some schema restrictions may be based on reified actions.
+For example, the schema can be restricted to only users
+that someone follows or may exclude users who have been
+marked as spammers.
+Also the continue.
 
+The \texttt{discover} iterator will end once all objects have been fetched.
 The choice to not keep it live was intentional.
-
-Common schemas might include
+discover needs to be polled for new data because live updates to an application can be visually distracting or lead to toxic engagement. If and when an application wants real-time updates, such as in a chat application, application authors must be intentional about their polling.
+The asynchronous generator ends by returning a \texttt{cursor} string and a
+\texttt{continue} method each of which can be used to resume the \texttt{discover}
+call.
+These methods are the only
+They hide state management below the API.
 
 At the end it returns a cursor and continue method.
 These hide the complexity of state management below the API.
@@ -298,13 +292,8 @@ Also leaves open the possibility of different protocols having different state t
 This continuation is the only situation where tombstones are returned.
 They only contain the URL of the object in question, preserving the users right to be forgotten.
 
-discover needs to be polled for new data because live updates to an application can be visually distracting or lead to toxic engagement. If and when an application wants real-time updates, such as in a chat application, application authors must be intentional about their polling.
+% Implementers should be aware that some users may applications may try to poll discover repetitively. They can deal with this by rate limiting or preemptively fetching data via a bidirectional channel, like a WebSocket. Additionally, implementers should probably index the lastModified field to speed up responses to schemas like the one above.
 
-Implementers should be aware that some users may applications may try to poll discover repetitively. They can deal with this by rate limiting or preemptively fetching data via a bidirectional channel, like a WebSocket. Additionally, implementers should probably index the lastModified field to speed up responses to schemas like the one above.
-
-"Paging" is done by specifying a schema with a "lastModified" done appropriately.
-There may be paging done by the underlying implementation!
-Also the continue.
 
 \subsection{Recovery Methods}
 

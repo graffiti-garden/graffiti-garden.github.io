@@ -12,33 +12,30 @@ users to query for objects from a set of channels.
 Finally, there are two specialized methods included for completeness:
 \texttt{recoverOrphans} and \texttt{channelStats},
 which prevent users from ``losing'' objects or channels, respectively.
-
-The API is written as an abstract Typescript \texttt{Graffiti} class.
-Its complete documentation is available online\footnote{
-    \url{https://api.graffiti.garden/classes/Graffiti.html}
-} and so here we focus on explaining our design decisions.
-Typescript is a type annotation layer around standard Javascript
-and gives developers the option of type safety in their projects,
-while still being completely accessible to normal developers:
-implementations of the API can run directly in the browser with
-no build step.
-We later describe additional tools that make it even easier (Vue Plugin)
-Type safety, which can be invaluable when working with multiple and
-evolving object
-however the API can be used.
-The abstract part of the class allows different implementations of
-the API, which may use different or multiple protocols,
-to
-
 Overall, as much complexity is pushed \emph{below} the API
 while as much functionality is pushed \emph{above}.
-Self-describing objects and channels push a lot of expressive
-power above the API, while URLs, our login, continue push
-things below
-Hidden by the "URL" concept, not having to think about where stuff is stored.
-Might open popup on first time to ask "where to store this?"
-Hidden by discover returning just a "cursor" rather than new polling functionality.
-Hidden by login() logout() functions with the flow.
+
+The API is written as an abstract Typescript class.
+Its complete documentation is available online\footnote{
+    \url{https://api.graffiti.garden/classes/Graffiti.html}
+} and so here we focus on the important design decisions.
+Typescript is a type annotation layer around standard Javascript
+and can provide enourmous benefit to developers working on large projects.
+However, the Graffiti API is still completely functional
+in regular Javascript and entire Graffiti applications can be written
+with vanilla HTML, CSS, and Javascript that function without
+any build step.
+
+% Self-describing objects and channels push a lot of expressive
+% power above the API,
+% while URLs, our login, continue push
+% things below
+% Hidden by the "URL" concept, not having to think about where stuff is stored.
+% Might open popup on first time to ask "where to store this?"
+% Hidden by discover returning just a "cursor" rather than new polling functionality.
+% Hidden by login() logout() functions with the flow.
+
+% We later describe additional tools that make it even easier (Vue Plugin)
 
 \subsection{Logging In}
 
@@ -146,7 +143,7 @@ They include the following meta properties:
 \item
 \texttt{actor} (string): The URI of the actor that created the object.
 \item
-\texttt{channels} (array of strings): A list of channels that the object is contained in, see Section~\ref{concepts:channels}).
+\texttt{channels} (array of strings): A list of channels that the object is contained in, see Section~\ref{concepts:channels}.
 \item
 \texttt{allowed} (array of strings): A list of actors URIs that are allowed to access the object.
 \item
@@ -234,6 +231,21 @@ const content = object.value.content; // string
 
 \texttt{discover} lets an application developer query for objects
 from a particular set of channels.
+Objects are returned from \texttt{discover} as an \emph{asynchronous generator}.
+This allows the application to process objects as they come in,
+using a \texttt{for await} loop, rather than waiting for all objects
+to be fetched before processing them.
+
+Like \texttt{get}, \texttt{discover} requires a JSON schema.
+In addition to providing type safety, it is critical to let developers to
+only have to process objects they are interested in. For example,
+the channel represented by an actor's URI has many overloaded uses,
+like storing a user's profile
+
+Underlying implementations can take advantage of this, too.
+
+In addition to an array of channels, like \texttt{get},
+a
 
 
 Most of the work in creating a Graffiti application is knowing the

@@ -146,44 +146,112 @@ They include the following meta properties:
 \item
 \texttt{actor} (string): The URI of the actor that created the object.
 \item
-\texttt{allowed} (array of strings): A list of actors URIs that are allowed to access the object.
-\item
 \texttt{channels} (array of strings): A list of channels that the object is contained in, see Section~\ref{concepts:channels}).
+\item
+\texttt{allowed} (array of strings): A list of actors URIs that are allowed to access the object.
 \item
 \texttt{lastModified} (number): A time to compare object versions.
 \end{enumerate}
 
-Subtly, the \texttt{channels} and \texttt{allowed} do not necessarily
-reflect all the channels an object is contained in or
+Subtly, \texttt{channels} and \texttt{allowed} do not necessarily
+reflect all the channels an object is contained in, or
 all the actors that can access the object.
 Like a BCC email, it can be useful to send a message to multiple parties
-without revealing their existence to one another to prevent
+without revealing their existence to one another, to prevent
 context collapse.
-So both \texttt{channels} and \texttt{allowed} are \emph{masked} to
-actors that do not own the object, however an application can always
-add metadata to the object's \texttt{value} that reveals this information.
+So \texttt{channels} and \texttt{allowed} are both \emph{masked} to any
+actor other than the object's owner so that they only show information an actor implicitly knows,
+like the channel their application queried to discover the object.
+However an application developer can always
+add metadata to the object's \texttt{value}
+to reveal additional information.
 
-Additionally, the API builds on existing JSON Schema standard~\cite{jsonschema}.
-This is a well established method and we use a library that
-provides strong typing based on schemas.
-These objects can be interacted with through standard CRUD methods:
-\texttt{put}, \texttt{get}, \texttt{patch}, and \texttt{delete}.
-\texttt{get} requires a JSON schema to ensure that the object
-retrieved is of the correct type and \texttt
-\texttt{patch} and JSONPatch~\cite{jsonpatch} and allows users to update
-concurrently for example if they are using different devices.
-\texttt{delete} removes an object from the system but some amount of
-metadata is preserved.
+Objects can be interacted through familiar CRUD methods:
+\texttt{put}, \texttt{patch}, and \texttt{delete} for modifying objects,
+and \texttt{get} for retrieving objects
+The modification methods each require a \texttt{session} while
+for \texttt{get} the \texttt{session} is optional.
+An application cannot tell the difference between an object that does not exist,
+an object that has been deleted, and an object that exists but that the retrieving actor
+is not allowed to see.
+
+The \texttt{url} and \texttt{actor} are assigned to an object when it is first \texttt{put}
+and are immutable.
+As mentioned in our discussion of ``total reification,'' Section~\ref{concepts:total-reification},
+only the actor that created an object can mutate that object.
+An object's owner can arbitrarily mutate the object's
+\texttt{value}, \texttt{channels}, and \texttt{allowed} list.
+The \texttt{lastModified} field is updated by the underlying implementation on each modification.
+
+\texttt{get} requires the application developer to provide
+a JSON schema, a widely used and flexible standard for describing
+the structure of JSON objects~\cite{jsonschema}.
+Any object that does not match the provided schema is rejected.
+Type inference on these schemas makes it to work with objects as
+if they were typed even though they can take on arbitrary values.
+% This ensures that developers can have a consistent.
+% This can also be harnassed by the underlying implementation for
+% performance benefits, which is more necessary to \texttt{discover}.
+
+\begin{lstlisting}[language=javascript]
+const object = await graffiti.get(url, {
+  value: {
+    properties: {
+      content: { type: "string" },
+    }
+  }
+}); // Error if the object does not match
+
+const content = object.value.content; // string
+\end{lstlisting}
+
+
+
+% Methods in the API including \texttt{get} and \texttt{discover} allow the application
+% developer to provide a JSON schema that the fetched objects must adhere to.
+% This makes it possible to
+% The patch operation build on the JSON patch standard~\cite{jsonpatch}
+% and can be made to reject if a schema mismatches to allow users to update
+% concurrently from different devices.
+
+
+
+% Objects returned by the API are strongly typed when possible
+
+% Additionally, the API builds on existing JSON Schema standard~\cite{jsonschema}.
+% This is a well established method and we use a library that
+% provides strong typing based on schemas.
+% These objects can be interacted with through standard CRUD methods:
+% \texttt{put}, \texttt{get}, \texttt{patch}, and \texttt{delete}.
+% \texttt{get} requires a JSON schema to ensure that the object
+% retrieved is of the correct type and \texttt
+% \texttt{patch} and JSONPatch~\cite{jsonpatch} and allows users to update
+% concurrently for example if they are using different devices.
+% \texttt{delete} removes an object from the system but some amount of
+% metadata is preserved.
 
 \subsection{Discover}
 
-The choice to not keep it live was intentional.
+\texttt{discover} lets an application developer query for objects
+from a particular set of channels.
+
+
+Most of the work in creating a Graffiti application is knowing the
+right \texttt{discover} cal
 
 pass in a JSON schema. This does \emph{not} need to be the same schema a user
 used when creating the object. For example, a user might be putting objects that
 have.
 As an example, here is a discover call for direct messages from
 a user with actor ID
+
+The discover call is an asynchronous generator that returns objects as they come in,
+hiding all of the "paging" below the API.
+If an application recieves too many objects, it can simply pause the iterator,
+or the developer can choose a more restrive schema. For example,
+specifying the \texttt{lastModified} field is greater than a certain date or
+only specifying objects from a certain set of \texttt{actors} etc.
+Allow lists may be reified into their own objects.
 
 \begin{lstlisting}[language=javascript]
 const iterator = graffiti.discover(
@@ -205,6 +273,10 @@ for await (const object of iterator) {
   console.log(object.value.content);
 }
 \end{lstlisting}
+
+Once
+
+The choice to not keep it live was intentional.
 
 Common schemas might include
 

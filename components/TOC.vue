@@ -40,9 +40,10 @@ function toTitle(kebab: string) {
                 <li>
                     <RouterLink to="/paper/concepts">Concepts </RouterLink>
                 </li>
-                <!-- <li>
+                <li>
                     <RouterLink to="/paper/api"> API </RouterLink>
                 </li>
+                <!--
                 <li>
                     <RouterLink to="/paper/protocols"> Protocols </RouterLink>
                 </li>

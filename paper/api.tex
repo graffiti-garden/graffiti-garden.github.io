@@ -13,7 +13,7 @@ Finally, there are two specialized methods included for completeness:
 \texttt{recoverOrphans} and \texttt{channelStats},
 which prevent users from ``losing'' objects or channels, respectively.
 
-The API is written as an abstract Typescript class.
+The API is written as an abstract Typescript \texttt{Graffiti} class.
 Its complete documentation is available online\footnote{
     \url{https://api.graffiti.garden/classes/Graffiti.html}
 } and so here we focus on explaining our design decisions.
@@ -35,65 +35,77 @@ while as much functionality is pushed \emph{above}.
 Self-describing objects and channels push a lot of expressive
 power above the API, while URLs, our login, continue push
 things below
+Hidden by the "URL" concept, not having to think about where stuff is stored.
+Might open popup on first time to ask "where to store this?"
+Hidden by discover returning just a "cursor" rather than new polling functionality.
+Hidden by login() logout() functions with the flow.
 
-\subsection{Log In and Log Out}
+\subsection{Logging In}
 
 While it is possible to retrieve public content without logging in,
 all other functionality, including
 creating and modifying content or reading access-controlled content,
-requires a login.
-The goal of logging in is to establish the user's ownership of a
-a particular \texttt{actor} URI, as described in Section~\ref{concepts:actor}.
-In addition to identifying the owner of particular objects,
-an actor URI may also be used as a channel
-or used in reified actions regarding the actor, like ``following'' the actor.
+requires proof that the user owns a particular \emph{actor},
+as described in Section~\ref{concepts:actor}, thus requiring a login.
+% requires a login.
+% The goal of logging in is to establish the user's ownership of a
+% a particular \texttt{actor} URI, as described in Section~\ref{concepts:actor}.
 
-To enable interoperability, the login procedure must be portable
-so that a user can log in with the
-same identity across different applications.
-Ideally, login also be portable across different underlying
-\emph{protocols} that implement the API.
-For example, it should be possible a actor who stores their data on
-commodity storage service, like Dropbox, to send a private message
-% (by creating an object with an \emph{allowed} list)
-to an actor who stores their data on a peer-to-peer network.
-Unfortunately, such a universal identity standard does not yet exist
-and developing one is outside the scope of this paper.
-The Decentralized Identifier (DID) specification~\cite{dids} may serve this purpose one day,
-but currently has shortcomings listed in Section~\ref{protocols}.
-
-However, that change should
-However, regardless of the underlying identity system,
-as much of the complexity as possible should be hidden from
-application developers.
-
-Today on the web most application provide log in throught the OAuth 2.0
-protocol. While this protocol provides security, it is extremely complex
-and it should not be up to users to understand and implement it correctly.
-Instead we provide the user with simple \texttt{login} and \texttt{logout} methods.
+Modern log in methods, like OAuth 2.0, while secure, are incredibly complex.
+To hide this complexity from application developers and to make the API future proof
+to evolving security standards, the API provides a simple \texttt{login} method that works as follows:
 
 \begin{enumerate}
 \item
-A user clicks a button which the devloper has call \texttt{login()}
+A user performs an action, like clicking a ``log in'' button, that triggers
+the application to call \texttt{graffiti.login()} (with \emph{no} arguments).
 \item
-In repsonse, the implementation of the API may do any manner of things,
-including opening up a pop up including redirecting the user to a new page
-to ask for credentials like a username or password, or a public key pair.
+In response, the implementation of the API may do any manner of things,
+including opening up a pop up or redirecting the user to a new page.
+In that implementation-specific interface, which the application developer
+does not need to build, they might be asked for credentials like a username
+and password, a public key pair, etc.
 \item
-Once the action completes, which may involve redirecting away, an event fires
-providing a \texttt{session} object which includes an \texttt{actor} URI
-in addition to other information. This might be a token, a signing function,
+Once the user is authenticated they are redirected back to the application, if applicable,
+and a Javascript \emph{event} fires that includes
+a \texttt{session} object. The \texttt{session} object includes an \texttt{actor}
+URI and other information that the implentation needs to preserve authentication, like
+a token or a signing function, however those details are entirely opaque to the application developer.
 \item
-When the user wants to do an action they must provide their \texttt{session}
+When the application wants to perform an action that requires authentication,
+it must provide the \texttt{session} object. For example,
+\texttt{graffiti.delete(object, session)}.
+\item
+Finally, to log out, a user simply needs to call \texttt{logout} on the appropriate
+\texttt{session} object: \texttt{graffiti.logout(session)}.
 \end{enumerate}
 
-Using the \texttt{session}
-The seperate sesssion helps with type-safety and also allows the possibility of multiple logins
-at once, if a user.
-The session might contain a token, or it might contain cababilities, or it might include a private key.
+We chose to keep the \texttt{session} object external from the \texttt{graffiti} class
+to prevent developer mode errors, where an application attempts to perform an action
+that requires authentication without asking the user to log in first.
+These mode errors are detected by static type checking.
+A seperate \texttt{session} object also allows an application to be logged in to
+multiple actors at once, which can be useful for managing pseudonyms for anonymous interactions.
 
-Ideally we would like the system here to be portable across different implementations.
-Unfortunately, at the mome
+% To provide
+
+% In addition to identifying the owner of particular objects,
+% an actor URI may also be used as a channel
+% or used in reified actions regarding the actor, like ``following'' the actor.
+
+% However, that change should
+% However, regardless of the underlying identity system,
+% as much of the complexity as possible should be hidden from
+% application developers.
+
+% Today on the web most application provide log in throught the OAuth 2.0
+% protocol. While this protocol provides security, it is extremely complex
+% and it should not be up to users to understand and implement it correctly.
+% Instead we provide the user with simple \texttt{login} and \texttt{logout} methods.
+
+
+% Ideally we would like the system here to be portable across different implementations.
+% Unfortunately, at the mome
 
 % A user clicks a "log in" button in an application which trigger the login() method
 %     A user interface appears, either as a dialog or a redirect, and asks for some user credentials.
@@ -105,46 +117,55 @@ Unfortunately, at the mome
 %         In our local implementation, the "actor" field just includes the username that the user specified. The session doesn't contain any other information because there is no other entity that needs proof that the user owns that username - everything is local, so they own everything.
 %         In a (hypothetical) distributed implementation, the "actor" field could be the hash of the user's public key. The session would also include the the user's private key (or more securely a "signing function" and "decrypt function" so that client applications don't have direct access to the private key). The session can be used to sign objects the user creates to prove they own them, or decrypt objects that only the user is allowed to see.
 
-Identities should be portable between applicaiton but ideally they
-should be portable between protocols. A universal protocol DIDs
-seem like they will fit this, although currently they do not have authentication.
-Graffiti is built on Solid OIDC as portable identity but others can be in the future.
-Alternatively, non-interoperating identities are possible (e.g. dropbox) but this is restricting.
-Ideally, identities should be portable regar
-Importantly, identities should be portable regardless of
-
-They provide strong typing even in an object of flexible envireonemtn
-We would like to rely on an existing standard for identity,
-but none so far exist and we point to future work in that
-area.
-As we are building on JSON Schema, it would be nice to also build on
-an existing standard for login. Unfortunately, one does not currently
-exist that suits are needs.
-As mentioned, it would be nice to build on an existing and
-well used standard for login. There is an emerging specification
-called DID, however it lets the user authenticate with \emph{one}
-service. We would like different services or even protocols.
-In our implementations we use an older speicification Solid OIDC,
-which has some serious usability limitations and is not flexible,
-but at least provides the high level functionality we would like.
-However we can not say with confidence that the
+% They provide strong typing even in an object of flexible envireonemtn
+% We would like to rely on an existing standard for identity,
+% but none so far exist and we point to future work in that
+% area.
+% As we are building on JSON Schema, it would be nice to also build on
+% an existing standard for login. Unfortunately, one does not currently
+% exist that suits are needs.
+% As mentioned, it would be nice to build on an existing and
+% well used standard for login. There is an emerging specification
+% called DID, however it lets the user authenticate with \emph{one}
+% service. We would like different services or even protocols.
+% In our implementations we use an older speicification Solid OIDC,
+% which has some serious usability limitations and is not flexible,
+% but at least provides the high level functionality we would like.
+% However we can not say with confidence that the
 
 \subsection{Objects and CRUD}
 
 Objects, as described in section~\ref{concepts:objects} encapsulate
 all of the data in Graffiti.
-They include a \texttt{value} property which is a freeform JSON object,
-a \texttt{url} property which is a string,
-a \texttt{channels} property which is an array of strings,
-an \texttt{allowed}
-The one additional piece of metadata not described in the concepts
-is the \texttt{lastModified} property which is used to compare object version.
+They include the following meta properties:
+\begin{enumerate}
+\item
+\texttt{value} (object): The actual data, which can be any JSON object.
+\item
+\texttt{url} (string): A string to uniquely identify and locate the object.
+\item
+\texttt{actor} (string): The URI of the actor that created the object.
+\item
+\texttt{allowed} (array of strings): A list of actors URIs that are allowed to access the object.
+\item
+\texttt{channels} (array of strings): A list of channels that the object is contained in, see Section~\ref{concepts:channels}).
+\item
+\texttt{lastModified} (number): A time to compare object versions.
+\end{enumerate}
 
-Dealing with objects can be typed.
+Subtly, the \texttt{channels} and \texttt{allowed} do not necessarily
+reflect all the channels an object is contained in or
+all the actors that can access the object.
+Like a BCC email, it can be useful to send a message to multiple parties
+without revealing their existence to one another to prevent
+context collapse.
+So both \texttt{channels} and \texttt{allowed} are \emph{masked} to
+actors that do not own the object, however an application can always
+add metadata to the object's \texttt{value} that reveals this information.
+
 Additionally, the API builds on existing JSON Schema standard~\cite{jsonschema}.
 This is a well established method and we use a library that
 provides strong typing based on schemas.
-
 These objects can be interacted with through standard CRUD methods:
 \texttt{put}, \texttt{get}, \texttt{patch}, and \texttt{delete}.
 \texttt{get} requires a JSON schema to ensure that the object
@@ -158,6 +179,35 @@ metadata is preserved.
 
 The choice to not keep it live was intentional.
 
+pass in a JSON schema. This does \emph{not} need to be the same schema a user
+used when creating the object. For example, a user might be putting objects that
+have.
+As an example, here is a discover call for direct messages from
+a user with actor ID
+
+\begin{lstlisting}[language=javascript]
+const iterator = graffiti.discover(
+  [session.actor], // Look in "my" channel
+  {
+    value: {
+      properties: {
+        content: { type: "string" },
+        createdAt: { type: "number" },
+        to: { enum: [session.actor] }
+      }
+    },
+    actor: { enum: ["alice"] }
+  },
+  session
+)
+
+for await (const object of iterator) {
+  console.log(object.value.content);
+}
+\end{lstlisting}
+
+Common schemas might include
+
 At the end it returns a cursor and continue method.
 These hide the complexity of state management below the API.
 Also leaves open the possibility of different protocols having different state to maintain.
@@ -167,6 +217,10 @@ They only contain the URL of the object in question, preserving the users right 
 discover needs to be polled for new data because live updates to an application can be visually distracting or lead to toxic engagement. If and when an application wants real-time updates, such as in a chat application, application authors must be intentional about their polling.
 
 Implementers should be aware that some users may applications may try to poll discover repetitively. They can deal with this by rate limiting or preemptively fetching data via a bidirectional channel, like a WebSocket. Additionally, implementers should probably index the lastModified field to speed up responses to schemas like the one above.
+
+"Paging" is done by specifying a schema with a "lastModified" done appropriately.
+There may be paging done by the underlying implementation!
+Also the continue.
 
 \subsection{Recovery Methods}
 
@@ -182,10 +236,3 @@ allow a user to get a global view of their \emph{own} Graffiti usage.
 a user has created that are not contained in \emph{any} channel.
 \texttt{channelStats} gives a user a high level overview of all the
 channels that they've posted in.
-
-\subsection{Hiding Complexity}
-
-Hidden by the "URL" concept, not having to think about where stuff is stored.
-Might open popup on first time to ask "where to store this?"
-Hidden by discover returning just a "cursor" rather than new polling functionality.
-Hidden by login() logout() functions with the flow.

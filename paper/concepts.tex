@@ -8,12 +8,12 @@ concepts and Section~\ref{protocols} outlines various protocols that implement t
 
 At a high level the design works as follows.
 \emph{Actors} (basically users) create \emph{objects} which can represent
-social artifacts like posts or activities like "likes".
+social artifacts like posts or activities like ``likes.''
 Objects are associated with a set of \emph{channels} and other users can
 discover an object by querying one of its channels. Channels a are flexible representation
 of different \emph{contexts} which may include identities, topics, piece of media, locations,
 and more.
-Users can not modify other user's objects and so for users to interact with each other's content
+Users can not modify other users' objects and so for users to interact with each others' content
 those interactions must be \emph{reified} into indivdual
 activities.
 
@@ -96,13 +96,13 @@ which some argue contributed to the failure of the semantic web~\cite{semanticwe
 % We also provide tooling that allows users to filter data and provide human-readable
 % fallbacks for data they can't parse.
 
-Graffiti objects also have URLs, which
+Graffiti objects also have URLs which,
 % can be used to retrieve or reference them.
 as alluded to in Section~\ref{requirements},
 start with a \emph{scheme} just like URLs on the World Wide Web,
 enabling objects to be served by different \emph{coexisting} protocols.
 For example, a post might have the URL \texttt{graffiti:remote:pod.graffiti.garden/123},
-where the scheme \texttt{graffiti:remote:} will be overviewed in Section~\ref{protocols}.
+where the scheme \texttt{graffiti:remote:} refers to one of the protocols described in Section~\ref{protocols}.
 URLs also allow objects to be pointed at by other objects as with the
 ``like'' activity below.
 % enabling other users to ``like'' that post by creating a new object with the value:
@@ -135,8 +135,8 @@ The question of \emph{who} can mutate the objects is relevant to
 total reification which,
 again, we discuss in the following
 Section~\ref{concepts:total-reification}.
-Access controls enables some affordances that mitigate context collapse,
-like private messages, while others arise from the \emph{channels} concept
+Access controls enable private message which mitigates some forms of context collapse,
+while others will handled with the \emph{channels} concept
 which we discuss in Section~\ref{concepts:channels}.
 
 In summary Graffiti objects are:
@@ -204,7 +204,7 @@ Total reification is powerful when applied to moderation.
 For example, suppose a developer would like to introduce a new application
 that interoperates with an existing application,
 but that allows certain actors (moderators) to delete other actors' posts.
-If the moderators' deletions are reified into \texttt{"delete"} activities,
+If the moderators' deletions are reified into ``delete'' activities,
 then the original application can simply ignore the delete activities
 while the new application removes ``deleted'' posts from the display.
 
@@ -260,7 +260,7 @@ makes reifiecation \emph{possible} but to be ``totally reified,''
 reification must be \emph{necessary} for interactions between
 actors to occur.
 For example, it should not be possible for an actor to \emph{actually}
-delete another actor's post because that prevents
+delete another actor's post because that makes it impossible to build
 an application that does not recognize the deleting actor as a moderator from existing.
 This violate the ``adversarial'' part of ``adversarial interoperability,''
 from requirement~\ref{requirement:adversarial-interop}.
@@ -313,9 +313,9 @@ Unlike a television channel, Graffiti channels are:
 
 \begin{enumerate}
 \item
-Bidirectional: Users can both read from and write to channels.
+Bidirectional: Actors can both read from and write to channels.
 \item
-Persistent: When a user publishes an object to a channel, other users can
+Persistent: When an actor publishes an object to a channel, other actors can
 continue to retrieve the object from the channel until it gets deleted.
 \item
 Global: The channel namespace is global with every string (up to a certain length)
@@ -333,7 +333,7 @@ Given the obscurity property, we should clarify:
 \begin{enumerate}
 \setcounter{enumi}{5}
 \item
-Ownerless: No user can prevent any other user from reading from or writing to a channel
+Ownerless: No actor can prevent any other actor from reading from or writing to a channel
 \emph{that they know about}.
 \end{enumerate}
 
@@ -353,8 +353,8 @@ but not bidirectional, ownerless, or crosspostable.
 \subsubsection{Replies}
 
 To understand how channels can work to prevent context collapse, consider the example of \emph{replies}.
-Most social applications allow you to reply to posts, but there are surprisingly subtle
-contextual differences between different designs.
+Most social applications allow users to reply to posts, but there are surprisingly subtle
+contextual differences between different reply designs.
 For example, currently on Instagram
 if you reply to a post, that reply can only be seen by other
 people also viewing that particular post.
@@ -383,7 +383,7 @@ actor's reply to \emph{both} the channel represented by the original post's URL
 and the channel represented by the replier's actor URI.
 An actor's followers all implicitly know the actor's URI and so
 again, by convention, their applications know to query the channel represented by that URI
-for content related to that actor.
+for content related to the actor.
 
 Finally, what happens if the reply is \emph{only} posted to the
 channel represented by the actor's URI?
@@ -408,13 +408,27 @@ A summary of these different designs is shown in Table~\ref{concepts:channel-rep
 
 Importantly, these reply designs interoperate in a way that provides content producers with
 a consistent \emph{audience} regardless of the applications those audience members choose to use.
-A Twitter-like application will still only show replies
+For example, if an actor posts an Instagram-like reply, that reply will \emph{only} show up
+in the context of the original post. An actor using a Twitter-like application
+will not see the replying actor's reply in their Replies tab because it simply was not
+posted to a channel that the application knows to query.
 
-This can be seen as a limit on extensibility in the system. It is \emph{not} possible for an
+Channels can be considered as a limit on extensibility, counter to requirement~\ref{requirements:autonomous-extensibility}.
+It is \emph{not} possible for an
 application to find all a user's replies if they have not been posted to channels that
 the application knows to query.
-Unlike total reification, which gives autonomy to \emph{see} what they like this is
-a limit on what applications \emph{cannot} see.
+We establish this limit because, unlike with total reification where it is
+possible for application to provide different interpretations of the underlying
+content simultaneously (a post is ``deleted'' in one application but not in another),
+it is not possible for an actor's reply to be simultaneously ``seen'' and ``not seen''
+by a potential audience member.
+We opt to give posters the ability to express their intended audience
+to mitigate context collapse, at the cost of a small loss of autonomy for viewers.
+% We opt to protect users from context collapse.
+
+
+% Unlike total reification, which gives autonomy to \emph{see} what they like this is
+% a limit on what applications \emph{cannot} see.
 % Here the choice of a person to
 % It is possible for a user to
 % It is not possible to require that a person does not read something and give them the ability to read it.
@@ -446,25 +460,33 @@ a limit on what applications \emph{cannot} see.
 % of the original post.
 
 \subsubsection{Other Uses of Channels}
+
 We've seen how channels can represent \emph{people} and \emph{posts}
-which covers the functionality of most microblogging applications,
+which cover the contextual needs of most microblogging applications,
 but channels can also represent
 media, topics, websites, locations, and more,
 each of which can form the basis for a different class of
 social application, as shown in Table~\ref{concepts:tab:channels}.
 
+Like with object properties, channels represent a \emph{folksonomy}.
+They have no inherent meaning other than the meaning ascribed to them
+by particular application. However, network effects provide incentives for
+application developers to establish shared conventions.
+% They will establish meaning by convention and applications have interest
+% in establishing the same conventions.
+
 \begin{table}[h]
     \centering
     \begin{tabular}{|l|l|}
         \hline
-        \textbf{Channel} & \textbf{Application} \\ \hline
+        \textbf{Channel Meaning} & \textbf{Application} \\ \hline
         External Media & Letterboxd, GoodReads, Genius, last.fm \\ \hline
         User-Created Media & SoundCloud, YouTube, Medium \\ \hline
         User-Generated Topics & Reddit, Discord, Slack, IRC \\ \hline
         User-Generated Collections & are.na, Pinterest, Spotify playlists \\ \hline
         Website & Hypothes.is, Pinboard, Delicious \\ \hline
         Physical Locations & Tinder, Nextdoor, Craigslist, YikYak \\ \hline
-        Virtual Locations & VRChat, Second Life, Minecraft \\ \hline
+        Virtual Locations & Second Life, Minecraft \\ \hline
         Events & Meetup, Partiful, Facebook Events \\ \hline
         Products and Services & Amazon reviews, Yelp \\ \hline
         Collaborative Documents & Wikipedia, Google Docs \\ \hline
@@ -473,47 +495,60 @@ social application, as shown in Table~\ref{concepts:tab:channels}.
     \label{concepts:tab:channels}
 \end{table}
 
-In some cases the channel string is obvious, like the URL of a website (Hypothes.is),
+In some cases, there is an existing identifier that can be used as a channel
+like the URL of a website (Hypothes.is),
 or the ISBN of a book (GoodReads).
 In other cases the channel string may be user generated, as with
 public contexts like subreddits or a Wikipedia pages,
-and in others they may be randomly generated for privacy, as with
+or randomly generated for privacy, as with
 a Discord channel, Pinterest board, or Google document.
-Locations are interesting because they are a continuous space.
-An agreed upon subdivision of space, like zip codes or what-three-words,
-or a "resolution pyramid" where users could post at different
-levels where they want.
 
-Channels should be URI-like and are prepended with a scheme to prevent
-collisions.
+Locations are continuous and so to be represented as channels,
+space must be broken into discrete regions which could be done with
+human-generated divisions like zip codes or automatic division like
+what3words. Fine-grained location channels could be used for
+augmented reality applications, like Pokemon Go,
+while more coarse grained ones should be used for applications like Tinder
+to prevent a user's exact location from being revealed.
+Applications similar Craigslist may post to channels at multiple levels in
+a resolution pyramid to increase a post's visibility.
 
-Channels can also represent \emph{application types themselves}.
-For example, to avoid the issue of Linkedin and Tinder.
-Channels can also be concatenated.
-For example, `dating+location' would prevent other people from seeing th post.
+Channels can also be concatenated to produce new, more specific channels.
+For example, users may prefer to use a Tinder-like application that posts
+profiles to channels of the form \texttt{dating+zip:12345} rather than
+\texttt{zip:12345} so that they can be sure their profile won't
+\emph{accidentally} be seen by neighbors casually browsing a Nextdoor-like application.
 Concatenation may also happen in natural language.
 For example, on Reddit when one wants to post programming-related memes they post to \texttt{r/programmerhumor} rather than \texttt{r/programming+funny}.
-These concatenations may themselves take on new meaning.
 
+% These concatenations may themselves take on new meaning.
 
+% Channels can also represent \emph{application types themselves}.
+
+% For example, to avoid the issue of Linkedin and Tinder
+% Channels can also be concatenated.
 
 \subsubsection{Social Access Control}
 
-In some sense, channels provide a sort of "social access control" by forming
+In some sense, channels provide a sort of social access control by forming
 expectations about the audiences of different online spaces.
 As a real world analogy, oftentimes support groups, such as alcoholics
 anonymous, are open to the public but people in those spaces feel comfortable sharing intimate details
-because they have expectations about the other people attending.
+because they have expectations about the other people in attendance.
 If someone malicious went to support groups just to spread people's secrets,
 they would be shamed for violating these norms.
 Similarly, in Graffiti, while you could spider public channels like a search engine
 to find content about a person, revealing that you've done such a thing
 would be shameful.
+% Moreover it will not happen by accident --- the spidering
+% user ``knew what they were getting into'' and so if they come across information
+% the poster
 
-Still, social access control is not perfect and so in situations where privacy is important,
-objects can also be given
-an {@link GraffitiObjectBase.allowed | `allowed`} list.
-For example, to send someone a direct message you should put an object representing
-that message in the channel that represents them (their {@link GraffitiObjectBase.actor | `actor` URI}),
-so they can find it, *and* set the `allowed` field to only include the recipient,
-so only they can read it.
+Still, social access control is not perfect and so in situations where privacy is critical,
+objects can also be access controlled to a particular set of actors,
+as we mentioned in Section~\ref{concepts:objects},
+For example, to send someone a direct message that message should be placed in
+the channel represented by the recipient's actor URI (which, by convention,
+the recipient will know to query for messages) and at the same time the
+access control list should be limited to only the recipient.
+For private groups, group membership can be reified, as explored in Section~\ref{case-studies}.

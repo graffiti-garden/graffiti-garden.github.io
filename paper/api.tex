@@ -3,27 +3,28 @@
 We now describe the API that fulfills the requirements
 outlined in Section~\ref{requirements} and builds upon the concepts
 discussed in Section~\ref{concepts}.
-The API is designed to be externally consistent when possible,
-featuring a series of standard CRUD methods for manipulating objects:
+The API features simple methods for \texttt{login} and \texttt{logout}
+and a series of CRUD methods for manipulating objects,
 \texttt{put}, \texttt{get}, \texttt{patch}, and \texttt{delete},
-as well as straightforward methods for \texttt{login} and \texttt{logout}.
-Most of the novel functionality is packaged into the \texttt{discover} method, which allows
-users to query for objects from a set of channels.
-Finally, there are two specialized methods included for completeness:
+The novel \texttt{discover} method allows users to query for objects
+from a set a of channels.
+Finally, there are two specialized ``recovery'' methods included for completeness:
 \texttt{recoverOrphans} and \texttt{channelStats},
 which prevent users from ``losing'' objects or channels, respectively.
-Overall, as much complexity is pushed \emph{below} the API
-while as much functionality is pushed \emph{above}.
+Overall, as much complexity as possible is pushed \emph{below} the API,
+while as much functionality as possible is pushed \emph{above}.
 
-The API is written as an abstract Typescript class.
-Its complete documentation is available online\footnote{
+The API is written as an \emph{abstract} Typescript class, allowing
+developers building on top of the API to swap out different implementation
+with a single line of code.
+The API's complete specification is available online\footnote{
     \url{https://api.graffiti.garden/classes/Graffiti.html}
 } and so here we focus on the important design decisions.
 Typescript is a type annotation layer around standard Javascript
-and can provide enourmous benefit to developers working on large projects.
+and provides enourmous benefit to developers working on large projects.
 However, the Graffiti API is still completely functional
-in regular Javascript and entire Graffiti applications can be written
-with vanilla HTML, CSS, and Javascript that function without
+in a regular Javascript environment and entire Graffiti applications can be written
+with vanilla HTML, CSS, and Javascript that function in the browser without
 any build step.
 
 % Self-describing objects and channels push a lot of expressive
@@ -42,31 +43,30 @@ any build step.
 While it is possible to retrieve public content without logging in,
 all other functionality, including
 creating and modifying content or reading access-controlled content,
-requires proof that the user owns a particular \emph{actor},
-as described in Section~\ref{concepts:actor}, thus requiring a login.
+requires proof that the user owns a particular \emph{actor}, thus requiring a login.
 % requires a login.
 % The goal of logging in is to establish the user's ownership of a
 % a particular \texttt{actor} URI, as described in Section~\ref{concepts:actor}.
 
-Modern log in methods, like OAuth 2.0, while secure, are incredibly complex.
+Modern log in methods, like OAuth 2.0, while secure, are incredibly complex~\cite{oauth}.
 To hide this complexity from application developers and to make the API future proof
 to evolving security standards, the API provides a simple \texttt{login} method that works as follows:
 
 \begin{enumerate}
 \item
 A user performs an action, like clicking a ``log in'' button, that triggers
-the application to call \texttt{graffiti.login()} (with \emph{no} arguments).
+the application to call \texttt{graffiti.login()}.
 \item
 In response, the implementation of the API may do any manner of things,
 including opening up a pop up or redirecting the user to a new page.
 In that implementation-specific interface, which the application developer
-does not need to build, they might be asked for credentials like a username
-and password, a public key pair, etc.
+does not need to build, the user might be asked to provide credentials like a username
+and password or a public key pair.
 \item
 Once the user is authenticated they are redirected back to the application, if applicable,
 and a Javascript \emph{event} fires that includes
-a \texttt{session} object. The \texttt{session} object includes an \texttt{actor}
-URI and other information that the implentation needs to preserve authentication, like
+a \texttt{session} object. The \texttt{session} object includes the authenticated \texttt{actor}
+URI and other information that the implentation needs to verify authentication, like
 a token or a signing function, however those details are entirely opaque to the application developer.
 \item
 When the application wants to perform an action that requires authentication,
@@ -142,18 +142,18 @@ the following meta properties:
 \item
 \texttt{actor} (string): The URI of the actor that created the object.
 \item
-\texttt{channels} (array of strings): A list of channels that the object is contained in, see Section~\ref{concepts:channels}.
+\texttt{channels} (array of strings): A list of channels that the object is contained in.
 \item
 \texttt{allowed} (array of strings): A list of actors URIs that are allowed to access the object.
 \item
-\texttt{lastModified} (number): The time in milliseconds the object was last modified, to compare object versions.
+\texttt{lastModified} (number): A time to compare object versions.
 \end{enumerate}
 
 Subtly, \texttt{channels} and \texttt{allowed} do not necessarily
 reflect \emph{all} the channels an object is contained in, or
 \emph{all} the actors that are allowed access the object.
 Like a BCC email, it can be useful to send a message to multiple parties
-without revealing their existence to one another, to prevent
+without revealing their existence to one another, preventing
 context collapse.
 So \texttt{channels} and \texttt{allowed} are both \emph{masked} to any
 actor other than the object's owner so that they only show information an actor implicitly knows,
@@ -162,9 +162,9 @@ However an application developer can always
 add metadata to the object's \texttt{value}
 to reveal additional information.
 
-Objects can be interacted through familiar CRUD methods:
+Objects can be interacted with through familiar CRUD methods:
 \texttt{put}, \texttt{patch}, and \texttt{delete} for modifying objects,
-and \texttt{get} for retrieving objects
+and \texttt{get} for retrieving objects.
 The modification methods each require a \texttt{session} whereas
 for \texttt{get} the \texttt{session} is optional.
 An application cannot tell the difference between an object that does not exist,
@@ -184,7 +184,7 @@ a JSON schema, a widely used and flexible standard for describing
 the structure of JSON objects~\cite{jsonschema}.
 Any object that does not match the provided schema is rejected.
 The API includes type inference on these schemas which makes it possible to work
-with objects as if they were typed even though they can take on arbitrary values.
+with objects as if they were strongly typed, even though they can take on arbitrary values.
 % This ensures that developers can have a consistent.
 % This can also be harnassed by the underlying implementation for
 % performance benefits, which is more necessary to \texttt{discover}.
@@ -244,8 +244,8 @@ as a query mechanism, limiting the objects returned to only those the developer 
 For example, the channel represented by an actor's URI has many overloaded uses,
 including being the site for the actor to broadcast Twitter-like posts,
 and the site where they receive direct messages.
-To receive only direct messages from a particular actor, with URI \texttt{"alice"}, made over
-the past day, a developer may do the following:
+To receive only direct messages from a particular actor
+sent over the past day, a developer may do the following:
 
 \begin{lstlisting}[language=javascript]
 const iterator = graffiti.discover(
@@ -271,41 +271,76 @@ for await (const object of iterator) {
 }
 \end{lstlisting}
 
-Some schema restrictions may be based on reified actions.
-For example, the schema can be restricted to only users
-that someone follows or may exclude users who have been
-marked as spammers.
-Also the continue.
+Reified activities can also be processed to construct more
+complex \texttt{discover} schemas.
+For example, the schema may exclude objects by
+actors who have been ``blocked'' by a sufficient
+number of other actors.
+% However, some features like TikTok's ``For You'' page
+% requires processing beyond the
 
-The \texttt{discover} iterator will end once all objects have been fetched.
-The choice to not keep it live was intentional.
-discover needs to be polled for new data because live updates to an application can be visually distracting or lead to toxic engagement. If and when an application wants real-time updates, such as in a chat application, application authors must be intentional about their polling.
-The asynchronous generator ends by returning a \texttt{cursor} string and a
-\texttt{continue} method each of which can be used to resume the \texttt{discover}
-call.
-These methods are the only
-They hide state management below the API.
+The \texttt{discover} iterator will end once all objects
+currently matching the channels and schema have been fetched.
+It ends by returning a
+\texttt{continue()} function,
+which can be used to resume
+the \texttt{discover} call.\footnote{
+    A \texttt{cursor} string is also returned, which can be
+    serialized for when an application closes and reopens.
+    The \texttt{cursor} can then be passed into a \texttt{continueObjectStream}
+    method and will produce the same result as \texttt{continue()},
+    however it is does not preserve type safety and is less convenient.
+}
 
-At the end it returns a cursor and continue method.
-These hide the complexity of state management below the API.
-Also leaves open the possibility of different protocols having different state to maintain.
-This continuation is the only situation where tombstones are returned.
-They only contain the URL of the object in question, preserving the users right to be forgotten.
+\texttt{continue()} returns new objects, changed objects, \emph{and}
+tombstones for objects that have been deleted, \emph{and} tombstones
+for objects that have been modified so that they no longer match the
+specified channels, schema, or actor.
+In total, these allow an application to keep an up to date state
+without having to re-fetch all objects.
+A tombstone only includes an object's URL and the time of deletion.
+Tombstones must inevitably expire to preserve a user's the right to be forgotten,
+causing \texttt{continue()} to throw an error
+that signals to the application to poll \texttt{discover} from scratch.
+\texttt{continue()} can be recursively called for applications,
+like direct messaging, that require real-time updates.
+% However we intentionally chose this pattern over having the updates
+% happen
 
-% Implementers should be aware that some users may applications may try to poll discover repetitively. They can deal with this by rate limiting or preemptively fetching data via a bidirectional channel, like a WebSocket. Additionally, implementers should probably index the lastModified field to speed up responses to schemas like the one above.
+% However we intentionally chose not to provide an live update mechanism as
+% it can be visually distracting or lead to toxic engagement.
+
+% all objects have been fetched.
+% The choice to not keep it live was intentional.
+% discover needs to be polled for new data because live updates to an application can be visually distracting or lead to toxic engagement. If and when an application wants real-time updates, such as in a chat application, application authors must be intentional about their polling.
+% The asynchronous generator ends by returning a \texttt{cursor} string and a
+% \texttt{continue} method each of which can be used to resume the \texttt{discover}
+% call.
+% These methods are the only
+% They hide state management below the API.
+
+% At the end it returns a cursor and continue method.
+% These hide the complexity of state management below the API.
+% Also leaves open the possibility of different protocols having different state to maintain.
+% This continuation is the only situation where tombstones are returned.
+% They only contain the URL of the object in question, preserving the users right to be forgotten.
 
 
 \subsection{Recovery Methods}
 
-One key component of Graffiti is that users cannot get objects
-unless they know either their URLs or one the channels the object
-is contained in.
-However this can lead to users losing objects if their applications
-lose their URLs. It is also possible for a channel to have a typo.
+It is intentionally impossible to get a global view of all objects
+in Graffiti to prevent context collapse. Most of the time,
+an application must know either an object's URL or one of the channels
+the object is contained in to retrieve it. However, we relax this
+constraint for an actor's \emph{own} objects, to prevent them from
+``losing'' objects.
 
-Therefore the two methods \texttt{recoverOrphans} and \texttt{channelStats}
-allow a user to get a global view of their \emph{own} Graffiti usage.
-\texttt{recoverOrphans} works much like discover but finds objects
-a user has created that are not contained in \emph{any} channel.
-\texttt{channelStats} gives a user a high level overview of all the
-channels that they've posted in.
+The \texttt{recoverOrphans} method finds objects that an actor has created
+that are not contained in \emph{any} channel and \texttt{channelStats}
+returns a list of all the channels that an actor has posted in.
+Both methods output streams similar to \texttt{discover}
+and require a \texttt{session}.
+
+These methods are not intented to be used in most applications but are
+necessary for creating something like Facebook's ``activity log,''
+enabling a user to audit their system-wide usage.

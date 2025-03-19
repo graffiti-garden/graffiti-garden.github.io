@@ -1,6 +1,28 @@
 \section{System Implementation}
 all
 
+To enable interoperability, the login procedure must be portable
+so that a user can log in with the
+same identity across different applications.
+Ideally, login also be portable across different underlying
+\emph{protocols} that implement the API.
+For example, it should be possible a actor who stores their data on
+commodity storage service, like Dropbox, to send a private message
+% (by creating an object with an \emph{allowed} list)
+to an actor who stores their data on a peer-to-peer network.
+Unfortunately, such a universal identity standard does not yet exist
+and developing one is outside the scope of this paper.
+The Decentralized Identifier (DID) specification~\cite{dids} may serve this purpose one day,
+but currently has shortcomings listed in Section~\ref{protocols}.
+
+
+On the one end
+tracker: channl->directories
+tracker: channel->objects
+There is an in between
+tracker: channel->schema
+that might be more efficient
+
 Our system, which employs a similar pattern can evolve to shifting threats,
 and also different. For example, currently models like end-to-end encryption
 allow for trust, but also allow for CSAM. Some users may prefer centralized control.

@@ -6,11 +6,13 @@ the implementations we've built \emph{below} the API
 that realize different trade-offs between efficiency and
 robustness.
 
-While we have made insights on both fronts, there are, of course,
+While we have made insights on both fronts that at
+the least demonstrate \emph{feasibility},
+there are, of course,
 many unanswered questions and unexplored ideas.
 Fortunately, by having a static API in the middle, work done above the API
 is \emph{decoupled} from work done below.
-It is possible to drop in a new, more efficient, or secure implementation
+It is possible to drop in a new, more efficient, or privacy-preserving implementation
 without upheaving all the tools and applications that have been built on top.
 % Additionally, as mentioned, it is possible for different implementations to coexist,
 % allowing for a smooth transition to a strictly better solution, akin the move from \texttt{http} to \texttt{https},

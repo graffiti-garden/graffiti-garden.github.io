@@ -1,15 +1,3 @@
-<script setup lang="ts">
-import { inject } from "vue";
-const sections = inject<Record<string, string[]>>("sections");
-
-function toTitle(kebab: string) {
-    return kebab
-        .split("-")
-        .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
-        .join(" ");
-}
-</script>
-
 <template>
     <ul>
         <!-- <li>
@@ -43,10 +31,12 @@ function toTitle(kebab: string) {
                 <li>
                     <RouterLink to="/paper/api"> API </RouterLink>
                 </li>
-                <!--
                 <li>
-                    <RouterLink to="/paper/protocols"> Protocols </RouterLink>
+                    <RouterLink to="/paper/above-and-below"
+                        >Above & Below</RouterLink
+                    >
                 </li>
+                <!--
                 <li>
                     <RouterLink to="/paper/related-work">
                         Related Work

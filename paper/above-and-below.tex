@@ -1,16 +1,16 @@
 \section{Above & Below}
 
-We now describe tooling we've built \emph{above}
+We now describe the tooling we've built \emph{above}
 the Graffiti API that makes development even easier, and
-implementations we've built \emph{below} the API
-that realize different tradeoffs between efficiency,
-robustness, scalability, and privacy.
+the implementations we've built \emph{below} the API
+that realize different trade-offs between efficiency and
+robustness.
 
-While we have made insights on both fronts there are, of course,
+While we have made insights on both fronts, there are, of course,
 many unanswered questions and unexplored ideas.
 Fortunately, by having a static API in the middle, work done above the API
 is \emph{decoupled} from work done below.
-It is possible to drop in a new, more efficient or secure implementation
+It is possible to drop in a new, more efficient, or secure implementation
 without upheaving all the tools and applications that have been built on top.
 % Additionally, as mentioned, it is possible for different implementations to coexist,
 % allowing for a smooth transition to a strictly better solution, akin the move from \texttt{http} to \texttt{https},
@@ -32,9 +32,9 @@ without upheaving all the tools and applications that have been built on top.
 \subsection{Above}
 
 While the API has hidden a lot of complexity below,
-like the need to write and deploy and server code or the need to
+like the need to write and deploy server code or the need to
 consider the server infrastructure at all,
-writing Javascript or Typescript code is still inaccessible
+writing JavaScript or TypeScript code is still inaccessible
 to many people.
 We have made some initial steps towards reducing the
 programming complexity by allowing for the \emph{reactive} and
@@ -45,24 +45,24 @@ without any code at all.
 
 \subsubsection{Internal Synchronization}
 
-When a user likes a post or sends a message
+When a user likes a post or sends a message,
 it is necessary, for the usability of the interface, for the user
 to get instant feedback that their action completed
 successfully, by seeing a like counter increment or seeing their message
 appear in the chat.
 While it is possible to manually update the relevant sections of the UI,
 this is unnecessary work for the developer and
-can become unweildy with many interconnected components.
+can become unwieldy with many interconnected components.
 
 Instead, we built a library for internal synchronization\footnote{
   \url{https://sync.graffiti.garden/classes/GraffitiSynchronize.html}
 } that wraps around the Graffiti API to make these updates automatic.
 Whenever the library encounters a new or changed object, either because
 the user created, modified, or deleted an object,
-or because an object was recieved from \texttt{get}
+or because an object was received from \texttt{get}
 or \texttt{discover}, that change is internally forwarded to an
 appropriate listener.
-These listeners can be set up manually with new methods \texttt{synchronizeDiscover}
+These listeners can be set up manually with the new methods \texttt{synchronizeDiscover}
 and \texttt{synchronizeGet} or automatically by our Vue Plugin, described next.
 
 % a user makes or receives a change, that change is internally forwarded
@@ -91,12 +91,12 @@ We built a plugin for Vue\footnote{
 }
 that provides a variant of
 \texttt{discover} that returns a reactive array of objects rather than
-an asyncrhonous stream.
+an asynchronous stream.
 Local user actions update the array automatically, thanks to
 \texttt{synchronizeDiscover}, while remote changes
 can be polled either manually with \texttt{poll()} or automatically
 with an \texttt{autopoll} setting.
-All updates to the array automatically propogate to UI components.
+All updates to the array automatically propagate to UI components.
 The plugin similarly provides reactive variants of \texttt{get} and
 \texttt{recoverOrphans}.
 
@@ -114,23 +114,27 @@ The plugin similarly provides reactive variants of \texttt{get} and
 % in
 % Local changes update live, while remote changes can be polled by calling
 % \texttt{poll}.
+% It is still possible for a user to manually manage other \texttt{session}s
+% for multi-actor applications.
 
 The plugin exposes this reactive functionality with both
-``composable'' functions\footnote{
-  \url{https://vuejs.org/guide/reusability/composables.html}
-}, like \texttt{useGraffitiDiscover}, which can be used
+``composable'' functions,
+% \footnote{
+%   \url{https://vuejs.org/guide/reusability/composables.html}
+% }
+like \texttt{useGraffitiDiscover}, which can be used
 in a more traditional programming environment, as well as
-``renderless components''\footnote{
-  \url{https://vuejs.org/guide/components/slots#renderless-components}
-}, like \texttt{<GraffitiDiscover>},
+``renderless components,''
+% \footnote{
+%   \url{https://vuejs.org/guide/components/slots#renderless-components}
+% }
+like \texttt{<GraffitiDiscover>},
 which can be used declaratively within an HTML template.
 Additionally, for convenience,
 the plugin sets up a global Graffiti class instance, \texttt{\$graffiti},
 as well as a global
 \texttt{\$graffitiSession}.
-% It is still possible for a user to manually manage other \texttt{session}s
-% for multi-actor applications.
-The plugin maintains complete Typescript support and
+The plugin maintains complete TypeScript support and
 is a relatively light wrapper over our internal synchronization library,
 and so support for other front-end frameworks, like React, will be
 fairly easy to add in the future.
@@ -148,7 +152,7 @@ Waves from other users also change the count, live.
 
 \begin{lstlisting}[language=html]
 <GraffitiDiscover autopoll
-    v-slot="{ objects: waves, isLoading }"
+    v-slot="{ objects: waves, isInitialPolling }"
     :channels="[ 'https://graffiti.garden' ]"
     :schema="{
         properties: {
@@ -186,7 +190,7 @@ Waves from other users also change the count, live.
         Log In to Wave
     </button>
 
-    <p v-if="isLoading">Loading...</p>
+    <p v-if="isInitialPolling">Loading...</p>
     <p v-else>{{ waves.length }} people have waved from this page 👋!</p>
 </GraffitiDiscover>
 \end{lstlisting}
@@ -196,7 +200,7 @@ Waves from other users also change the count, live.
 We have started compiling a library of Vue components
 for common social functionality\footnote{
     TODO: Link to components library
-},
+}
 such as \texttt{<GraffitiLike>} and \texttt{<GraffitiProfile>}.
 The components are designed to be fairly extensible.
 For example, a ``Like'' button can be configured to be a
@@ -214,15 +218,16 @@ no-code system for Graffiti, like a graphical editor, without limiting
 its extensibility.
 
 Additionally, in our own application development,
-we found that inline AI tools like Github Copilot are already
+we found that inline AI tools like GitHub Copilot are already
 capable of generating large portions of functional Graffiti code.
 This is especially true when writing applications with the
 Vue plugin --- perhaps because of the reduction in boilerplate
 code and the declarative nature of the templates.
 It is not hard to imagine a future where a developer asks
-a large language model, to ``make a messaging app''
+a large language model to ``make a messaging app''
 or to ``add a bookmark button to posts in this application'' and
-it simply works. CITE
+it simply works.
+% CITE
 % https://www.geoffreylitt.com/2023/03/25/llm-end-user-programming
 
 Finally, users may gravitate towards using ``meta'' applications.
@@ -230,10 +235,10 @@ Users of these applications could easily change their functionality
 by swapping out different plugins,
 which could represent different feed sorting algorithms
 (similar to \cite{threeleggedstool, bluesky}),
-different moderation policities, different styles,
+different moderation policies, different styles,
 or different features.
 Or portions of applications may become represented within social objects themselves.
-MySpace for example, let users style their own pages --- what if users could easily add
+MySpace, for example, let users style their own pages --- what if users could easily add
 custom social functionality to their own
 or their community's ``pages''?
 
@@ -304,7 +309,7 @@ Figure~\ref{above-and-below:login}.
 \begin{figure}
     \label{above-and-below:login}
     \includegraphics{figures/login.png}
-    \caption{The popup that opens when the user triggers a \texttt{login()}}
+    \caption{The modal that pops up when the user triggers a \texttt{login()}. TODO: Update the figure to show the whole flow.}
 \end{figure}
 
 We implemented the local protocol\footnote{
@@ -396,8 +401,9 @@ We answer these questions and others below.
 The simplest way for a client to know which
 servers to query is for there to
 be a public ``registry'' of servers.
-This method is used by BlueSky and by other federated services like
-the \texttt{apt} package manager
+This is the method used by BlueSky~\cite{bluesky}
+% and by other federated services like
+% the \texttt{apt} package manager
 % certificate authorities
 % and package managers
 and is available in our
@@ -475,7 +481,7 @@ This enables \emph{data portability}.
 Our implementation of the remote protocol server\footnote{
     \url{https://github.com/graffiti-garden/implementation-remote}
 } wraps our local implementation behind
-a web server built node.js with NestJS and Fastify.
+a web server built on node.js with NestJS and Fastify.
 We point the local implementation's PouchDB instance
 to use a CouchDB database for efficiency and robustness.
 We also use a library from the Community Solid Server project
@@ -511,7 +517,7 @@ Their client manages channel-specific files on that provider,
 each containing all the objects the actor has published to that channel.
 A user's client shares links to those channel files
 with a \emph{tracker}.
-The tracker is similar to a BitTorrent tracker but
+The tracker is similar to a BitTorrent tracker~\cite{bittorrent} but
 rather than mapping torrent IDs to IP addresses
 it maps channel strings to channel file URLs.
 To run \texttt{discover}, a client queries the tracker
@@ -571,9 +577,11 @@ and discard ones that do not match the schema.
 Still, for users who tend to participate in small networks, these issues
 of scale are not a concern and the use of ``simple'' storage servers can be appealing.
 
-We implemented the commodity storage protocol\footnote{
-    TODO link to solid implementation
-} on top of a custom tracker\footnote{
+We implemented the commodity storage protocol
+% \footnote{
+%     TODO link to solid implementation
+% }
+on top of a custom tracker\footnote{
     \url{https://github.com/graffiti-garden/link-service},
     \url{https://github.com/graffiti-garden/link-service-client}.
     WebTorrent was considered instead of a custom tracker,
@@ -645,6 +653,21 @@ as shown in Figure~\ref{above-and-below:choose-protocol}.
 As mentioned in Section~\ref{above-and-below:delegation},
 a user can later migrate their data to a different protocol
 or server without breaking their object's URLs.
+
+\begin{figure}
+    \label{above-and-below:choose-protocol}
+    TODO: this will be a figure!!
+    \begin{itemize}
+    \item
+    Panel 1: Where would you like to store your data? You can always change this later.
+    "Choose for Me", "On a Graffiti Server", "On a Solid Pod".
+    \item
+    Panel 2 (Graffiti): Which Graffiti server would you like to use?
+    \item
+    Panel 3 (Solid): Which Solid pod would you like to use?
+    \end{itemize}
+    \caption{The modal that pops up when the user triggers a \texttt{put()} for the first time.}
+\end{figure}
 
 For two protocols to truly coexist,
 \emph{identity} must also be portable across them.
@@ -744,36 +767,48 @@ We hope that DIDs or new specifications evolve past this restriction.
 
 \subsubsection{Future Work}
 
-There is more work to be done on the efficiency
+The remote protocol offloads work to complex storage servers,
+while the commodity storage protocol shifts work to clients, keeping the servers simple.
+A middle ground could be created where slightly more information is given to
+the \emph{tracker}, like when a channel was last modified
+or some schema-based indexing of channel content,
+to allow for more efficient \texttt{discover} calls.
 
-There is much more work to be done making.
-For example, in cases like private messaging where a user
-is continually polling for an object a protocol should silently
-``upgrade'' to a bidirectional socker.
+In the commodify storage protocol, the tracker also serves as a central point of control and so, like in BitTorrent,
+it could be replaced with a distributed hash table~\cite{bittorrentdht}. In small networks,
+a tracker may not be necessary at all and can be replaced with a gossip protocol.
 
-There are also ways of fusing ideas from both the
-commodity storage and
-The remote implementation maps
-tracker: channel->objects
-It requires all servers in the system to be relatively complex.
-The tracker implementation maps
-tracker: channl->directories
-Most of the servers are \emph{simple}
-but the system is inefficient.
-There is a middle ground where slightly more information
-is given to the tracker, but
+Currently each server owner can see all the objects and channels
+that pass through it. While federation allows users to switch
+to servers they trust, those servers are still vulnerable to
+subpoenas, putting groups like activists at risk.
+It would be valuable to build end-to-end encrypted versions of the remote servers,
+tracker, and commodity storage servers, perhaps building on
+searchable encryption~\cite{searchableencryption}.
 
-To our knowledge it is not directly possible to implemenet
-Graffiti on top of ecosystems like the AtProtocol or ActivityPub
-without leaking channels. However encrypting data may
-work.
+% Finally, non-federated architectures like a peer-to-peer
+% implementaiton may also be possible.
+% To our knowledge it is not directly possible to implemenet
+% Graffiti on top of ecosystems like the AtProtocol or ActivityPub
+% without leaking channels. However encrypting data may
+% work.
 
-Also, currently each server owner can see all of the data
-passing through it. While federation allows users to switch
-to servers, activists may for example not want to use the service
-because services can be subpoena'd.
-An end-to-end encrypted version of the remote protocol or
-could be built using  searchable encryption~\cite{searchableencryption}
+% service where a lot of the work is done on individual
+% servers and the commodity storage protocol demonstrates one where.
+% There are indexes.
+% There are also ways of fusing ideas from both the
+% commodity storage and
+% The remote implementation maps
+% tracker: channel->objects
+% It requires all servers in the system to be relatively complex.
+% The tracker implementation maps
+% tracker: channl->directories
+% Most of the servers are \emph{simple}
+% but the system is inefficient.
+% There is a middle ground where slightly more information
+% is given to the tracker, but
 
-Finally, non-federated architectures like a peer-to-peer
-implementaiton may also be possible.
+% There is much more work to be done making.
+% For example, in cases like private messaging where a user
+% is continually polling for an object a protocol should silently
+% ``upgrade'' to a bidirectional socker.

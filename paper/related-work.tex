@@ -91,7 +91,7 @@ Firebase plugins for the frontend framework Vue and the low-code tool
 Mavo~\cite{mavo} allow these applications to be written declaratively.
 For example, Mavo Chat\footnote{
     \url{https://dmitrysharabin.github.io/mavo-chat/}
-} demonstrates a working realtime chat app written in 156 lines of HTML
+} is a realtime chat application written in 156 lines of HTML
 with Mavo and Firebase.
 
 % allow a relatively
@@ -129,7 +129,7 @@ with Mavo and Firebase.
 
 \subsection{Protocols}
 
-Before around 2018, social protocols, like Email and IRC,
+Before 2018, social protocols, like Email and IRC,
 and later diaspora* and Secure ScuttleButt,
 were designed to support \emph{specific} application types:
 messaging for the former and microblogging for the latter~\cite{diaspora,scuttlebutt}
@@ -230,15 +230,15 @@ can be stored across multiple servers and it is end-to-end encrypted.
 While generally intended for messaging, we mention Matrix because of a
 prototype microblogging application built on top of it called \emph{Cerulean}~\cite{cerulean}.
 
-In Cerulean, each user's application creates for them a
-personal ``timeline'' room that is public but read-only
+Cerulean creates ``timeline'' room for each of its users
+that is public but read-only
 to other users. Users publish posts to their own timeline room
 and users follow each other by subscribing to each other's timeline rooms.
 Additionally, whenever a user creates a post, their application creates a
 public ``thread'' room and replies to that post are copied to both the
 thread room and the replier's timeline room.
 Matrix's client-server API is flexible enough that this prototype
-was written with front end code over a generic Matrix server
+was written with front end code over a generic Matrix server.
 
 % similar to an ActivityPub outbox. One user can follow another by subscribing to messages from their timeline room.
 % Whenever someone creates a post, they must also create a public `thread' room for that post, for users to write comments in.
@@ -246,8 +246,8 @@ was written with front end code over a generic Matrix server
 % Matrix has a standardized API of creating rooms and forwarding messages between participants within in rooms, so Cerulean was implemented with frontend code over a \emph{generic} Matrix server.
 % However, the prototype is fairly limited and does not explain, for example how other features will work, like user discovery.
 
-This is similar to Graffiti's implementation of following
-and replies with channels as described in Section~\ref{channels}.
+This is similar to Graffiti's channel-based implementation of following
+and replies as described in Section~\ref{channels}.
 The biggest difference is that the ``thread'' and ``timeline'' rooms
 in Cerulean
 must be explicitly created by the poster.

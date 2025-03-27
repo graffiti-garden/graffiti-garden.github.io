@@ -1,18 +1,15 @@
 \section{Related Work}
 
 Graffiti, so far as we know, is the only system that makes it
-easy to build a wide variety of novel social applications while
-also allowing for these applications to \emph{interoperate}
-\emph{Frameworks} like Deja Vu
-and Google Firebase make it relatively easy to build novel
-social applications but the applications built can't be
-independently modified without breaking their existing community apart.
-\emph{Protocols} like ActivityPub and the At Protocol allow for interoperation,
-but the work of creating interoperating applications is signifigant
-and the design space of applications that can be created is limited.
-We overview existing frameworks and protocols, as well
-a handful of systems that have similar design concepts
-to the ones introduced in Graffiti.
+relatively easy to build a wide variety of interoperating applications.
+Below, we discuss \emph{frameworks} that make it easy to build
+\emph{non-interoperating} social applications
+and \emph{protocols} that support interoperation but
+application development is difficult and the design space limited.
+We also discuss other systems with related designs to Graffiti
+% We overview existing frameworks and protocols, as well
+% a handful of systems that have similar design concepts
+% to the ones introduced in Graffiti.
 
 % \begin{table}[h]
 %     \centering
@@ -44,11 +41,10 @@ Of course, these sub-applications have limitations,
 like a strict user-moderator hierarchy
 and predefined feature sets.
 However, Reddit and Slack allow moderators to deploy
-custom \emph{bots} which enable the
+custom \emph{bots} that enable the
 ``delta'' ranking system in the SubReddit \texttt{r/changemyview}
 ~\cite{changemyview}
-and the PolicyKit moderation system
-in Slack~\cite{policykit}.
+and the PolicyKit moderation system in Slack~\cite{policykit}.
 
 % One could consider things like Subreddits can be considered
 % no-code frameworks for creating social media applications.
@@ -61,15 +57,6 @@ in Slack~\cite{policykit}.
 % there are
 % Similar limitations are in place on Facebook Groups, Discord,
 % and Slack.
-
-Slightly more extensibility can be achieved with self-hosted tools
-like Hometown and Smalltown, but on Mastodon, and PubHubs, built on Matrix.
-Unfortunately, self-hosting is already a barrier to entry and beyond
-basic configuration options, actually changing the underlying features
-requires a lot of technical expertise and is inevitably limited
-by the underlying protocols, discussed in the next Section~\ref{}~\cite{
-smalltown,runyourownsocial,pubhubs,pubhubsidentity
-}.
 % All of these projects add features
 % that prioritize within-server interactions,
 % and PubHubs disables federated interactions
@@ -87,32 +74,26 @@ smalltown,runyourownsocial,pubhubs,pubhubsidentity
 Déjà Vu is a more expressive framework that allows developers
 to declaratively construct a social media application out
 of a catalog of primitive \emph{concepts}.
-These concepts can be composed with each other to create complex
-high-level interactions.
-For example a HackerNews style forum can be built by
-composing a ``comment'' concept
-recursively to get threading and then composing
-with a ``scoring'' concept to enable voting on comments and
-sorting comments by their number of votes.
-While a developer does need to host their own server,
-each concept is a self-contained full stack module with both
-front end and backend code, and so the developer does not need to write any new server code.
-% These applications are built on a single infrastructure.
-% However, even if they were the concepts are not designed to be extensible.
-Unfortunately these concepts are not extensible.
-For example the ``scoring'' concept in Déjà Vu cannot be expanded
-to include multiple ``reactions'' (as on Facebook)
-without creating a new concept, requiring new server code
-and breaking interoperability~\cite{dejavu}.
+The authors demonstrate how a HackerNew-style forum can be built by
+recursively composing a ``comment'' concept for threading,
+with a ``scoring'' concept to rank those comments.
+Each concept is a self-contained full stack module
+and so building with existing concepts requires no new server code.
+Unforuntately, these concepts are limited in their extensibility.
+For example, the ``scoring'' concept cannot be expanded
+to support multiple ``reactions''
+without creating a new concept with new server code~\cite{dejavu}.
 
 Commercial frameworks like Google Firebase allow developers
-to build on top of Google's databases and identity system,
+to build on top of Google's database and identity systems,
 enabling pure client-side developement.
-Plugins for the frontend framework Vue and the low code tool
-Mavo allow these applications to be written declaratively,
-much like Graffiti apps.
-Of course, like all the Frameworks mentioned here,
-there is no interoperation~\cite{mavo,mavochat}.
+Firebase plugins for the frontend framework Vue and the low-code tool
+Mavo~\cite{mavo} allow these applications to be written declaratively.
+For example, Mavo Chat\footnote{
+    \url{https://dmitrysharabin.github.io/mavo-chat/}
+} demonstrates a working realtime chat app written in 156 lines of HTML
+with Mavo and Firebase.
+
 % allow a relatively
 % easy application development experience.
 % It hides away server hosting and scaling.
@@ -148,28 +129,171 @@ there is no interoperation~\cite{mavo,mavochat}.
 
 \subsection{Protocols}
 
-So far as we know, the protocols we describe were
-created, first and foremost, to give
+Before around 2018, social protocols, like Email and IRC,
+and later diaspora* and Secure ScuttleButt,
+were designed to support \emph{specific} application types:
+messaging for the former and microblogging for the latter~\cite{diaspora,scuttlebutt}
+Since the introduction of ActivityPub~\cite{activitypub},
+a new generation of social protocols have
+been developed that, technically, support a wider variety of applications.
+However, in practice,
+building applications on these protocols can be limited by technical
+difficulty, barriers to interoperability, or so much interoperability
+as to cause context collapse.
 
-Protocols have been developed for social applications.
-The earliest ones were meant to replicate
-\emph{specific} platform types.
-For example diaspora* and Secure ScuttleButt.
-% For example, two early decentralized infrastructures that we consider quasi-monolithic are
-% diaspora* and Secure ScuttleButt.
-These infrastructures bake in Twitter-like microblogging
-design patterns: a feed of content posted by people a user
-follows and interactions via comments and likes.
-Others allow for slightly more diversity, but largely
-major classes of apps. Twitter-like, Reddit-like, etc.
-% Both further limit the experience by signing all posts cryptographically with a user's public key. This makes all of a user's messages undeniable, unlike many centralized platforms where users can claim, for example, that a screenshot of a deleted post has been doctored.
-% ScuttleButt takes this a step further by using an append-only structure that makes it impossible to truly edit or delete content~\cite{diaspora, securescuttlebutt}.
+All of the protocols we describe below are \emph{federated},
+lacking a central point of control or,
+at the very least, offering
+a ``credible exit'' if one organization in the federation becomes
+untrustworthy~\cite{howdecentralizedisbluesky}.
 
-Most acheive trust through some form of \emph{federation}.
-Matrix also uses end to end encryption.
+\subsubsection{ActivityPub}
 
-Later systems have been given more generality,
-but are limited in terms of.
+ActivityPub~\cite{activitypub} is the federated protocol underlying the
+``Fediverse'' which includes the applications
+Mastodon (Twitter-like), Pixelfed (Instagram-like), and
+Lemmy (Reddit-like).
+Graffiti builds on ActivityPub's representation of social artifacts and
+activities as extensible objects.
+However, some actions in ActivityPub, like moderation, are not
+reified into activities, and other activities are
+limited in their extensibility by server ``side effects''.
+
+ActivityPub is organized into ``instances'' that conflate
+a user's community, moderation service, application,
+identity provider, and storage provider into one entity.
+Moderation decisions by instance moderators are not reified activities
+but actually delete or modify the target content.
+This prevents their users from opting to use a different moderation
+service without leaving their instance, including their community,
+behind.
+It \emph{also} means that federated content
+needs to be moderated by \emph{every} receiving instance,
+overwhelming already resource-constrained moderators, causing many
+to resort to coarse moderation techniques like ``defederation''
+\cite{securingfederatedplatforms}.
+
+ActivityPub distributes content using an ``actor model,''
+where every actor has an inbox for receiving direct messages, like email,
+and an outbox for broadcasting messages, like RSS.
+While the actor model is conceptually elegant, it makes it difficult
+to implement features as simple as replies.
+A replier must send their reply to the original poster's instance which
+triggers a server ``side effect'' that forwards the reply to the original
+poster's outbox so their followers can discover it.
+In practice, there is a flow diagram of at least 8 edge cases to consider
+to prevent ``ghost replies''~\cite{stateofmastodon}.
+Server side effects are needed to facilitate any interaction not centered around identity,
+including all of those listed in Table~\ref{concepts:channels-and-applications}.
+Additionally, while the activities involved are reified, side effects prevent them
+from being \emph{autonomously} extensible (see requirement~\ref{requirement:autonomous-extensibility}),
+because all involved servers need to implement the side effect before
+the new interaction can be used.
+
+As a result there is no ``generic'' ActivityPub server
+and custom-built servers
+for Mastodon, Lemmy, and PixelFed each consist of hundreds
+of thousands of lines of code.
+Projects like Hometown, Smalltown and Glitch\footnote{
+    \url{https://glitch.com/fediverse}
+} attempt to lower the barrier
+to instance creation, but beyond basic configuration panels,
+new application designs require modifying the underlying server code~\cite{smalltown,runyourownsocial}.
+
+% There are other subtle differences.
+% Actors in AP include global names and profiles and
+% are linked to a particular instance that doubles as their storage,
+% making it impossible to migrate.
+% Objects are typed with a \texttt{type} property,
+% which doesn't allow for an object like an event to
+% merge with an object like a post.
+
+% Slightly more extensibility can be achieved with self-hosted tools
+% like Hometown and Smalltown, but on Mastodon, and PubHubs, built on Matrix.
+% Unfortunately, self-hosting is already a barrier to entry and beyond
+% basic configuration options, actually changing the underlying features
+% requires a lot of technical expertise and is inevitably limited
+% by the underlying protocols, discussed in the next Section~\ref{}~\cite{
+% smalltown,runyourownsocial,pubhubs,pubhubsidentity
+% }.
+
+% Many ActivityPub activities have required or suggested side effects and additional side effects are added to make certain application-specific features possible.
+% Therefore there is no general purpose ActivityPub server.
+
+\subsubsection{Matrix}
+
+The Matrix protocol\footnote{
+    \url{https://spec.matrix.org/}
+}
+provides similar features to IRC and XMPP but content within a ``room''
+can be stored across multiple servers and it is end-to-end encrypted.
+While generally intended for messaging, we mention Matrix because of a
+prototype microblogging application built on top of it called \emph{Cerulean}~\cite{cerulean}.
+
+In Cerulean, each user's application creates for them a
+personal ``timeline'' room that is public but read-only
+to other users. Users publish posts to their own timeline room
+and users follow each other by subscribing to each other's timeline rooms.
+Additionally, whenever a user creates a post, their application creates a
+public ``thread'' room and replies to that post are copied to both the
+thread room and the replier's timeline room.
+Matrix's client-server API is flexible enough that this prototype
+was written with front end code over a generic Matrix server
+
+% similar to an ActivityPub outbox. One user can follow another by subscribing to messages from their timeline room.
+% Whenever someone creates a post, they must also create a public `thread' room for that post, for users to write comments in.
+
+% Matrix has a standardized API of creating rooms and forwarding messages between participants within in rooms, so Cerulean was implemented with frontend code over a \emph{generic} Matrix server.
+% However, the prototype is fairly limited and does not explain, for example how other features will work, like user discovery.
+
+This is similar to Graffiti's implementation of following
+and replies with channels as described in Section~\ref{channels}.
+The biggest difference is that the ``thread'' and ``timeline'' rooms
+in Cerulean
+must be explicitly created by the poster.
+This gives them automatic moderator priveleges\footnote{
+    Matrix rooms are goverened by a very specific and inflexible moderation scheme.
+    Each user in a room a ``power level'' from 0 to 100 and
+    different room actions such as posting a message or kicking
+    another user out of the room require different power levels.
+},
+unlike channels which are ownerless,
+and does not allow for the technique to be used
+when there is not someone clearly resonsible for instantiating the room,
+as is the case for unowned entities like topics, old books, or public locations.
+
+Still, Cerulean's existence is an indication that perhaps
+Matrix could be modified to support the Graffiti API without having
+to change much of the underlying infrastructure.
+% Additionally, events (the equivalent of objects in Matrix) can't be linked
+% to and so an event needs to be copied.
+% promising that Matrix could be
+% adapted to implement the Graffiti API. We were unable to due
+% to its moderation and linking.
+
+
+% However there are major differences:
+% - Moderation (moderation occurs based on a fixed
+% Additionally, Matrix is limited by a coarse moderation system.
+% - Cross posting
+% - Owner created
+% - Not possible to know channel in advance (location)
+
+% Given its similarity, Matrix is the existing protocol most suited to support
+% Graffiti, however its limitations were too great for us to independently
+% build on top of.
+
+% Users within a room each have a `power level' from 0 to 100.
+% The creator of a room starts with a power level 100 and others start at level 0.
+% Different room actions can be assigned to require different power levels.
+%  By default, posting and inviting users to the room require power level 0, redacting messages or kicking users out of the room requires power level 50, and changing a person's or action's power level requires power level 100.
+% While this system may be enough for most chat applications, it is overly simplified for the complex moderation needs of large social networks~\cite{policykit}.   And because it is built in to the server, it is difficult if not impossible to design alternative moderation schemes for custom client applications.
+
+% PubHubs are built on top of Matrix. Homeservers serve their own clients. It uses it's own identity system.~\cite{pubhubs, pubhubsidentity}
+
+% PubHubs, like
+
+
 
 % Graffiti is novel in that it makes it easy to create social media,
 % while also having those sites interconnected and malleable.
@@ -205,18 +329,18 @@ but are limited in terms of.
 % protocols, servers and other resources on top of which other social applications can be built.
 % Reddit API and Twitter API.
 
-In the following subsections we review infrastructures that demonstrate high degrees of pluralism.
-It happens that all of these infrastructures are motivated in part, if not in full, by a distrust of \emph{centralized} social media infrastructures.
-Centralized infrastructures are ones whose technology is controlled by a single entity, like a corporation.
-This distrust is understandable as a malicious central entity
-can interfere with content distribution, mine user data to develop algorithms for manipulation,
-sell user data to third parties, or make themselves more monolithic as both Reddit and Twitter did in 2023 by limiting API access~\cite{ageofsurveillancecapitalism, platformsociety, standoutofourlight}.
+% In the following subsections we review infrastructures that demonstrate high degrees of pluralism.
+% It happens that all of these infrastructures are motivated in part, if not in full, by a distrust of \emph{centralized} social media infrastructures.
+% Centralized infrastructures are ones whose technology is controlled by a single entity, like a corporation.
+% This distrust is understandable as a malicious central entity
+% can interfere with content distribution, mine user data to develop algorithms for manipulation,
+% sell user data to third parties, or make themselves more monolithic as both Reddit and Twitter did in 2023 by limiting API access~\cite{ageofsurveillancecapitalism, platformsociety, standoutofourlight}.
 %Not to mention handing data to third parties like banks or governments.
-But while we hare this distrust, and consider it in our implementation, it is diversity rather than distrust that is the central motivator for this work.
+% But while we hare this distrust, and consider it in our implementation, it is diversity rather than distrust that is the central motivator for this work.
 % However, distrust is not the central adversary in our work.
 
-Instead, we are concerned that infrastructures, whether centralized or decentralized, can be difficult to build upon and lock people in to certain design patterns --- in other words, we are concerned that existing infrastructures are not pluralistic enough.
-Decentralized infrastructures can limit themselves to design patterns copied from the centralized services they were designed to replace or use technology for decentralization that introduces new limits on the user experience.
+% Instead, we are concerned that infrastructures, whether centralized or decentralized, can be difficult to build upon and lock people in to certain design patterns --- in other words, we are concerned that existing infrastructures are not pluralistic enough.
+% Decentralized infrastructures can limit themselves to design patterns copied from the centralized services they were designed to replace or use technology for decentralization that introduces new limits on the user experience.
 % For example, many of these systems have locked in designs that make user interactions highly public
 % and many have introduced cryptography that makes posts undeniable and unforgettable.
 
@@ -282,131 +406,93 @@ Decentralized infrastructures can limit themselves to design patterns copied fro
 
 % Like, diaspora*, ScuttleButt only specifies server-to-server interactions, requiring full stack development to create custom clients.
 
-\subsubsection{ActivityPub}
-
-Published as a World Wide Web Consortium recommendation in 2018, ActivityPub is the standard underlying the fediverse. The fediverse is an open ecosystem of applications including Mastodon (Twitter-like), Lemmy (Reddit-like), PeerTube (Youtube-like) and PixelFed (Instagram-like).
-Meta's Threads is also rolling out fediverse support.
-%https://engineering.fb.com/2024/03/21/networking-traffic/threads-has-entered-the-fediverse/
-
-It achieves trust through \emph{federation}
-
-Graffiti owes many of its concepts to ActivityPubs, however there are subtle differences.
-- Actors also include meta data.
-- Objects are reified but there are also side effects
-- Eric Gilbert study on moderation in the fediverse.
-- Objects use linked data and types vs duck typing
-
-ActivityPub builds on its sister standards Activity Streams and Activity Vocabulary, schemas which provide a diverse and extensible set of \emph{objects} that can be created and \emph{activities} that can be performed by \emph{actors}, which may be users or other entities like communities.
-Activities include Announce, Like or Follow, and objects include Note, Image, or Profile.
-Activities and objects are represented in JSON-LD and each have standard associated properties like `content,' `tag,' and `inReplyTo.'
-The `LD' in JSON-LD stands for `linked data' and allows for this schema to be extended and so
-Mastodon, for example, has expanded the schema to include an Emoji object for posting emojis with custom icons and a `featured' property for pinning posts to the top of one's profile.
+% ActivityPub builds on its sister standards Activity Streams and Activity Vocabulary, schemas which provide a diverse and extensible set of \emph{objects} that can be created and \emph{activities} that can be performed by \emph{actors}, which may be users or other entities like communities.
+% Activities include Announce, Like or Follow, and objects include Note, Image, or Profile.
+% Activities and objects are represented in JSON-LD and each have standard associated properties like `content,' `tag,' and `inReplyTo.'
+% The `LD' in JSON-LD stands for `linked data' and allows for this schema to be extended and so
+% Mastodon, for example, has expanded the schema to include an Emoji object for posting emojis with custom icons and a `featured' property for pinning posts to the top of one's profile.
 % https://docs.joinmastodon.org/spec/activitypub/
 
-To share these activities and objects around, ActivityPub gives each actor an inbox for receiving messages and an outbox for broadcasting messages.
-This model naturally allows for direct messaging: to message another user you put a message in their inbox, like an email; and friend/follower interactions: to subscribe to posts from another user you poll that user's outbox, like an RSS feed.
-However, there are other interactions that cannot be easily simulated with inboxes and outboxes alone and so ActivityPub adds \emph{side effects} to activities and objects to compensate.
+% To share these activities and objects around, ActivityPub gives each actor an inbox for receiving messages and an outbox for broadcasting messages.
+% This model naturally allows for direct messaging: to message another user you put a message in their inbox, like an email; and friend/follower interactions: to subscribe to posts from another user you poll that user's outbox, like an RSS feed.
+% However, there are other interactions that cannot be easily simulated with inboxes and outboxes alone and so ActivityPub adds \emph{side effects} to activities and objects to compensate.
 
 %This system gives ActivityPub a lot of flexibility, however the protocol is vague or silent on how many objects, activities, and properties should interpreted.
-For example, a reply can be represented in the Activity Vocabulary as an Announce activity of a Note object that has an `inReplyTo' property pointing to the parent post that is being replied to.
-However, if a user simply posts the Announce activity publicly to their outbox, how are viewers of the parent post supposed to know to look in the replying user's outbox?
-The \emph{suggested} solution is that when a user posts a reply, it has the side effect of also being sent directly to the parent poster's inbox. When that parent poster receives the reply, they have the side effect of rebroadcasting it to their followers.
-This generally works but number of edge cases can lead to `ghost replies' that implementers have built various heuristics to catch.
-% https://seb.jambor.dev/posts/understanding-activitypub-part-3-the-state-of-mastodon/
+% For example, a reply can be represented in the Activity Vocabulary as an Announce activity of a Note object that has an `inReplyTo' property pointing to the parent post that is being replied to.
+% However, if a user simply posts the Announce activity publicly to their outbox, how are viewers of the parent post supposed to know to look in the replying user's outbox?
+% The \emph{suggested} solution is that when a user posts a reply, it has the side effect of also being sent directly to the parent poster's inbox. When that parent poster receives the reply, they have the side effect of rebroadcasting it to their followers.
+% This generally works but number of edge cases can lead to `ghost replies' that implementers have built various heuristics to catch.
 
 %https://fedidb.org/software
-Many ActivityPub activities have required or suggested side effects and additional side effects are added to make certain application-specific features possible.
-Therefore there is no general purpose ActivityPub server.
-We observe that the top 5 open source ActivityPub communities, according to monthly active users, Mastodon, Lemmy, PixelFed, Peertube, and Pleroma, all use their own custom server implementations, consisting of hundreds of thousands of lines of code each. Each implementation has custom side effects for application-specific message forwarding, moderation, content discovery, and aggregation.
-
-Some of these applications, like Mastodon, have client-server APIs that allow users to build varied Mastodon clients, however like Twitter (before 2023), diaspora*, or Secure ScuttleButt, Mastodon on its own is quasi-monolithic.
-Unlike diaspora* and Secure ScuttleButt, ActivityPub does not require messages to be signed with a public key, however most implementations do in fact mandate it.  This imposes constraints on client applications.   If an infrastructure supports anonymous messaging, it is easy to build clients that do authentication end-to-end using their own signatures; however, building signing into the infrastructure makes anonymous or deniable messaging impossible.
-
-\paragraph{Actor}
-
-We use actors to describe identities in the system,
-but ActivityPub uses the actor model to describe the system itself.
-As mentioned the actor model used by ActivityPub is a fusion of
-direct messaging (like Email) and broadcasting like RSS.
-Having channels
-
-Compared to the Actor Model it removes the need for Server-Side effects
-The actor model is a fusion of direct messaging (like Email) and broadcasting
-(like RSS) and works well for follow-based communication but struggles
-to pass information via other rendez-vous.
-In the actor model, even something as simple as comments can be
-[very tricky and require server "side effects"](https://seb.jambor.dev/posts/understanding-activitypub-part-3-the-state-of-mastodon/).
-
-\subsubsection{Matrix}
-
-Matrix was developed in 2014 as a real-time chat protocol, similar to IRC and XMPP.
-It is so flexible however, that in 2020 the Matrix.org Foundation released a prototype microblogging application built upon the protocol.
-
-Matrix is centered around the concept of `rooms'.
-Rooms can be private and require invitation to enter or can be open to the public.
-Messages shared to a particular room are shared with all of the other participants in the room.
-
-The prototype microblogging app Cerulean works as follows:
-each user creates a personal `timeline' room that is public but read-only to other users. Users publish their posts to their timeline room, similar to an ActivityPub outbox. One user can follow another by subscribing to messages from their timeline room.
-Whenever someone creates a post, they must also create a public `thread' room for that post, for users to write comments in.
-
-Matrix has a standardized API of creating rooms and forwarding messages between participants within in rooms, so Cerulean was implemented with frontend code over a \emph{generic} Matrix server.
-However, the prototype is fairly limited and does not explain, for example how other features will work, like user discovery.
-
-Additionally, Matrix is limited by a coarse moderation system.
-Users within a room each have a `power level' from 0 to 100.
-The creator of a room starts with a power level 100 and others start at level 0.
-Different room actions can be assigned to require different power levels. By default, posting and inviting users to the room require power level 0, redacting messages or kicking users out of the room requires power level 50, and changing a person's or action's power level requires power level 100.
-While this system may be enough for most chat applications, it is overly simplified for the complex moderation needs of large social networks~\cite{policykit}.   And because it is built in to the server, it is difficult if not impossible to design alternative moderation schemes for custom client applications.
-
-% The Dutch
-% PubHubs are built on top of Matrix. Homeservers serve their own clients. It uses it's own identity system.~\cite{pubhubs, pubhubsidentity}
-
-As of 2020 Matrix uses public key encryption to sign all messages.
 
 %https://matrix.org/blog/2020/12/18/introducing-cerulean/
 
-\subsubsection{At Protocol}
-https://docs.bsky.app/docs
+\subsubsection{The AT Protocol and Nostr}
 
-It is technically decentralized although some critics suggest
-that decentralization scales quadratically and so realistically it
-can only support a fixed number of users.
-However it does offer a "credible exit".
-Cite Christine.
+The AT Protocol~\cite{bluesky} and Nostr\footnote{
+\url{https://nostr.com}
+} are two similar federated protocols
+with the AT Protocol being notable for underlying Bluesky.
+Both protocols use a combination of personal data stores and ``relays''
+to construct a queryable stream of \emph{all} data in the system.
+Within the AT Protocol, this global stream is called the ``firehose.''
+In the AT Protocol, client applications connect to intermediate ``app views,''
+while in Nostr, client applications connect directly to the relays, similar
+to the protocols we described for Graffiti in Section~\ref{above-and-below}.
 
-Released in 2022, the At Protocol is the protocol underlying the Bluesky social network.
-All posts in the At Protocol are public --- as of March 2024, there is not even private messaging.
+The global queryable stream of data makes contextual seperation impossible.
+For example, it is impossible for a user, Alice, to post a reply on either protocol
+without that reply surfacing in a query for ``anything by Alice.''
+This appears to be causing inter-application collapse as well.
+An application called Flashes, built on the AT Protocol,
+currently places all images a user has posted to Bluesky within
+an Instagram-like grid. Users who want their Flashes feed to be
+more curated are simply suggested to use a different account\footnote{
+    \url{https://www.youtube.com/live/B7OwcXCE5Rg?t=1655s}
+}.
 
-All of a user's posts are kept in a personal data store that tracks changes like a git repository. All of these changes are signed with the user's public key which means posts are undeniable and unforgettable, since all deletions and edits a user makes are publicly available in this log.
+Both protocols include extensible objects but these objects are not
+\emph{autonomously} extensible (see requirement~\ref{requirements:autonomous-extensibility})
+because the relays will not index objects with properties that are unfamiliar to them.
+Additionally, both protocols sign all objects with their users' public keys, making
+all content \emph{unrepudiable}, violating our requirement~\ref{requirements:forgiving}.
+Finally, the AT Protocol does not currently allow for
+any private messaging.
 
-Independent developers can build relays that index the content stored in individual data repositories to compute algorithmic feeds. Clients can be built on top of a relay's API by calling methods like `getTimeline` or `getPostThread.' However, relays don't necessarily need to share an API so there is no universal client-server API.
-The relay-specific client-server APIs are at least be described by a common At Protocol-specific lexicon.
+% It is technically decentralized although some critics suggest
+% that decentralization scales quadratically and so realistically it
+% can only support a fixed number of users.
+% However it does offer a "credible exit".
+% Cite Christine.
 
-Relays may perform some amount of baseline moderation, but there is standardized labeling system that allows users to mark posts or other users as `rude,' `troll,' etc.
-Users can subscribe to other users' labeling, allowing relays to filter or blur posts labeled by those users.
-They call this system `composable moderation.'
+% Released in 2022, the At Protocol is the protocol underlying the Bluesky social network.
+% All posts in the At Protocol are public --- as of March 2024, there is not even private messaging.
 
-Introduced Flashes as an instagram-like app but all apps posted in one appear in the other.
-To create a new account to use a different app.
-https://www.youtube.com/live/B7OwcXCE5Rg?t=1655s
+% All of a user's posts are kept in a personal data store that tracks changes like a git repository. All of these changes are signed with the user's public key which means posts are undeniable and unforgettable, since all deletions and edits a user makes are publicly available in this log.
 
-\subsubsection{Nostr}
+% Independent developers can build relays that index the content stored in individual data repositories to compute algorithmic feeds. Clients can be built on top of a relay's API by calling methods like `getTimeline` or `getPostThread.' However, relays don't necessarily need to share an API so there is no universal client-server API.
+% The relay-specific client-server APIs are at least be described by a common At Protocol-specific lexicon.
 
-Released in 2020, Nostr's infrastructure, like the At Protocol's, is divided into three layers: data storage, relays, and clients.
-Unlike the At Protocol, Nostr relays use a universal client-server API that allow users to query the relays for content they've indexed like a general purpose database.
+% Relays may perform some amount of baseline moderation, but there is standardized labeling system that allows users to mark posts or other users as `rude,' `troll,' etc.
+% Users can subscribe to other users' labeling, allowing relays to filter or blur posts labeled by those users.
+% They call this system `composable moderation.'
 
-For example, when one user follows another, their client simply queries the relays it is connected to for posts by that user.
-This system is so generic it has allowed for at 78 different applications to be built on top of Nostr, including microblogging sites, Reddit-like forums, Pinterest-like collaborative tagging, an app for collaborative music remixing, and more.
-%https://www.nostrapps.com/
+% \subsubsection{Nostr}
 
-However the flexibility to make arbitrary queries is also Nostr's drawback:
-all of a user's activity across all client applications can be revealed by simply querying for their user ID.
-Nostr provides basic mechanism for crafting private messages (which, by necessity, leaks a lot of metadata so the messages appear in queries)
-but this won't prevent, for example, a user's posts in in a public political forum from mixing with their public life updates from mixing with their public dating profile --- this is the phenomenon of context collapse, which we will return to in \S.
+% Released in 2020, Nostr's infrastructure, like the At Protocol's, is divided into three layers: data storage, relays, and clients.
+% Unlike the At Protocol, Nostr relays use a universal client-server API that allow users to query the relays for content they've indexed like a general purpose database.
 
-Many of Nostr's users are cryptocurrency enthusiasts and cryptocurrency micropayments are a built-in feature of the platform. Unsuprisingly, all Nostr data is signed by a user's public key.
-Similar to the At Protocol, users can opt-in to moderation by subscribing to block lists.
+% For example, when one user follows another, their client simply queries the relays it is connected to for posts by that user.
+% This system is so generic it has allowed for at 78 different applications to be built on top of Nostr, including microblogging sites, Reddit-like forums, Pinterest-like collaborative tagging, an app for collaborative music remixing, and more.
+% %https://www.nostrapps.com/
+
+% However the flexibility to make arbitrary queries is also Nostr's drawback:
+% all of a user's activity across all client applications can be revealed by simply querying for their user ID.
+% Nostr provides basic mechanism for crafting private messages (which, by necessity, leaks a lot of metadata so the messages appear in queries)
+% but this won't prevent, for example, a user's posts in in a public political forum from mixing with their public life updates from mixing with their public dating profile --- this is the phenomenon of context collapse, which we will return to in \S.
+
+% Many of Nostr's users are cryptocurrency enthusiasts and cryptocurrency micropayments are a built-in feature of the platform. Unsuprisingly, all Nostr data is signed by a user's public key.
+% Similar to the At Protocol, users can opt-in to moderation by subscribing to block lists.
 
 % https://www.youtube.com/watch?v=89Y-Bj_VBk8
 
@@ -440,7 +526,7 @@ Graffiti applications are \emph{adversarially interoperable} with other Graffiti
 applications, as per requirement~\ref{requirements:adversarial-interop}.
 However, Graffiti applications do not interoperate with \emph{external}
 applications or protocols.
-One tool that does that is Gobo, which unifies feeds from Reddit, Bluesky,
+One tool that does is Gobo, which unifies feeds from Reddit, Bluesky,
 Mastodon, and, previously, Twitter
 and allows users to customize the algorithms that sort their unified feed~\cite{gobo}.
 Matrix also provides ``bridges'' to itself from messaging platforms like
@@ -478,27 +564,37 @@ Graffiti as a way to encourage adoption.
 \subsection{Channel-Like Models}
 
 Channels, as discussed in Section~\ref{concepts:channels}
-are one of the most novel aspects about the Graffiti system.
-While relatively simple, they are highly expressive.
-They have subtle similarities and differences to existing concepts.
+are one of the most novel aspects about the Graffiti API.
+We have, so far, discussed channels in relation to IRC and Slack channels
+and Matrix rooms, which are user-facing instances of a general publish-subscribe
+messaging pattern~\cite{pubsub}.
+Here we mention two other concepts that relate to and shaped our
+design of Graffiti's channels.
+
+% While relatively simple, they are highly expressive and remove the
+% need for many server-side effects.
+% We have discussed channels in relation to ``Room-like'' models
+% of IRC, Slack, and Matrix which correspond to publish-subscribe
+% systems more broadly. Here we mention two other systems that
+% are related to channels but were designed for different purposes.
 
 
 % While they are more powerful than the Actor model, used by ActivityPub
 % and the Firehose model used by BlueSky, we outline the differences from
 % other familiar and related concepts.
 
-\paragraph{Publish Subscribe}
+% \paragraph{Publish Subscribe}
 
-Publish subscribe, has been implemented by RSS or
-more efficiently by WebSub, formerly PubSubHubub.
-Some systems have owners.
-Others are not persistent.
+% Publish subscribe, has been implemented by RSS or
+% more efficiently by WebSub, formerly PubSubHubub.
+% Some systems have owners.
+% Others are not persistent.
 
-Also that one paper Dave Clark told me to cite.
+% Also that one paper Dave Clark told me to cite.
 
-Graffiti combines both aspects.
+% Graffiti combines both aspects.
 
-\paragraph{Bidirectional Links}
+\subsubsection{Bidirectional Links}
 
 On the World Wide Web, hyperlinks point in one direction from one website to another.
 However, hypertext systems like Xanadu~\cite{xanadu}
@@ -511,7 +607,7 @@ Channels can be seen as a way to \emph{selectively} create bidirectional links.
 A reply object points \emph{to} the object it is replying to.
 Placing the reply in the channel represented by the original post's URL
 creates a link in the opposite direction
-pointing \emph{from} the original post object to the reply.
+pointing \emph{from} the original post object \emph{to} the reply.
 The ability for an object's creator to select which of its links should be bidirectional
 is critical for managing context collapse.
 The general Dexter hypertext model allows for mixed link types, but
@@ -523,19 +619,19 @@ as far as we can tell, it was never implemented~\cite{dexter}.
 % or \emph{from} the actor \emph{to} the reply (in the case of Twitter/X-like comments).
 % Of course, channels also make it possible to create "links" from non-digital artifacts like topics or locations.
 
-\paragraph{Object Capabilities}
+\subsubsection{Object Capabilities}
 
 Object capability security is a security model where rights to perform an action
-can be transferred to another user by giving that user a reference to that action.
+can be transferred to another user by giving the user a reference to that action~\cite{capabilitymyths}.
 A channel string can be thought of as a ``read'' capability because knowledge
 of a channel string allows an actor to read all public objects in that channel.
 
-The Spritely project aims to encapsulate \emph{all}
+The Spritely Institute aims to encapsulate \emph{all}
 security aspects of a social application with object capabilities~\cite{spritely}.
 Capabilities can indeed be layered to create complex interactions,
 including revocation of access.
 However, many of these interactions require an agent acting on the user's behalf
-to be always \emph{online}.
+to be always \emph{online}, similar to ActivityPub's server side effects.
 Since we don't want developers to have to write server code,
 we chose to give objects more familiar \texttt{allowed} lists
 in addition to channels.

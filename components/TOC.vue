@@ -36,12 +36,12 @@
                         >Above & Below</RouterLink
                     >
                 </li>
-                <!--
                 <li>
                     <RouterLink to="/paper/related-work">
                         Related Work
                     </RouterLink>
                 </li>
+                <!--
                 <li>
                     <RouterLink to="/paper/case-studies">
                         Case Studies
@@ -52,6 +52,9 @@
                 </li>
                 <li>
                     <RouterLink to="/paper/discussion"> Discussion </RouterLink>
+                </li>
+                <li>
+                    <RouterLink to="/paper/conclusion"> Conclusion </RouterLink>
                 </li>
                 <li>
                     <RouterLink to="/paper/appendix"> Appendix </RouterLink>

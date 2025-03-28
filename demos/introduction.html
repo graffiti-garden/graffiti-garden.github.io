@@ -1,5 +1,6 @@
 <GraffitiDiscover
-    v-slot="{ results: waves, isPolling }"
+    autopoll
+    v-slot="{ objects: waves, isInitialPolling }"
     :channels="[ 'https://graffiti.garden' ]"
     :schema="{
         properties: {
@@ -38,6 +39,6 @@
         <p>To wave 👋 you need to be logged in.</p>
     </template>
 
-    <p v-if="isPolling">Loading...</p>
+    <p v-if="isInitialPolling">Loading...</p>
     <p v-else>{{ waves.length }} people have waved from this page!</p>
 </GraffitiDiscover>

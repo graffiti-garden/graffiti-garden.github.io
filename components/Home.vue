@@ -7,8 +7,8 @@
             website with just a few lines of HTML and JavaScript. These features
             can be as relatively simple, as in the demo below, or amount to
             full-fledged applications similar to
-            <a href="https://namebook.graffiti.garden">Facebook</a> or Google
-            Docs.
+            <a href="https://namebook.graffiti.garden">Facebook</a> to
+            <a href="https://wiki.graffiti.garden">Wikipedia</a>.
         </p>
 
         <Playground path="introduction" :hide-source="true" />

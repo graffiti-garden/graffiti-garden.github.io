@@ -1,0 +1,173 @@
+\section{Case Studies}
+
+% All are built with our Vue plugin and
+% pure client-side applications with no servers
+% involved other than those interfaced with below the Graffiti API.
+
+% The first demonstrate interoperability.
+% The latter demonstrate how ``weird'' social applications
+% can become when there is not central moderator.
+\begin{enumerate}
+\item
+Wide variety/diversity
+\item
+Interoperability and interplay
+\item
+``Weird'' with no central moderator
+\end{enumerate}
+All of the applications were written with pure client-side code on
+top of the Graffiti Vue plugin.
+
+\subsection{Namebook and Gloof}
+
+Namebook is a text-centric microblogging platform,
+where users can post updates, follow others,
+etc.
+It also includes a directory of users, that users
+can choose to put themselves on, but not necessary.
+Threaded replies
+
+Gloof is an application for sharing flyers to events in the [REDACTED]-area.
+The flyers are displayed in a grid, similar to Instagram,
+but there is just one feed, rather than.
+
+but the flyers are published from an explicit set of approved members.
+Gloof has a built-in set of administrators.
+Anyone can comment on Gloof posts but the Gloof
+moderators can selectively delete posts.
+
+Namebook posts under a user's channel as described in section~\ref{concepts:channels}.
+Gloof posts are posted to the channel \texttt{"gloof"} and filtered
+for only their approved.
+Gloof posts can be optionally cross-posted to Namebook.
+Namebook cannot parse the images but can still read the
+text description.
+Additionally, comments on Namebook are Twitter-like
+and available in a replies tab, unlike Gloof comments
+which only show up under the post
+
+Additionally, Gloof posts are posted with a timestamp.
+This allows those posts to interoperate with a
+separate calendar application.
+Similar applications might also post the data in a map,
+however this app explicitly hides locations.
+
+% Posts to Gloof can be cross-posted to Namebook.
+
+% Users of [Redacted] can are "cross-posted" to Namebook.
+% Comments under than post show up on
+% both Namebook and [Redacted]. However,
+% Comments on Namebook \emph{also} show up
+% in the users profile. THis is not the case
+% for comments on Redacted which, like INstagra
+
+% Additionally, on [Redacted] you can delete comments.
+% This is not possible on Namebook.
+
+\subsection{Parallax and Provenance}
+
+\emph{Parallax} is a realtime group chat application that demonstrates
+how, under total reification, it is possible for \emph{every} user to employ a different
+moderation scheme.
+Specifically,
+every user, from their own perspective,
+is the sole administrator of \emph{all} group chats (that they know about) with
+unilateral control over each group's name and membership.
+The messages a user sends in a group can only be seen by the users they explicitly
+put on that group's membership list.
+However, users can also see the changes that other users
+make to their own ``views'' of a group and are given the option
+to \emph{voluntarily} incorporate those changes,
+as shown in Figure~\ref{case-studies:fig:splitsignal}.
+
+Under the hood, a group is represented by a random identifier,
+generated when the group is created, and also used as the group's channel.
+Changes to a group's name are similar to name changes on Namebook, only they
+\texttt{describe} the channel identifier.
+Changes to the group's membership are \texttt{"Add"}
+and \texttt{"Remove"} activities that \texttt{target} the relevant actor.
+Messages are much like posts on Namebook, only they have \texttt{allowed} lists, which are determined
+by aggregating the user's own \texttt{"Add"} and \texttt{"Delete"} activities.
+
+Of course, complete independence is not always desirable:
+work usually done by just one group administrator must, in Parallax,
+be done by every single group user.
+We use Parallax to demonstrate an extreme, but by changing X lines of functional code,
+the application can be transformed into a more reasonable (but more restrictive) application called \emph{Provenance},
+where a group's administrator is the  \emph{creator} of the group chat.
+
+% Provenance determines the \texttt{allowed} list on a user's messages
+% by aggregating the \texttt{"Add"} and \texttt{"Remove"} activities made by the first
+% actor to post in the chat.
+
+Parallax and Provenance both interoperate.
+Some messages sent from one will not be seen in the other
+according to their unequal membership lists. However, this messiness is already present and tolerable
+in messaging applications like Signal, where users can block other group members,
+and email, where any reply can be sent to a different set of recipients.
+There is exciting work to be done learning what interfaces make
+Graffiti's inevitable assymetry most accessible and engaging.
+
+% While the previous case study demonstrates
+% how a user might choose different settings
+% \emph{between} applications.
+% Here there are settings \emph{within} the application.
+
+% This and the following app are extreme.
+% In many cases the user would not to
+% have fine grained control over group
+% membership and would like to delegate
+% some of that work to, say, the person
+% who created the groupchat.
+% Additional layers like this are possible
+% but it is always possible for an application
+% like this one to interoperate with
+% more traditional ones.
+
+% Maybe show traditional chat app and how
+% it interoperates?
+
+\subsection{Wikiffiti}
+
+Wikiffiti is a Wikipedia-like application that demonstrates that
+collaborative editing in Graffiti is possible,
+even though an actor can only mutate their own objects.
+Additionally, unlike Wikipedia,
+every user on Wikiffiti can choose which other users have ``permission'' to edit an article,
+\emph{retroactively} undoing edits by unpermissioned users,
+as shown in Figure~\ref{case-studies:fig:wikiffiti}.
+% total reification provides every user with affordance
+
+Edits to each Wikiffiti article are published to
+the channel represented by the article's title.
+This allows for basic search and, like on Wikipedia,
+``disambiguation'' pages can serve as manual search indexes when necessary.
+
+Edits are published and composed together according to Logoot,
+a conflict-free replicated data type (CRDT)~\cite{logoot,crdts}.
+Logoot, and CRDTs in general, were developed for asynchronous collaborative editing
+but, luckily for us, Logoot produces reasonable results when
+some edits are ``dropped,'' as we do here intentionally.
+Currently, our implementation is inefficient with a 40x space blowup;
+however, there are plenty of low-hanging optimizations that one could apply
+and release as part of a standard collaborative editing library.
+
+Like Parallax, Wikiffiti is an extreme. Clearly, not every user
+has the expertise or desire to vet all the editors of
+every article they read. In reality, the work of approving editors
+or individual edits will be delegated to
+a hierarchy of user access levels,
+friend-of-a-friend networks of trust,
+or automatic vandalism detectors, for example.
+Still, the data underneath can always be reinterpreted, allowing
+for new systems to independently evolve that,
+for example, might be more welcoming to newcomers~\cite{wikibourgeoisie, wikirisedecline}
+or promote edits made by women and non-binary people~\cite{wikigender}.
+An application could even highlight edits that are vandalism to some,
+but art to others: graffiti.
+
+
+% Vandalism to some may be empowering to other.
+
+% All the while, maintaining the dissonance that what is vandalism to some,
+% may be art to others.

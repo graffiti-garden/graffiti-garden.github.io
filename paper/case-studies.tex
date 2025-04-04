@@ -1,4 +1,5 @@
 \section{Case Studies}
+\label{case-studies}
 
 % All are built with our Vue plugin and
 % pure client-side applications with no servers
@@ -7,50 +8,125 @@
 % The first demonstrate interoperability.
 % The latter demonstrate how ``weird'' social applications
 % can become when there is not central moderator.
-\begin{enumerate}
-\item
-Wide variety/diversity
-\item
-Interoperability and interplay
-\item
-``Weird'' with no central moderator
-\end{enumerate}
-All of the applications were written with pure client-side code on
+The case studies below demonstrate the diversity of applications
+that can be build on top of the Graffiti API and explore interoperation
+between those applications.
+The studies also demonstrate some of the unusual design patterns that
+Graffiti makes possible when the boundaries between applications
+are fuzzy and no one is really in control.
+
+Other than the interoperation we describe, no \emph{unexpected}
+interoperation occurs, thanks to our channels concept.
+For example, group chat messages don't show up as posts on
+a microblogging site even though both use similar object schemas,
+because they are each posted to different channels.
+
+All of the applications are written with pure client-side code on
 top of the Graffiti Vue plugin.
 
-\subsection{Namebook and Gloof}
+\subsection{Namebook and The Gloof}
 
-Namebook is a text-centric microblogging platform,
-where users can post updates, follow others,
-etc.
-It also includes a directory of users, that users
-can choose to put themselves on, but not necessary.
-Threaded replies
+The following example demonstrates how a community-specific application,
+\emph{The Gloof}, can interoperate with a general-purpose application, \emph{Namebook},
+without the explicit permission of Nambook.
+Not all of the community-specific features on The Gloof
+translate to Namebook, and not all of the interconnectedness on Namebook
+is forced upon The Gloof.
+Still, there is enough interoperation between the two to be meaningful.
 
-Gloof is an application for sharing flyers to events in the [REDACTED]-area.
+\emph{Namebook} is a text-centric microblogging platform
+where users can post, follow, reply, and change their display name.
+Replies are threaded and, like Twitter, appear in the replier's followers' feeds
+in addition to the reply thread.
+There is also a literal ``name book,'' a directory
+users can add themselves to so others can find them.
+
+\emph{The Gloof} is an application made for a local
+venue to share event flyers.
 The flyers are displayed in a grid, similar to Instagram,
-but there is just one feed, rather than.
+but there is just one feed, collectively curated by
+the application's fixed set of venue organizers.
+Flyers can be replied to but the organizers can delete replies they disapprove of.
 
-but the flyers are published from an explicit set of approved members.
-Gloof has a built-in set of administrators.
-Anyone can comment on Gloof posts but the Gloof
-moderators can selectively delete posts.
+Importantly, The Gloof gives the ability for
+top-level repliers to ``crosspost'' their replies
+to Namebook, effectively sharing the flyer like a quote tweet.
+Namebook does not support images and so only the
+event description appears.
+Replies to the crosspost made on Namebook also appear on The Gloof
+and vice versa, \emph{unless} the Gloof's organizers ``delete'' the reply,
+in which case it only appears on Namebook, regardless of where it originated.
+Additionally, replies to the crosspost made on Namebook appear in the replier's
+followers' feeds while replies made on The Gloof only appear in the reply thread,
+as expected of each.
+% on Namebook but replies
+% to the crosspost show up on both applications,
+% allowing repliers ask clarifying questions.
+% Namebook does not consider The Gloof's organizers
+% moderators of its own site and so replies ``deleted''
+% on The Gloof still show up on Namebook.
+% Finally, replies made on The Gloof only appear
+% in the reply thread while replies made on Namebook
+% appear on the user's profile, even if they are in
+% reply to posts on The Gloof.
 
-Namebook posts under a user's channel as described in section~\ref{concepts:channels}.
-Gloof posts are posted to the channel \texttt{"gloof"} and filtered
-for only their approved.
-Gloof posts can be optionally cross-posted to Namebook.
-Namebook cannot parse the images but can still read the
-text description.
-Additionally, comments on Namebook are Twitter-like
-and available in a replies tab, unlike Gloof comments
-which only show up under the post
+The applications are built on the object schemas and channels
+shown in Figure~\ref{case-studies:fig:schemas-and-channels}.
+Importantly, both applications use the same reply schema,
+and the post schema used by Namebook is a subset of the flyer
+schema used by The Gloof.
+This overlap makes interoperation \emph{possible}
+but selecting ``crosspost'' in The Gloof collapses the
+channel usage of the two applications
+causing the interoperation to actually \emph{happen}.
+The difference in reply visibility between the two applications
+is exactly as described in Section~\ref{concepts:channels}.
 
-Additionally, Gloof posts are posted with a timestamp.
-This allows those posts to interoperate with a
-separate calendar application.
-Similar applications might also post the data in a map,
-however this app explicitly hides locations.
+\begin{figure}
+    \centering
+    \includegraphics[width=\columnwidth]{figures/schemas-and-channels.jpg}
+    \caption{Namebook and Gloof object schemas and channels}
+    \label{case-studies:fig:schemas-and-channels}
+\end{figure}
+
+% Namebook employs four object schemas: posts and replies are represented
+% by one schema with \texttt{content}, a \texttt{published} timestamp, and an optional
+% \texttt{inReplyTo} link;
+% name changes represented by objects with a \texttt{name} and
+% \texttt{desribes} property pointing to the actor's URI;
+% \texttt{"Follow"} and \texttt{"Add"} activities
+% are used for following and adding one's self to the name book respectively
+% and each \texttt{target} the relevant actor URI.
+% All posts, replies, and name changes are published to the actor's URI
+% channel. Replies are also posted to original post's URL channel.
+% Finally, \texttt{"Add"} activities are simply posted to the channel \texttt{"namebook"}.
+
+% Gloof employs three object schemas. Replies are identitical to Namebook's,
+% while flyers have additional properties \texttt{startTime},
+% and \texttt{attachment} for including the flyer image.
+% Moderation is done with \texttt{"Remove"} activities that
+% target the relevant actor URI.
+% Flyer's are posted in the channel \texttt{"gloof"} while
+% replies are posted in
+
+
+% To make this work,
+% Namebook posts are posted to the actor's own URI channel,
+% as described in Section~ref{}
+% Namebook posts under a user's channel as described in section~\ref{concepts:channels}.
+% Gloof posts are posted to the channel \texttt{"gloof"} and filtered
+% for only their approved.
+% Gloof posts can be optionally cross-posted to Namebook.
+% Namebook cannot parse the images but can still read the
+% text description.
+% Additionally, comments on Namebook are Twitter-like
+% and available in a replies tab, unlike Gloof comments
+% which only show up under the post
+
+One additional note is that flyers posted to The Gloof include a \texttt{startTime}
+to display event dates.
+This metadata is also used to populate a separate calendar application
+used by the co-operative that owns the venue space.
 
 % Posts to Gloof can be cross-posted to Namebook.
 
@@ -78,15 +154,15 @@ put on that group's membership list.
 However, users can also see the changes that other users
 make to their own ``views'' of a group and are given the option
 to \emph{voluntarily} incorporate those changes,
-as shown in Figure~\ref{case-studies:fig:splitsignal}.
+as shown in Figure~\ref{case-studies:fig:parallax}.
 
 Under the hood, a group is represented by a random identifier,
 generated when the group is created, and also used as the group's channel.
 Changes to a group's name are similar to name changes on Namebook, only they
-\texttt{describe} the channel identifier.
+\texttt{describe} the group identifier.
 Changes to the group's membership are \texttt{"Add"}
 and \texttt{"Remove"} activities that \texttt{target} the relevant actor.
-Messages are much like posts on Namebook, only they have \texttt{allowed} lists, which are determined
+Messages are like posts on Namebook, only they have \texttt{allowed} lists, which are determined
 by aggregating the user's own \texttt{"Add"} and \texttt{"Delete"} activities.
 
 Of course, complete independence is not always desirable:
@@ -100,8 +176,8 @@ where a group's administrator is the  \emph{creator} of the group chat.
 % by aggregating the \texttt{"Add"} and \texttt{"Remove"} activities made by the first
 % actor to post in the chat.
 
-Parallax and Provenance both interoperate.
-Some messages sent from one will not be seen in the other
+Parallax and Provenance both interoperate
+but some messages sent from one will not be seen in the other
 according to their unequal membership lists. However, this messiness is already present and tolerable
 in messaging applications like Signal, where users can block other group members,
 and email, where any reply can be sent to a different set of recipients.
@@ -149,7 +225,7 @@ Logoot, and CRDTs in general, were developed for asynchronous collaborative edit
 but, luckily for us, Logoot produces reasonable results when
 some edits are ``dropped,'' as we do here intentionally.
 Currently, our implementation is inefficient with a 40x space blowup;
-however, there are plenty of low-hanging optimizations that one could apply
+however, there are plenty of existing optimizations that one could apply~\cite{logootbetter}
 and release as part of a standard collaborative editing library.
 
 Like Parallax, Wikiffiti is an extreme. Clearly, not every user

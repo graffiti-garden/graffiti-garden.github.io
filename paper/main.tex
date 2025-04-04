@@ -1,0 +1,43 @@
+\documentclass[sigconf,review,anonymous]{acmart}
+
+\usepackage{minted}
+\usepackage{xcolor}
+
+% For multirow
+\usepackage{multirow}
+
+% Encoding and language settings
+\usepackage[utf8]{inputenc} % Allow UTF-8 input
+% \usepackage[T1]{fontenc}    % Use 8-bit T1 fonts
+% \usepackage{microtype}      % Improves spacing
+
+\usepackage{graphicx} % Required for inserting images
+
+% \usepackage{fontspec}
+% \setmainfont{Noto Serif}
+
+% Uncomment to double-space so you have
+% room to write comments on the print-out
+\linespread{2}
+
+\usepackage{natbib} % For bibliography
+\bibliographystyle{ACM-Reference-Format}
+
+\title{Graffiti: An API for Diverse, Interoperable,\\
+Pure-Client Social Applications}
+% \date{March 2024}
+
+\begin{document}
+\input{abstract}
+\maketitle
+\input{introduction}
+\input{requirements}
+\input{concepts}
+\input{api}
+\input{above-and-below}
+\input{related-work}
+\input{case-studies}
+\input{conclusion}
+
+\bibliography{bibliography}
+\end{document}

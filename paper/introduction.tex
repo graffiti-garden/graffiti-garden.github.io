@@ -1,45 +1,171 @@
+\section{Introduction}
 
-It is easy to identify problems with the social media applications we have today, but creating new applications can be daunting.
-Not only does it require building a full-stack infrastructure, it also requires overcoming the network effects that keep people locked into existing platforms.
-We introduce Graffiti, a novel infrastructure that aims to make social media applications easier to create, change, and migrate between in the hope that the ecosystem of applications will evolve to be better for both individuals and society.
+There are millions of apps and billions of websites but
+most people socialize on a tiny handful of them.
+This is partly because adding social features to applications\footnote{
+    We use the term ``application'' to encompass interactive websites,
+    smarphone apps, and desktop applications.
+    Today, the same web technologies (HTML, CSS, JavaScript)
+    can be used to build all three.
+}
+requires significant technical expertise,
+and partly because network effects pressure
+people to gather where their friends already are.
 
-The core of Graffiti is a generic API for publishing and discovering social data. The API is designed so that many different client applications can be built on top it simultaneously, allowing those apps to naturally interoperate so that content posted in one client can be read in another.
+We present a system called \emph{Graffiti} that works
+on both fronts, laying the foundation
+for developers to build a diverse ecosystem
+of social applications using \emph{only client-side code},
+while also ensuring that these applications \emph{interoperate},
+allowing users to freely migrate between them.
 
-Related systems, that allow for different frontends to be built on top of a shared social backend, bake design patterns into their APIs that limit the gamut of applications that can be built.
-For example, users can switch between different frontends for Mastodon and BlueSky, but they still follow the general microblogging design pattern: a feed of posts with likes and comments.
+The challenge of Graffiti's design it to resolve
+this tension between extensibility and interoperability.
+Can an application with top-down
+moderation interoperate with a democratically moderated one?
+In Graffiti, yes. Our concept \emph{total reification}
+treats moderation, and in fact all social interactions,
+as first-class objects that can be interpreted
+or ignored by different applications.
+What happens when a user posts from an application with strict privacy settings,
+while they are viewed from an application with loose ones?
+In this case, our \emph{channels} concept helps respect the wishes of the poster,
+maintaining their ``imagined audience'' and preventing context collapse.
 
-Graffiti, on the other hand, is highly \emph{pluralistic} and can be used to create Twitter clones, but also clones of Reddit, Pinterest, Yelp, and Wikipedia, in addition to radically different designs.
-In particular,
-it allows for an evolving ``folksonomy'' of data types, the creation of social boundaries despite its interoperability, coexisting moderation policies, and allows data to be forgotten.
+Our design decisions are guided by a set of \emph{requirements}, outlined
+in Section~\ref{requirements}, that focus on the experience
+of social application developers and the users of their applications,
+both users of Graffiti as a whole.
+We assume, for the first half of this paper, that the system implementing these requirements
+will not misbehave, for example revealing data that is supposed to be private to third parties.
+Using language from cryptography literature,
+our requirements shape the
+``\emph{ideal functionality}''~\cite{universallycomposable}
+of the system or, using language from computer security literature,
+we assume that the system implementing these requirements is a ``\emph{trusted computing base}''~\cite{tcb}.
 
-We actualize the Graffiti API from ``above'' with a Typescript client library and a Vue.JS plugin that we use to build an array of example applications.
+Of course, trust will not come for free.
+There must be mechanisms in place to prevent situations like
+the Cambridge Analytica scandal, where Facebook blatantly violated the
+privacy and autonomy of its users,
+or situations like those involving X and Reddit, which violated
+the (unspoken) expectation that third-party API access would
+remain a free and reliable service.
+However, we aim to prove that designing mechanisms to establish trust can and should be
+\emph{separated} from designing for the user experience and moreover that
+the design of the user experience should come \emph{first}.
+The primary artifact we have designed to suit user needs is
+an \emph{application programming interface} (API) while
+secondary artifacts we've built beneath the API
+to establish trust are \emph{protocols}.
+
+Many of the existing infrastructures that allow for interoperation,
+described in Section~\ref{related-work:protocols}
+% including AcitivityPub, used by Mastodon, and the ATProtocol,
+% used by BlueSky,
+% like ActivityPub, Matrix and the AtProtocol, appear to
+seem to have been designed in reverse with their protocols first and their APIs second.
+While their protocols include effective trust mechanisms like federation and end-to-end-encryption,
+the APIs they provide often cannot be used to fulfil basic user needs, like private messaging~\cite{bluesky}.
+Or, aspects of their trust mechanisms,
+like ``instances'' or ``key management,''
+have leaked through into their APIs,
+adding unnecessary complexity to developers
+who simply want to make applications.
+We reply to the provocation ``\emph{Protocols, Not Platforms}''~\cite{protocolsnotplatforms},
+the rallying cry that sparked BlueSky\footnote{
+\url{https://bsky.app/profile/jay.bsky.team/post/3kkrxedmatv2p}
+},
+with the ammendment, ``\emph{...but the API first!}''
+
+% Conversely, the \emph{frameworks} we describe,
+% like the academic system Deja Vu or the commercial
+% Google database, are highly flexible and usable
+% but build silod applications.
+
+By separating out the concerns of the API from the protocols,
+we also leave open the possibility of evolving or competing protocols.
+Our design takes inspiration from the World Wide Web
+where URLs begin with a \emph{scheme}, like \texttt{http:} or \texttt{https:}. The inclusion of the scheme
+in the URL itself allows different protocols to coexist
+while the \emph{API} of the web, which allows for users to publish and retrieve
+web pages from URLs, remains unchanged.
+
+We describe the Graffiti API
+% in that meets our requirements
+first through high level concepts, in Section~\ref{concepts},
+then in detail in Section~\ref{api}.
+Section~\ref{above-and-below} describes the
+the decentralized protocols we've built \emph{below} the API,
+as well the tooling we've built \emph{above} the API
+to make Graffiti applications with declarative and reactive programming.
+We wait until Section~\ref{related-work}
+to introduce related work, with a more concrete
+understanding of what we're comparing to.
+Finally, Section~\ref{case-studies} explores Graffiti's
+capabilities in a set of case studies, that show it is possible to build
+systems as diverse as Twitter, Signal, and Wikipedia,
+all using client-side code.
+% Unforuntately, some of the social implications of our
+% system, are left to another paper but we conclude
+% with leading questions.
+
+% s tools we've built above the API
+% Section
+% The requirements below are for our primary contribution, our \emph{API}. The design that meets these
+% requirements is covered in the following
+% We also outline a set of \emph{protocols} that implement the API in Section~\ref{protocols}, each with their own
+% requirements and tradeoffs, but all of which can coexist.
+% We have also built additional tools \emph{above} the API, to enable
+% ``reactive'' programming and to make common designs easier
+% We also provide different implementations \emph{below} the API
+% involing communication \emph{protocols}.
+
+% We work towards alleviating both of these problems.
+% reducing the barrier to entry to making a wide variety of applications
+% while also allowing for those applications to \emph{interoperate}
+% with data smoothly flowing across them.
+% We introduce Graffiti, a novel infrastructure that aims to make social media applications easier to create, change, and migrate between in the hope that the ecosystem of applications will evolve to be better for both individuals and society.
+
+% The core of Graffiti is a generic API for publishing and discovering social data. The API is designed so that many different client applications can be built on top it simultaneously, allowing those apps to naturally interoperate so that content posted in one client can be read in another.
+
+% Related systems, that allow for different frontends to be built on top of a shared social backend, bake design patterns into their APIs that limit the gamut of applications that can be built.
+% For example, users can switch between different frontends for Mastodon and BlueSky, but they still follow the general microblogging design pattern: a feed of posts with likes and comments.
+
+% Graffiti, on the other hand, is highly \emph{pluralistic} and can be used to create Twitter clones, but also clones of Reddit, Pinterest, Yelp, and Wikipedia, in addition to radically different designs.
+% In particular,
+% it allows for an evolving ``folksonomy'' of data types, the creation of social boundaries despite its interoperability, coexisting moderation policies, and allows data to be forgotten.
+
+% We actualize the Graffiti API from ``above'' with a Typescript client library and a Vue.JS plugin that we use to build an array of example applications.
 % makes it possible to build complete social applications using only front-end development tools on top of the generic Graffiti API.
-We actualize Graffiti API from ``below'' with a decentralized backend that implements API.
-In this implementation, users host their social data in a storage pods of their choice and a decentralized tracker tells clients which pods they should query to find relevant data.
-Together, the technology stack composed of the API, client side tools, and decentralized backend form the complete Graffiti infrastructure.
+%
+% We actualize Graffiti API from ``below'' with a decentralized backend that implements API.
+% In this implementation, users host their social data in a storage pods of their choice and a decentralized tracker tells clients which pods they should query to find relevant data.
+% Together, the technology stack composed of the API, client side tools, and decentralized backend form the complete Graffiti infrastructure.
 
-Our analysis of Graffiti is primarily focused on the design of the API. The client side tools make it possible to build.
+% Our analysis of Graffiti is primarily focused on the design of the API. The client side tools make it possible to build.
 
 % Graffiti at its heart rellects a simple design: each user hosts their own content/posts on their own storage service such as Dropbox or Solid, partitioned into \emph{channels} intended for different audiences, and social client applications collect, organize, lnd present that content for users who want it.   A simple, scalable \emph{tracker} helps clients keep track of content they should collect.   Graffiti can be seen as an evolution of RSS feeds and readers, with added realtime notification and interaction capabilities to support social applications.
 
 % [Add something about how the affordances of a system mirror cultural partices of communities (Black Twitter, distruted blackness) and can reinforce existing hierarchies (design justice)]
 
-Graffiti is generally a liberal system that prioritizes self determination over paternahism, however we present both centralized and decentralized implementations as different approaches to the trolley problem that pits the need for a central entity that can detect repugnant behavior (e.g. CSAM) against the values of privacy and free speech.
+% Graffiti is generally a liberal system that prioritizes self determination
+% over paternahism, however we present both centralized and decentralized implementations as different approaches to the trolley problem that pits the need for a central entity that can detect repugnant behavior (e.g. CSAM) against the values of privacy and free speech.
 
-Aside from this possible root-level filter for universally repugnant content,
-moderation is performed independently by different clients using annotations from the user or from user-selected third-parties to hide, flag, or demote unwanted content.
-Data is not limited to rigidly defined concepts like ``posts,'' ``replies,'' or ``likes;'' instead, clients can interpret data flexibly according to an evolving folksonomy.
-Users enjoy the ``right to be forgotten,'' and plausible deniability for their posts, unless they explicitly opt-in to third party signing services.
-One of the system's few enforced constraints aims to prevent context collapse~\cite{contextcollapse}, the flattening of multiple audiences, giving users a sense of ``place'' in an otherwise amorphous sea of data.
+% Aside from this possible root-level filter for universally repugnant content,
+% moderation is performed independently by different clients using annotations from the user or from user-selected third-parties to hide, flag, or demote unwanted content.
+% Data is not limited to rigidly defined concepts like ``posts,'' ``replies,'' or ``likes;'' instead, clients can interpret data flexibly according to an evolving folksonomy.
+% Users enjoy the ``right to be forgotten,'' and plausible deniability for their posts, unless they explicitly opt-in to third party signing services.
+% One of the system's few enforced constraints aims to prevent context collapse~\cite{contextcollapse}, the flattening of multiple audiences, giving users a sense of ``place'' in an otherwise amorphous sea of data.
 
-To the extent possible, Graffiti is built upon existing infrastructure.
-In our decentralized implementation, users posts are hosted on their own cloud storage provider like Dropbox or Solid.  We connect these personal data stores together to form a global content discovery network using a tracker, a concept borrowed from BitTorrent.  The demands on the Graffiti tracker are minimal, making the system quite scalable.
-In both implementations, the data passing through the system is based on the Activity Vocabulary web standard.
+% To the extent possible, Graffiti is built upon existing infrastructure.
+% In our decentralized implementation, users posts are hosted on their own cloud storage provider like Dropbox or Solid.  We connect these personal data stores together to form a global content discovery network using a tracker, a concept borrowed from BitTorrent.  The demands on the Graffiti tracker are minimal, making the system quite scalable.
+% In both implementations, the data passing through the system is based on the Activity Vocabulary web standard.
 
-We developed a prototype Typescript library that connects to these backend components and exposes a simple API for frontend development. Additionally, we created created a Vue.JS plugin on top of the library that lets developers write entire social applications declaratively.
+% We developed a prototype Typescript library that connects to these backend components and exposes a simple API for frontend development. Additionally, we created created a Vue.JS plugin on top of the library that lets developers write entire social applications declaratively.
 
-We analyze Graffiti through a number of case study applications that demonstrate the ease of development, interoperability, and a diversity of possible application designs.
-We also discuss the system's performance at scale, its economics, its adoption, and its potential for abuse.
+% We analyze Graffiti through a number of case study applications that demonstrate the ease of development, interoperability, and a diversity of possible application designs.
+% We also discuss the system's performance at scale, its economics, its adoption, and its potential for abuse.
 
 % Moderation actions are annotihns of data and can be interpretted as.
 % The receiving client can then choose to display the data based on it's own moderation policies.
@@ -69,24 +195,9 @@ We also discuss the system's performance at scale, its economics, its adoption, 
 
 % In our vision of Graffiti, choosing which social application you use will be like choosing what email client you use. You will have an immense amount of choices and regardless of which one you pick, you will still be able to communicate with others.
 
-\subsection{API Before Protocol(s)}
+% \subsection{API Before Protocol(s)}
 
-Readers may have noticed that there was no mention of privacy,
-or decentralization in oura document.
-Concerns having to do to the
-
-Partitioning design is important for reducing complexity and scope.
-It also means that certain features won't bubble up to developers
-Things like servers, keeping track of keypairs,
-
-It also leaves the possibility of multiple different competing
-schemas. The beginning of a URL before the colon specifies a schema.
-Browsers understand http:, https:, and used to support ftp:
-The change from http: to https: happened smoothly and.
-
-It's a lot like a URL. Browsers can understand multiple URL schemes: http, https, ipfs, ftp, mailto, tel, magnet, etc. Each URL is associated with a very different protocol. But I can type any of them into my browser bar and, if the browser supports that protocol, it will return the right result / open the right application, etc.
-
-These are certainly things we believe in but they can be met in many different ways.
-The tech is evolving.
-
-\ref{requirements:easy}
+% In 2019 a piece called \emph{Protocols, Not Platforms} appeared,
+% which directly influenced the creation of BlueSky.
+% The focus on protocols can be limiting.
+% We instead take the mantra \emph{APIs, before Protocols}.

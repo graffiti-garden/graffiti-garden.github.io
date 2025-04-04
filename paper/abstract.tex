@@ -1,9 +1,30 @@
-There are millions of applications to be found across app stores and the web, but the monolithic nature of the social media platforms means that our social interactions are mediated through a bare handful of dominant social applications that can't be modified or replaced.
-In this work we explore the design and implementation of Graffiti, a \emph{pluralistic} infrastructure that aims to enable the emergence of a truly diverse ecosystem of inherently interoperable \emph{pure client} social applications that require no server implementation or significant resources beyond what is provided by the infrastructure.
+\begin{abstract}
 
-%It minimizes barriers to creating, changing, and migrating between social applications.
-Graffiti prioritizes user autonomy and design versatility while also addressing concerns like content moderation and privacy. Graffiti is designed with a specific eye towards preventing \emph{context collapse}, making it easy to create distinct spaces in which the different facets of a user's identity can be kept separate.
+% The closed APIs, network effects of modern social applications
+% have forced most people onto a small number of applications
+% over which they have no control.
+People today have little autonomy over the social applications
+they inhabit.
+We present the Graffiti API, which can be used
+to build a wide variety of custom social applications with
+relative ease and pure client-side development. These applications
+also \emph{interoperate}, allowing people to freely move between
+a plurality of designs---each with its own aesthetic, feature set,
+and moderation---all without ``losing their friends.''
 
-Graffiti is defined by its general-purpose API and we have realized it with a decentralized backend, frontend tooling, and many example applications.
-Graffiti includes a general-purpose backend and a frontend library that together allow for diverse, powerful, and interoperable social applications to be built with only HTML, CSS and Javascript.  We provide both centralized and decentralized implementations of Graffiti, with discussion of the scalability, economics, and potential for abuse of each.
-We evaluate Graffiti by examining a case-study ecosystem of example applications.
+Our concept of \emph{total reification} makes it possible
+for seemingly contradictory designs, including conflicting
+moderation rules, to interoperate.
+Conversely, our concept of \emph{channels}
+prevents interoperation from occurring by accident, avoiding context collapse.
+
+The Graffiti API is not tied to any specific communication protocol.
+We present two decentralized protocols for it,
+but others could be developed and used alongside them,
+much like how HTTP and HTTPS coexist on the web.
+Above the API, we built a Vue.js plugin, which we used
+to develop applications similar to Twitter, Signal, and Wikipedia.
+Our case studies explore how these and other novel applications interoperate,
+as well as the ecosystems that Graffiti enables.
+
+\end{abstract}

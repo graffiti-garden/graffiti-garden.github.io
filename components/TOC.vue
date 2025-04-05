@@ -12,14 +12,16 @@
         <li v-if="$route.path.startsWith('/paper')">
             Paper
             <ul>
-                <!-- <li>
+                <!--
+                <li>
                     <RouterLink to="/paper/abstract"> Abstract </RouterLink>
                 </li>
+                -->
                 <li>
                     <RouterLink to="/paper/introduction">
                         Introduction
                     </RouterLink>
-                </li> -->
+                </li>
                 <li>
                     <RouterLink to="/paper/requirements">
                         Requirements
@@ -41,24 +43,16 @@
                         Related Work
                     </RouterLink>
                 </li>
-                <!--
                 <li>
                     <RouterLink to="/paper/case-studies">
                         Case Studies
                     </RouterLink>
                 </li>
-                <li>
-                    <RouterLink to="/paper/hackathon"> Hackathon </RouterLink>
-                </li>
-                <li>
-                    <RouterLink to="/paper/discussion"> Discussion </RouterLink>
-                </li>
+                <!--
                 <li>
                     <RouterLink to="/paper/conclusion"> Conclusion </RouterLink>
                 </li>
-                <li>
-                    <RouterLink to="/paper/appendix"> Appendix </RouterLink>
-                </li> -->
+                -->
             </ul>
         </li>
         <li>

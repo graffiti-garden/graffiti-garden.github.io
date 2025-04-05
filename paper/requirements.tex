@@ -1,81 +1,77 @@
 \newtheorem{requirement}{Requirement}
 
 \section{Design Requirements}
+\label{requirements}
 
-The design of Graffiti,
-a system for building social applications,
-arises from a set of \emph{requirements}.
-These requirements focus on the experience of social application developers
-and the users of their applications.
-We assume, for now, that the system implementing these requirements
-will not misbehave, for example revealing data that is supposed to be private to third parties.
-Using language from cryptography literature,
-our requirements describe the
-``\emph{ideal functionality}''~\cite{universallycomposable}
-of the system or, using language from computer security literature,
-we assume that the system implementing these requirements is a ``\emph{trusted computing base}''~\cite{tcb}.
-% equivalently we assume that the system implementing these
-% these requirements is a ``\emph{trusted computing base}''~\cite{tcb}\footnote{
-%     The terms ``ideal functionality'' and ``trusted computing base''
-%     are borrowed from cryptography and computer security
-%     literature respectively.
-% }.
-% In other words, such a system will not misbehave,
-% for example revealing data that is supposed to be private to third parties.
-% or
-% In other words, the system will not misbhave,
-% for example revealing data that is supposed to be private to third parties
+Graffiti's design is primarily driven by our
+first two requirements:
+(\ref{requirements:easy})
+the need for communities to personalize
+their social applications,
+and (\ref{requirements:adversarial-interop})
+the need for those applications to interoperate.
+Our other requirements work to clarify these two.
 
-% and it will be reliable and free from bugs.
-% Developers and users trust the system will play by the rules,
-% not revealing data that is supposed to be private to third parties for example,
-% and that it is reliable, not losing data, going offline or being discontinued.
-% losing data going offline, etc.
+Requirements \ref{requirements:autonomous-extensibility}
+and \ref{requirements:serverless} expand on how accessible
+personalization should be: it should be possible to add new features
+without a lengthy standards process, and possible to build
+applications without writing server code.
+Requirements \ref{requirements:context-differentiation}
+and \ref{requirements:forgiving}
+presurface possible antisocial consequences of
+interoperation that we need to avoid,
+namely by protecting users from ``context collapse,''
+and ensuring their ``right to be forgotten.''
 
-% will be reliable (not lose data or go offline), and will
-% will not change or violate,
-% they trust it will be reliable and online, they trust it to
-% In other words that the system will not change the rules of the game by,
-% say, revealing information that is supposed to be private.
-% will not change the rules of the game
-% or violate the requirements by, say, revealing information
-% that is supposed to be private.
-% reliability, keeps bad actors out.
+While we call them ``requirements,''
+most are on a spectrum and our design
+does its best to accommodate all of them
+to the best of its ability.
 
-Of course, trust will not come for free.
-There must be mechanisms in place to prevent situations like
-the Cambridge Analytica scandal, where Facebook blatantly violated the
-privacy and autonomy of its users,
-or situations like those involving X and Reddit, which violated
-the (unspoken) expectation that third-party API access would
-remain a free and reliable service.
-% Facebook's violations of user's trust and pricy
-% % Facebook misbehaved when it violated its own terms of service
-% in the Cambridge Analytica scandal and both X and Reddit
-% violated the assumed trust of their users when they restricted API
-% to third party applications
-% and both X and Reddit
-% Of course, historical violations of trust including
-% Facebook's Cambridge Analytica scandal or Reddit and X's API
-% restrictions have shown that trust does not come for free.
-% We are not simply saying ``trust us.''
-However, we aim to prove that designing mechanisms to establish trust can and should be
-\emph{separated} from designing for the developer experience and moreover that
-the design of the developer experience should come \emph{first}.
-We refer to an artifact designed to shape the developer experience as an
-\emph{application programming interface} (API)
-and an artifact designed
-to establish trust as a \emph{protocol}.
+% are measured on a spectrum.
 
-Many of the systems we describe in Section~\ref{related-work} appear to
-have been designed in reverse with their protocols first and their APIs second.
-While their protocols include effective trust mechanisms like federation and end-to-end-encryption,
-the APIs they provide often cannot be used to fulfil basic user needs, like private messaging~\cite{bluesky}.
-Or, aspects of their trust mechanisms,
-like ``instances'' or ``key management,''
-have leaked through into their APIs,
-adding unnecessary complexity to developers
-who simply want to make applications.
+% many of these are aspirational
+% and we seek to work \emph{towards}.
+% For example Graffiti does not yet for \emph{any}
+% community to build their personal social application,
+% but it lowers the barrier to entry significantly
+% and in Section~\ref{above-and-below:above:future-work}
+% we outline paths for lowering it even further.
+
+% How easy is personalization?
+% It should be possible to add new features
+% with a lengthy standards process (\ref{requirements:autonomous-extensibility})
+% and it should be possible to do so without writing server code (\ref{requirements:serverless}).
+% The others serve to mitigate problems that
+% we have observed other interoperating systems:
+% namely protect users from context collapse, and
+% namely the ability for users to delete posts,
+
+% Our driving requirements are \ref{requirements:easy},
+% to make social applications personalizable and
+% \ref{requirements:adversarial-interop},
+% to make them interoperable.
+
+% Some requirements
+% clarify how accessible this personalization is...
+
+% Our other requirements elaborate on these:
+% How easy should personalization be?
+% Requirement
+
+% Our primary requirements are 1: personlization and interoperability.
+% The other requirements elaborate:
+% how easy should personalization be?
+% it should be done without compliance (autonomous extensibility)
+% and without writing server code (serverless)
+% What are the limits of personalization?
+% Also with moderation (autonomous extensibility)
+% and forgiving
+% What are the harms of interoperability: context collapse
+
+
+
 % We also leave open the possibility of establishing trust through
 % non-technical means, like legal regulation, as argued for by
 % some scholars~\cite{}.
@@ -86,19 +82,6 @@ who simply want to make applications.
 % Additionally, some of these systems were designed in such a way where mechanisms
 % related to establishing trust like `instances,' or keypair managed
 % leaked through
-
-By separating out the concerns of the API from the protocols,
-we also leave open the possibility of evolving or competing protocols.
-Our design takes inspiration from the World Wide Web
-where URLs begin with a \emph{scheme}, like \texttt{http:} or \texttt{https:}. The inclusion of the scheme
-in the URL itself allows different protocols to coexist
-while the \emph{API} of the web, which allows for users to publish and retrieve
-web pages from URLs, remains unchanged.
-
-The requirements below are for our primary contribution, our \emph{API}. The design that meets these
-requirements is covered in the following Sections~\ref{concepts} and \ref{api}.
-We also outline a set of \emph{protocols} that implement the API in Section~\ref{protocols}, each with their own
-requirements and tradeoffs, but all of which can coexist.
 % ed the web to smoothly change from
 % \texttt{http:} to \texttt{https:} as technology advanced
 % All the time the API of the web
@@ -114,8 +97,11 @@ requirements and tradeoffs, but all of which can coexist.
 % (certificate authorities).
 % In the case of social media, ho
 
+% Requirements X and Y are our primary design goals.
+% The others elaborate on specific user needs
+% that are included in the diversity of applications that can be built
 
-\begin{requirement}
+\begin{requirement}[Personalization]
 \label{requirements:easy}
    It should be feasible for communities to build
    their own social media applications.
@@ -132,7 +118,7 @@ Existing examples of such applications include the fanfiction
 repository \href{https://archiveofourown.org/}{Archive of Our Own},
 the hypermedia curation platform \href{https://www.are.na}{are.na},
 the movie review site \href{https://letterboxd.com/}{Letterboxd},
-and Vermont's local \href{https://frontporchforum.com/}{front porch forum}.
+and Vermont's local \href{https://frontporchforum.com/}{Front Porch Forum}.
 
 % In most cases, the application developers are community members themselves
 % and listen closely
@@ -146,7 +132,7 @@ to their moderation policies, to their social norms, these applications
 are a reflection of the communities they serve and have a
 distinct sense of being \emph{lived-in}
 that one-size-fits-all platforms lack.
-Most importantly these applications are designed in close cooperation with the communities themselves
+Most importantly, these applications are designed in close cooperation with the communities themselves,
 giving members a sense of empowerment and autonomy over their shared space.
 Proponents argue that such online communities are the key to a healthier
 digital public sphere and the lessons members learn by participating in such
@@ -155,7 +141,7 @@ communities have benefits for civic society more broadly~\cite{threeleggedstool,
 The issue is that such applications are difficult to build and maintain,
 requiring either significant technical expertise or the money to outsource the work.
 Unprivileged communities must resort to other means like creating group chats,
-Discord servers, Subreddits, or Facebook groups. %, or Mastodon instances.
+Subreddits, or Facebook groups. %, or Mastodon instances.
 While these services host many thriving communities,
 those communities are often faced with rigid and inadequate feature sets,
 limited customization options, and shifting platform designs and policies.
@@ -209,7 +195,7 @@ without breaking from their existing communities.
 
 For example, it should be possible for a group of users to
 modify an application so that it only shows 5 posts per day (to combat screen addiction)
-without imposing this feature on all other users of the application.
+without imposing this feature on all other users of the original application.
 The original application may eventually include this feature in a configuration panel,
 or the applications may drift further apart as their users' needs diverge. However, this
 evolution can be driven entirely by users rather than by external pressures
@@ -222,10 +208,12 @@ We use the term ``adversarial interoperability''~\cite{adversarialinterop} becau
 interest of a large existing application to interoperate with a new application that may coopt some of its market share.
 For example, Facebook, Twitter/X, and Reddit all have a history of intentionally breaking
 the interoperability of third-party applications by either changing or limiting access to their APIs.
-While the power dynamics at play in small social applications are certainly
-different,
-it should still not be possible for one individual or group to hold users
-and their data hostage to a particular instance.
+Even in small group chats, where the power dynamics are less extreme,
+an adminstrator-administee hierarchy
+can embody an ``implicit feudalism'' that some claim can even
+normalizes monarchical power structures in society at large~\cite{governablespaces}.
+It should never be possible for one entity to hold users
+and their data hostage to a particular experience.
 Empowerment should not be limited to a community ``as a whole'' but
 distributed amongst its subgroups and individual members.
 
@@ -278,34 +266,6 @@ distributed amongst its subgroups and individual members.
 
 % Finally, an application may intentionally not interoperate with existing applications:
 
-\begin{requirement}
-\label{requirements:context-differentiation}
-    Users should be protected from context collapse.
-\end{requirement}
-
-Context collapse is a phenomenon that describes the negative consequences of flattening
-a person's multiple audiences into a single context.
-Context collapse is a well known problem of existing social applications.
-For example, if a person's family holds different political beliefs than their friends
-but both groups follow them on Facebook, that person may choose to self-supress their political
-speech to avoid angering either side of their collapsed audience.
-Either self-supressing to appeal to the "lowest-common denominator" or ignoring the collapse
-and simply posting to an "imagined audience" can lead to harm for both
-the users involved and society at large~\cite{contextcollapse, contextcollapseimpact, contextcollapsequeer, spiralofsilencesocialmedia}.
-
-Interoperability between applications as required by \ref{requirements:adversarial-interop} introduces the possibility
-of \emph{much more} context collapse.
-For example, both Tinder, a dating app, and Linkedin, a professional networking app, involve the authoring
-and browsing of user profiles.
-These user profiles have many semantic similarities (name, biography, interests, employment status) and so
-it would not be unreasonable to imagine that in a system of interoperable applications,
-the profile a user created in one application
-naturally shows up in the other.
-Of course, this could be confusing, highly embarassing, and might get someone fired.
-
-Therefore, Graffiti must give application developers affordances to mitigate traditional sources
-of context collapse (\emph{e.g.} the ability to post to Subreddit-like scopes)
-as well as affordances to mitigate new sources of inter-application context collapse.
 
 % While some users are not conscious of collapsed contexts, leading to accidental disclosures like the
 % father's or the priest's, others self-suppress their speech to appeal to the ``lowest common denominator.''
@@ -376,11 +336,11 @@ to be developed with relative ease.
 Importantly, it should be possible for a single application to introduce a new feature
 without requiring compliance from other interoperating applications, as this has the potential to
 lock applications into a particular set of features,
-just as an ecosystem without interoperability (see requirement~\ref{requirements:adversarial-interop}) can lock users into a
+just as an ecosystem without interoperability can lock users into a
 particular set of applications.
 
-For example, in the ActivityPub standard (the protocol underlying Mastodon),
-when user \emph{A} replies to a post by user \emph{OP}, \emph{A}'s appliction
+For example, in the ActivityPub standard, described in Section~\ref{related-work:activitypub},
+when user \emph{A} replies to a post by user \emph{OP}, \emph{A}'s application
 sends \emph{A}'s reply to \emph{OP}'s server, which then automatically forwards
 it to users who wish to view the replies to \emph{OP}'s post.
 This setup makes it impossible to reply to posts that are hosted on servers
@@ -401,6 +361,7 @@ This tension is resolved by our design concept ``Total Reification,''
 discussed in section~\ref{concepts:total-reification}.
 
 \begin{requirement}[Serverless]
+\label{requirements:serverless}
     It should be possible to build a new social application without writing or deploying any server code.
 \end{requirement}
 
@@ -422,18 +383,46 @@ The extent to which this requirement can be applied is potentially limited
 by the compute and storage capacities of modern devices.
 For example, constructing something like TikTok's For You feed requires
 analyzing billions of posts, well beyond the capability of any user's personal device.
-However, it is certainly possible for even mobile devices to handle multiple thousands of posts.
-We discuss this in detail later on.
+However, it is certainly possible for even mobile devices to handle many thousands of posts.
 
 Relying on generic servers also rules out the possibility that
-the ecosystem inadvertently relies on server side effects,
+the ecosystem inadvertently relies on server ``side effects,''
 like ActivityPub's reply forwarding which, as mentioned in
 requirement~\ref{requirements:autonomous-extensibility}, can impede extensibility.
+
+\begin{requirement}
+\label{requirements:context-differentiation}
+    Users should be protected from context collapse.
+\end{requirement}
+
+Context collapse is a phenomenon that describes the negative consequences of flattening
+a person's multiple audiences into a single context.
+Context collapse is a well known problem of existing social applications.
+For example, if a person's family holds different political beliefs than their friends
+but both groups follow them on Facebook, that person may choose to self-supress their political
+speech to avoid angering either side of their collapsed audience.
+Either self-supressing to appeal to the ``lowest-common denominator'' or ignoring the collapse
+and simply posting to an ``imagined audience'' can lead to harm for both
+the users involved and society at large~\cite{contextcollapse, contextcollapseimpact, contextcollapsequeer, spiralofsilencesocialmedia}.
+
+Interoperability between applications as required by \ref{requirements:adversarial-interop} introduces the possibility
+of \emph{much more} context collapse.
+For example, both Tinder, a dating app, and Linkedin, a professional networking app, involve the authoring
+and browsing of user profiles.
+These user profiles have many semantic similarities (name, biography, employment status) and so
+it would not be unreasonable to imagine that in a system of interoperable applications,
+the profile a user created in one application
+naturally shows up in the other.
+Of course, this could be confusing, highly embarassing, and might get someone fired.
+
+Therefore, Graffiti must give application developers affordances to mitigate traditional sources
+of context collapse (\emph{e.g.} the ability to post to Subreddit-like scopes)
+as well as affordances to mitigate new sources of inter-application context collapse.
 
 
 \begin{requirement}[Forgiving]
 \label{requirements:forgiving}
-    Users should be able to delete, mutate, and repudiate content they post.
+    Users should be able to delete, edit, and repudiate content they post.
 \end{requirement}
 
 Shortly before Elon Musk initiated his acquisition of Twitter, now X,
@@ -449,29 +438,29 @@ or posting to an unintended audience~\cite{regret, regrettwitter}.
 The ability to delete one's data was inshrined into law in the European Union's
 General Data Protection Regulation as
 the \emph{right to erasure}, previously called the \emph{right to be forgotten}~\cite{gdpr}.
-We require a stronger claim, that users should also be able to both \emph{mutate} (i.e. edit)
-and \emph{repudiate} content that they've posted. Repudiation is the ability to \emph{disown}
+We require a stronger claim, that users should also be able to both \emph{edit}
+and \emph{repudiate} content that they've posted. Repudiation is the ability to \emph{disown},
 as one might do when they say ``that screenshot has been photoshopped,''
 or more recently ``that's AI.'' Repudiation is usually possible in centralized platforms
 but can be limited by technologies employed in some decentralized platforms,
 like public key signatures~\cite{offtherecord}.
 
-The fact that we require erasure, mutability, and repudiation does not rule
+The fact that we require mutability (editing and deleting) and repudiation does not rule
 out the possibility that users can \emph{opt-in} to services that make their content more permanent.
 Technologies exist to make a ``forgiving'' system unforgiving but not the other way around.
 For example:
 \begin{enumerate}
 \item
-A user may choose to sign their messages with a PGP signature,
-as some people do with their emails, to make them non-repudiable.
+A post could link to content stored on an immutable storage service like IPFS
+or a blockchain to prevent erasure.
 \item
 When a user replies to a post, their application could include the hash
-of that post in their reply. Their application (and other interoperating applications)
-may hide or put a warning over replies to posts that have since been edited,
-causing a hash mismatch.
+of that post in their reply. Compatible applications would
+hide or put a warning over replies to posts whose hashes do not match,
+indicating that the post has been edited.
 \item
-A post could contain a link to content stored on an immutable storage service like IPFS
-or a blockchain to prevent erasure.
+A user could choose to sign their messages with a PGP signature,
+as some people do with their emails, to make them non-repudiable.
 \end{enumerate}
 Some users, like politicians, may face social pressure to use applications
 that employ some of these technologies as a form of accountability.

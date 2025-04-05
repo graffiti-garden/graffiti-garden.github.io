@@ -1,8 +1,9 @@
 \section{API}
+\label{api}
 
 We now describe the API that fulfills the requirements
 outlined in Section~\ref{requirements} and builds upon the concepts
-discussed in Section~\ref{concepts}.
+just discussed in Section~\ref{concepts}.
 The API features simple methods for \texttt{login} and \texttt{logout}
 and a series of CRUD methods for manipulating objects,
 \texttt{put}, \texttt{get}, \texttt{patch}, and \texttt{delete},
@@ -14,18 +15,25 @@ which prevent users from ``losing'' objects or channels, respectively.
 Overall, as much complexity as possible is pushed \emph{below} the API,
 while as much functionality as possible is pushed \emph{above}.
 
-The API is written as an \emph{abstract} Typescript class, allowing
-developers building on top of the API to swap out different implementation
+The API is written as an abstract TypeScript class, allowing
+developers building on top of the API to swap out different implementations
 with a single line of code.
-The API's complete specification is available online\footnote{
+The API's complete documentation, specification, and test suite is available online\footnote{
     \url{https://api.graffiti.garden/classes/Graffiti.html}
 } and so here we focus on the important design decisions.
-Typescript is a type annotation layer around standard Javascript
+
+TypeScript is a type annotation layer around standard JavaScript
 and provides enourmous benefit to developers working on large projects.
 However, the Graffiti API is still completely functional
-in a regular Javascript environment and entire Graffiti applications can be written
-with vanilla HTML, CSS, and Javascript that function in the browser without
+in a regular JavaScript environment and entire Graffiti applications can be written
+with vanilla HTML, CSS, and JavaScript that function in the browser without
 any build step.
+These web technologies can also be used to build desktop applications
+with Electron\footnote{
+    \url{https://www.electronjs.org/}
+} or mobile applications with progressive web applications\footnote{
+    \url{https://developer.mozilla.org/en-US/docs/Web/Progressive_web_apps}
+}.
 
 % Self-describing objects and channels push a lot of expressive
 % power above the API,
@@ -64,7 +72,7 @@ does not need to build, the user might be asked to provide credentials like a us
 and password or a public key pair.
 \item
 Once the user is authenticated they are redirected back to the application, if applicable,
-and a Javascript \emph{event} fires that includes
+and a JavaScript \emph{event} fires that includes
 a \texttt{session} object. The \texttt{session} object includes the authenticated \texttt{actor}
 URI and other information that the implentation needs to verify authentication, like
 a token or a signing function, however those details are entirely opaque to the application developer.
@@ -189,9 +197,10 @@ with objects as if they were strongly typed, even though they can take on arbitr
 % This can also be harnassed by the underlying implementation for
 % performance benefits, which is more necessary to \texttt{discover}.
 
-\begin{lstlisting}[language=javascript]
+\begin{minted}{javascript}
 const object = await graffiti.get(url, {
   value: {
+    required: ["content"],
     properties: {
       content: { type: "string" },
     }
@@ -199,8 +208,13 @@ const object = await graffiti.get(url, {
 }); // Error if the object does not match
 
 const content = object.value.content; // string
-\end{lstlisting}
+\end{minted}
 
+By default, JSON schemas also match objects that contain additional,
+unspecified properties, allowing developers to freely
+add new object properties without breaking
+interoperability with existing applications.
+This is related to the concept of
 
 
 % Methods in the API including \texttt{get} and \texttt{discover} allow the application
@@ -247,11 +261,12 @@ and the site where they receive direct messages.
 To receive only direct messages from a particular actor
 sent over the past day, a developer may do the following:
 
-\begin{lstlisting}[language=javascript]
+\begin{minted}{javascript}
 const iterator = graffiti.discover(
   [session.actor], // Look in "my" channel
   {
     value: {
+      required: ["content", "published", "to"],
       properties: {
         content: { type: "string" },
         published: {
@@ -267,9 +282,9 @@ const iterator = graffiti.discover(
 )
 
 for await (const object of iterator) {
-  console.log("message: ", object.value.content);
+  console.log("alice → me:", object.value.content);
 }
-\end{lstlisting}
+\end{minted}
 
 Reified activities can also be processed to construct more
 complex \texttt{discover} schemas.

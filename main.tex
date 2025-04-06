@@ -1,0 +1,65 @@
+\documentclass[sigconf,review,anonymous]{acmart}
+
+\usepackage{minted}
+\usepackage{xcolor}
+
+% Styling minted output
+\usemintedstyle{borland} % try other styles: borland, colorful, perldoc, etc.
+
+\setminted{
+  fontsize=\small,       % Smaller font size
+  linenos,               % Show line numbers
+  breaklines,            % Automatically break long lines
+  breakanywhere=true,    % Break long words if needed
+  autogobble,            % Remove common leading whitespace
+  numbersep=5pt,         % Space between line numbers and code
+  frame=lines,           % Add top/bottom frame lines
+  framesep=4mm,          % Padding between code and frame edge
+  % baselinestretch=1.2,   % Extra line spacing for readability
+  bgcolor=gray!5,         % Light gray background color
+}
+
+% For multirow
+\usepackage{multirow}
+
+% Encoding and language settings
+\usepackage[utf8]{inputenc} % Allow UTF-8 input
+% \usepackage[T1]{fontenc}    % Use 8-bit T1 fonts
+% \usepackage{microtype}      % Improves spacing
+
+\usepackage{graphicx} % Required for inserting images
+\graphicspath{{paper/}}
+
+
+% multiline texttt
+% \usepackage[htt]{hyphenat}
+
+% \usepackage{fontspec}
+% \setmainfont{Noto Serif}
+
+% Uncomment to double-space so you have
+% room to write comments on the print-out
+% \linespread{2}
+
+\usepackage{natbib} % For bibliography
+\bibliographystyle{ACM-Reference-Format}
+
+\title{Graffiti: An API for Personalized and Interoperable Social Media}
+% \date{March 2024}
+
+\begin{document}
+\begin{abstract}
+\input{paper/abstract}
+\end{abstract}
+\maketitle
+\input{paper/introduction}
+\input{paper/requirements}
+\input{paper/concepts}
+\input{paper/api}
+\input{paper/above-and-below}
+\input{paper/related-work}
+\input{paper/case-studies}
+\input{paper/conclusion}
+
+\bibliography{bibliography}
+\end{document}

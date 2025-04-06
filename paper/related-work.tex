@@ -1,4 +1,5 @@
 \section{Related Work}
+\label{related-work}
 
 Graffiti, so far as we know, is the only system that makes it
 relatively easy to build a wide variety of interoperating applications.
@@ -128,6 +129,7 @@ with Mavo and Firebase.
 % The store has not yet been realized~\cite{threeleggedstool}.
 
 \subsection{Protocols}
+\label{related-work:protocols}
 
 Before 2018, social protocols, like Email and IRC,
 and later diaspora* and Secure ScuttleButt,
@@ -148,6 +150,7 @@ a ``credible exit'' if one organization in the federation becomes
 untrustworthy~\cite{howdecentralizedisbluesky}.
 
 \subsubsection{ActivityPub}
+\label{related-work:activitypub}
 
 ActivityPub~\cite{activitypub} is the federated protocol underlying the
 ``Fediverse'' which includes the applications
@@ -451,6 +454,12 @@ more curated are simply suggested to use a different account\footnote{
     \url{https://www.youtube.com/live/B7OwcXCE5Rg?t=1655s}
 }.
 
+TODO: moderation
+They use ``stackable'' moderation. Labelers
+This is one specific form of the moderation that
+can be achieved with total reification, however
+other forms are possible as well.
+
 Both protocols include extensible objects but these objects are not
 \emph{autonomously} extensible (see requirement~\ref{requirements:autonomous-extensibility})
 because the relays will not index objects with properties that are unfamiliar to them.
@@ -635,6 +644,8 @@ to be always \emph{online}, similar to ActivityPub's server side effects.
 Since we don't want developers to have to write server code,
 we chose to give objects more familiar \texttt{allowed} lists
 in addition to channels.
+TODO: We also do not handle write capabilities because all
+writing is handled by total reactivity.
 
 
 % hile we are in support of these systems, this sort of legislation will lag behind the technology, so we are attempting to envision a system that leads to better outcomes from the getgo.

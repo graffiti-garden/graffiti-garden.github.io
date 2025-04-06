@@ -1,4 +1,5 @@
-\section{Above & Below}
+\section{Above and Below}
+\label{above-and-below}
 
 We now describe the tooling we've built \emph{above}
 the Graffiti API that makes development even easier, and
@@ -10,7 +11,7 @@ While we have made insights on both fronts that at
 the least demonstrate \emph{feasibility},
 there are, of course,
 many unanswered questions and unexplored ideas.
-Fortunately, by having a static API in the middle, work done above the API
+Fortunately, by having a fixed API in the middle, work done above the API
 is \emph{decoupled} from work done below.
 It is possible to drop in a new, more efficient, or privacy-preserving implementation
 without upheaving all the tools and applications that have been built on top.
@@ -152,50 +153,56 @@ As soon as they click the 👋 button, the wave count updates automatically and
 If they click the button again, the waving stops and the count decrements.
 Waves from other users also change the count, live.
 
-\begin{lstlisting}[language=html]
+\begin{minted}{vue}
 <GraffitiDiscover autopoll
-    v-slot="{ objects: waves, isInitialPolling }"
-    :channels="[ 'https://graffiti.garden' ]"
-    :schema="{
+  v-slot="{ objects: waves, isInitialPolling }"
+  :channels="[ 'https://graffiti.garden' ]"
+  :schema="{
+    properties: {
+      value: {
+        required: ['activity'],
         properties: {
-            value: {
-                required: ['activity'],
-                properties: {
-                    activity: { enum: ['Wave'] }
-                }
-            }
+          activity: { enum: ['Wave'] }
         }
-    }"
+      }
+    }
+  }"
 >
-    <template v-if="$graffitiSession.value">
-        <button
-            v-if="!waves.some(
-                wave => wave.actor === $graffitiSession.value.actor
-            )"
-            @click="$graffiti.put({
-                value: { activity: 'Wave' },
-                channels: [ 'https://graffiti.garden' ]
-            }, $graffitiSession.value)"
-        >
-            👋
-        </button>
-        <button v-else
-            class="waving"
-            @click="waves.filter(
-                wave => wave.actor === $graffitiSession.value.actor
-            ).map(wave => $graffiti.delete(wave, $graffitiSession.value))"
-        >
-            👋
-        </button>
-    </template>
-    <button v-else @click="$graffiti.login()">
-        Log In to Wave
+  <template v-if="$graffitiSession.value">
+    <button
+      v-if="!waves.some(
+        wave=> wave.actor ===
+          $graffitiSession.value.actor
+      )"
+      @click="$graffiti.put({
+        value: { activity: 'Wave' },
+        channels: [ 'https://graffiti.garden' ]
+      }, $graffitiSession.value)"
+    >
+      👋
     </button>
+    <button v-else
+      class="waving"
+      @click="waves.filter(
+        wave=> wave.actor ===
+          $graffitiSession.value.actor
+      ).map(wave=>
+        $graffiti.delete(wave, $graffitiSession.value))"
+    >
+      👋
+    </button>
+  </template>
+  <button v-else @click="$graffiti.login()">
+    Log In to Wave
+  </button>
 
-    <p v-if="isInitialPolling">Loading...</p>
-    <p v-else>{{ waves.length }} people have waved from this page 👋!</p>
+  <p v-if="isInitialPolling">Loading...</p>
+  <p v-else>
+    {{ waves.length }}
+    people have waved from this page 👋!
+  </p>
 </GraffitiDiscover>
-\end{lstlisting}
+\end{minted}
 
 \subsubsection{Component Library}
 
@@ -212,6 +219,7 @@ Of course, for sufficiently unique applications, it will be necessary to
 write custom components.
 
 \subsubsection{Future Work}
+\label{above-and-below:above:future-work}
 
 There is certainly potential for more low- or even no-code tools
 to be developed on top of the Graffiti API. It is an open
@@ -246,11 +254,125 @@ or their community's ``pages''?
 
 \subsection{Below}
 
-Now we come to the problem of actually \emph{implementing} the Graffiti API.
-As mentioned, an implementation can consist of multiple coexisting communication
-\emph{protocols}.
-We outline several communication protocols and their implementations first,
-and then how they can be used in tandem.
+The Graffiti API we describe in Section~\ref{api} is relatively
+simple and its implementation requires just two main pieces:
+storing data and discovering ``where'' data of interest is stored.
+One solution is to store data on a single massive database
+and then discovery can be answered by simply querying the database.
+Unfortunately, this centralizes all control of the network
+on that single server.
+
+Instead, we explore possible \emph{decentralized protocols}
+for the API. For example, data can be served by a ``federation'' of databases,
+each of which look like a small version of the centralized server,
+or the problems of storage and discovery can be split up,
+relying on existing storage solutions similar to Dropbox,
+and a new entity called a ``tracker'' to coordinate discovery.
+
+There are tradeoffs between these in terms of efficiency, scalability,
+robustness, and privacy. Fortunately, multiple \emph{protocols} can
+be understood by one \emph{implementation} allowing new protocols
+with different tradeoffs to be organically adopted without requiring
+everyone to collectively switch all at once.
+This is possible because, as we've mentioned, an object's URL starts with a scheme that indicates
+how the various CRUD methods should resolve and interact with the object.
+If a user tries to \texttt{delete} an object whose URL starts with the schema
+\texttt{graffiti:remote:}, their implementation will use the \emph{remote}
+protocol, while if the URL starts with the schema \texttt{graffiti:solid:},
+their implementation will use the \emph{solid} protocol.
+For \texttt{discover}, multiple protocol-specific \texttt{discover}
+calls can simply be aggregated together into one stream.
+
+There are two additional questions we need to resolve to make
+coexisting protocols work.
+Which protocol should an implementation use
+when an actor \emph{first} \texttt{put}s an object?
+And what \emph{identity} system will work across multiple existing
+protocols?
+
+For the first question of first-\texttt{put}s, we simply give the user the choice.
+As shown in Figure~\ref{above-and-below:choose-protocol},
+the first time a user attempts to \texttt{put} an object,
+they must indicate which protocol they would like to use
+as well as other protocol-specific information, such as what
+remote server they would like to use.
+While there is more work to be done on this,
+we have tried to make the experience frictionless, with
+reasonable defaults for
+users who do not know or care about the underlying infrastructure.
+Importantly, this interface is built in to the \emph{implementation}
+of the API and so is not the concern of developers building
+applications on top of it.
+% As mentioned in Section~\ref{above-and-below:delegation},
+% a user can later migrate their data to a different protocol
+% or server without breaking their object's URLs.
+
+% Some choice is give to users - which they can ignore - but none of
+% this needs to be build by developed implementing on top of the API,
+% it all exists in the implementation \emph{below} the API.
+
+\begin{figure}
+    \label{above-and-below:choose-protocol}
+    TODO: this will be a figure!!
+    \begin{itemize}
+    \item
+    Panel 1: Where would you like to store your data? You can always change this later.
+    "Choose for Me", "On a Graffiti Server", "On a Solid Pod".
+    \item
+    Panel 2 (Graffiti): Which Graffiti server would you like to use?
+    \item
+    Panel 3 (Solid): Which Solid pod would you like to use?
+    \end{itemize}
+    \caption{The modal that pops up when the user triggers a \texttt{put()} for the first time.}
+\end{figure}
+
+As for identity, we currently use a decentralized protocol called Solid OIDC~\cite{solidoidc}.
+It has open source client and server-side libraries and has
+the useful property that a user only needs to log in once
+with an ``identity provider'' before silently authenticating
+them with other services.
+It is also already used by the Solid protocol~\cite{solid},
+which we use in one of our protocols as a ``decentralized Dropbox.''
+
+Unfortunately, Solid OIDC is incompatible with many familiar
+identity solutions, like ``Log in with Google,''
+and many novel identity solutions, like ``Sign in with Ethereum.''
+The Decentralized Identifier (DID) specification attemps to unify
+these various identity methods, but currently DIDs require that
+users log in with \emph{each} service they want to authenticate with~\cite{dids}.
+This is like requiring a user to log in again every time
+they receive an email from a new email server, which would
+be tedious and confusing.
+We hope that DIDs or new specifications evolve past this restriction.
+
+
+% more than one implementation can
+% exist.
+
+
+
+% The API we've described is fairly simple, and can be done
+% with existing technologies.
+% The main things are:
+% - storing objects,
+% - retrieving objects,
+% - authenticating
+% - and verifying.
+
+% As mentioned, different protocols can do these different
+% things. The web gives us a way to do storing.
+
+% While we have not implemented why not create another protocol
+% called \texttt{graffiti-google}.
+% Users store objects in spreadsheets.
+% Obviously there are limitations regarding who can control.
+% But it is nice.
+
+% Now we come to the problem of actually \emph{implementing} the Graffiti API.
+% As mentioned, an implementation can consist of multiple coexisting communication
+% \emph{protocols}.
+% We outline several communication protocols and their implementations first,
+% and then how they can be used in tandem.
 % in a single implementation.
 
 % We focus on scalability and trust.
@@ -288,39 +410,6 @@ and then how they can be used in tandem.
 % API is implemented efficiently, scalably, and to provide \emph{trust}.
 % For example, we could implement
 
-\subsubsection{Local Protocol}
-
-Our first ``protocol'' is one that runs locally
-and handles objects with the URL scheme \texttt{graffiti:local:}.
-Any data created on the local protocol is only visible on the device
-it was created on.
-While such a restriction may seem like a non-starter for an implemetation
-of our \emph{social} API, it is invaluable for development.
-It provides a similar functionality to running a \texttt{localhost} development server,
-however it runs within the implementation of the API itself and so
-does not require the complexity of standing up a local server.
-Developers can easily create test actors and test objects on the local protocol
-without polluting their own online presence or existing Graffiti applications.
-% Our implementation of this protocol also includes its own internal
-% identity provider allowing for the creation of various test actors.
-Finally, the protocol is accessible in deployed applications
-and lets regular users try a Graffiti application out without
-having to create or log in to an account, as shown in
-Figure~\ref{above-and-below:login}.
-
-\begin{figure}
-    \label{above-and-below:login}
-    \includegraphics{figures/login.png}
-    \caption{The modal that pops up when the user triggers a \texttt{login()}. TODO: Update the figure to show the whole flow.}
-\end{figure}
-
-We implemented the local protocol\footnote{
-    \url{https://github.com/graffiti-garden/implementation-local}
-} using PouchDB, a Javascript library that allows for persistent
-storage in both the browser and in node.js.
-Because of its relative simplicity, the local implementation also serves
-as a reference implementation of the Graffiti API and pieces of its code are also used
-throughout other implementations.
 
 % Since Graffiti implementations can coexist by using different URL schemes,
 % it is possible to use the local implementation in tandem with other implementations.
@@ -353,6 +442,7 @@ throughout other implementations.
 % that draw from multiple sources.
 
 \subsubsection{Remote Protocol}
+\label{above-and-below:remote-protocol}
 
 The remote protocol maps the Graffiti API onto
 a monolithic HTTP server.
@@ -634,61 +724,39 @@ the announce protocol, removing the need for a tracker,
 because commodity storage servers do not allow clients to
 query multiple users' data at once.
 
-\subsubsection{Coexisting Protocols}
-\label{above-and-below:coexisting-protocols}
+\subsubsection{Local Protocol}
 
-The Graffiti API is designed so that different underlying
-communication protocols can be used together with relative ease.
-An object's URL starts with a scheme that indicates
-how the various CRUD methods should resolve and interact with the object.
-For \texttt{discover}, multiple protocol-specific \texttt{discover} calls can be
-aggregated into one stream.
-
-The first time a user attempts to \texttt{put} an object,
-they must indicate which protocol they would like to use
-as well as other protocol-specific information, such as what
-remote server they would like to use.
-To avoid confusing users we have tried to make this experience
-as frictionless as possible, with reasonable defaults for
-users who do not care about the underlying infrastructure,
-as shown in Figure~\ref{above-and-below:choose-protocol}.
-As mentioned in Section~\ref{above-and-below:delegation},
-a user can later migrate their data to a different protocol
-or server without breaking their object's URLs.
+Our first ``protocol'' is one that runs locally
+and handles objects with the URL scheme \texttt{graffiti:local:}.
+Any data created on the local protocol is only visible on the device
+it was created on.
+While such a restriction may seem like a non-starter for an implemetation
+of our \emph{social} API, it is invaluable for development.
+It provides a similar functionality to running a \texttt{localhost} development server,
+however it runs within the implementation of the API itself and so
+does not require the complexity of standing up a local server.
+Developers can easily create test actors and test objects on the local protocol
+without polluting their own online presence or existing Graffiti applications.
+% Our implementation of this protocol also includes its own internal
+% identity provider allowing for the creation of various test actors.
+Finally, the protocol is accessible in deployed applications
+and lets regular users try a Graffiti application out without
+having to create or log in to an account, as shown in
+Figure~\ref{above-and-below:login}.
 
 \begin{figure}
-    \label{above-and-below:choose-protocol}
-    TODO: this will be a figure!!
-    \begin{itemize}
-    \item
-    Panel 1: Where would you like to store your data? You can always change this later.
-    "Choose for Me", "On a Graffiti Server", "On a Solid Pod".
-    \item
-    Panel 2 (Graffiti): Which Graffiti server would you like to use?
-    \item
-    Panel 3 (Solid): Which Solid pod would you like to use?
-    \end{itemize}
-    \caption{The modal that pops up when the user triggers a \texttt{put()} for the first time.}
+    \label{above-and-below:login}
+    \includegraphics[width=\columnwidth]{figures/login.png}
+    \caption{The modal that pops up when the user triggers a \texttt{login()}. TODO: Update the figure to show the whole flow.}
 \end{figure}
 
-For two protocols to truly coexist,
-\emph{identity} must also be portable across them.
-For example, it should be possible for an actor who stores their data on
-the commodity storage protocol to send a private message to an
-actor who stores their data on the remote protocol.
-Currently, this is indeed possible, because both protocols use Solid OIDC
-and the local protocol uses a compatible internal ``identity provider.''
-
-Unfortunately, Solid OIDC is incompatible with many familiar
-identity solutions, like ``Log in with Google,''
-and many novel identity solutions, like ``Sign in with Ethereum.''
-The Decentralized Identifier (DID) specification attempts to unify
-these various identity methods, but currently DIDs require that
-users log in with \emph{each} service they want to authenticate with~\cite{dids}.
-This is like requiring a user to log in again every time
-they receive an email from a new email server, which would
-be tedious and confusing.
-We hope that DIDs or new specifications evolve past this restriction.
+We implemented the local protocol\footnote{
+    \url{https://github.com/graffiti-garden/implementation-local}
+} using PouchDB, a Javascript library that allows for persistent
+storage in both the browser and in node.js.
+Because of its relative simplicity, the local implementation also serves
+as a reference implementation of the Graffiti API and pieces of its code are also used
+throughout other implementations.
 
 % Solid OIDC has some shortcomings
 % In the future we would like to support a more extensible identity system

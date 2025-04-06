@@ -1,143 +1,121 @@
 % \section{Design Overview and Concepts}
 \section{Design Concepts}
+\label{concepts}
 
-This section outlines the high level concepts that make up the design of Graffiti
-according to the requirements we outlined in section \ref{requirements}.
-Section~\ref{api} outlines the specific API that is built out of these
-concepts and Section~\ref{protocols} outlines various protocols that implement the API.
+This section outlines the primary concepts that make up the design of Graffiti
+according to our requirements.
+We follow with Section~\ref{api} which outlines the \emph{specific} API that is built out of these
+concepts.
 
-At a high level the design works as follows.
+At a high level the Graffiti API works as follows.
 \emph{Actors} (basically users) create \emph{objects} which can represent
-social artifacts like posts or activities like ``likes.''
+social artifacts like posts or \emph{activities} like ``likes.''
 Objects are associated with a set of \emph{channels} and other users can
 discover an object by querying one of its channels. Channels a are flexible representation
-of different \emph{contexts} which may include identities, topics, piece of media, locations,
+of different \emph{contexts} which may include identities, topics, pieces of media, locations,
 and more.
-Users can not modify other users' objects and so for users to interact with each others' content
-those interactions must be \emph{reified} into indivdual
-activities.
-
-\subsection{Actors}
-
-An actor is a persistent identity represented by a globally unique string or \emph{URI}.
-In most cases an actor can be considered synonymous with a user,
-however, like an email address, a user can own multiple actors
-or actors may be non-human entities like bots or recommendation services.
-The term \emph{actor} was originally used for this purpose
-in the ActivityPub standard~\cite{activitypub}.
-
-A user can ``log in'' to an actor and then publish as that actor.
-It is not possible for one user to impersonate another user's actor.
-Importantly, to enable interoperability
-as required by \ref{requirements:adversarial-interop},
-a Graffiti actor is not tied to any particular application so that users can freely move between
-different applications.
-
-A Graffiti actor does not embody any identifiable information other than its
-URI. For example, an actor does not includ a
-name, profile picture, or biography associated with it.
-Instead, profiles are defined by seperate profile \emph{objects}
-(described in the following Section~\ref{concepts:objects}),
-allowing applications to freely introduce new profile
-metadata or for users to have multiple profiles for different contexts,
-making profiles autonomously extensible as required by \ref{requirements:autonomous-extensibility}.
-For example, a trans person who is not publicly ``out'' may want to
-% add pronoun metadat to their profile and
-change their name within theirr queer community without
-changing their name to the broader public.
-% Objects and their relation to autonomous extensibility are described next.
-
-All data in Graffiti must be associated with an actor, but
-for anonymous or meronymous~\cite{meronymous} interactions,
-a person can create ``throw away'' actors.
+Actors can not modify other actors' objects and so for actors to interact with each others' content
+those interactions must be \emph{reified} into indivdual activities,
+allowing for different interpretations of the interactions.
 
 \subsection{Objects}
 \label{concepts:objects}
 
 Objects are the atomic units that encapsulate \emph{all}
-of the social data in the system, including
+of the social data in Graffiti, including
 both social artifacts (such as posts and profiles) and social activities (such as likes and follows).
 Each Graffiti object includes some structured metadata,
 such as the actor who created the object,
-but an object's value can be \emph{any} valid JSON object.
+but an object's ``value'' can be \emph{any} valid JSON object.
 For example, a blog post object may have the value:
 
-\begin{lstlisting}[language=javascript]
+\begin{minted}{javascript}
 {
   title: "My First Post",
   content: "Hello, world!",
   published: 1611972000, // The time in seconds
 }
-\end{lstlisting}
+\end{minted}
 
-The ActivityVocabulary~\cite{activityvocab},
-whose object model inspired our own,
-defines many common properties that are useful for social applications, including
-the ones above.
-However, Graffiti application developers can freely introduce new properties as necessary
-as part of an evolving \emph{folksonomy}~\cite{folksonomy}.
-We leverage the fact that JSON can be \emph{self-describing}
---- a message can contain structured data with arbitrary properties and
-values that are irrelevant and opaque to the delivery infrastructure but
-meaningful to specific clients.
-For example, the developer of an application for sharing recipes can freely introduce a new
-\texttt{ingredients} property to objects.
+This idea of encapsulating social data in JSON objects is
+taken directly from the ActivityStreams standard~\cite{activitystreams},
+and many common \emph{properties} for objects,
+including the ones above, are defined in the
+ActivityVocabulary~\cite{activityvocab}.
+However, we choose not to inherit the ``linked data'' piece
+of these specifications which makes it complex to create new object properties.
+Instead, if a developer wants to make a recipes app, for example,
+they can freely add an \texttt{ingredients} property to their objects.
 
+% Graffiti application developers can freely introduce new properties as necessary
+% as part of an evolving \emph{folksonomy}~\cite{folksonomy}.
+% We leverage the fact that JSON can be \emph{self-describing}
+% --- a message can contain structured data with arbitrary properties and
+% values that are irrelevant and opaque to the delivery infrastructure but
+% meaningful to specific applications.
+% For example, the developer of an application for sharing recipes can freely introduce a new
+% \texttt{ingredients} property to objects.
+% allowing them to benefit from pre-existing data
+% made in other applications
+We're leveraging an idea here called a \emph{folksonomy}~\cite{folksonomy}.
 Social applications
-benefit from network effects, and so we expect that developers will make use of
-existing properties where possible, allowing them to benefit from pre-existing data
-made in other applications, but will introduce new properties when necessary.
+benefit from network effects and so we expect that developers will make use of
+existing properties where possible,
+but will introduce new properties when necessary.
 The result will inevitably be messy and inconsistent but, as with the evolution of
 particular hashtags, we expect there will be an effective balance of creativity and convergence.
 Importantly, the barrier to participating in the folksonomy is low
 and does not require a precise ontological agreement
-which some argue contributed to the failure of the semantic web~\cite{semanticwebtwodecades}.
+which some argue contributed to the failure of the semantic
+web~\cite{semanticwebtwodecades}.
+The folksonomy approach encourages autonomous extensibility
+as per requirement \ref{requirements:autonomous-extensibility}.
+
 % This folksonomy is an effective mean of ensuring that objects are autonomously extensible.
 % We also provide tooling that allows users to filter data and provide human-readable
 % fallbacks for data they can't parse.
 
-Graffiti objects also have URLs which,
-% can be used to retrieve or reference them.
-as alluded to in Section~\ref{requirements},
-start with a \emph{scheme} just like URLs on the World Wide Web,
+Graffiti objects also have URLs that
+start with a \emph{scheme}, just like URLs on the World Wide Web,
 enabling objects to be served by different \emph{coexisting} protocols.
-For example, a post might have the URL \texttt{graffiti:remote:pod.graffiti.garden/123},
-where the scheme \texttt{graffiti:remote:} refers to one of the protocols described in Section~\ref{protocols}.
-URLs also allow objects to be pointed at by other objects as with the
+For example, a post might have the URL
+\texttt{graffiti\allowbreak:remote\allowbreak:pod\allowbreak.graffiti\allowbreak.garden\allowbreak/123},
+where the scheme \texttt{graffiti:remote:} refers to a protocol we describe
+in Section~\ref{above-and-below:remote-protocol}
+instead of \texttt{https:} as seen on the web.
+URLs allow the object to be directly fetched\footnote{
+    In Section~\ref{above-and-below} we describe how fixed URLs
+    are still compatible with ``data portability,'' allowing
+    a user to move their data to a new place or protocol without
+    changing the URL.
+}, but also pointed to, as in the
 ``like'' activity below.
 % enabling other users to ``like'' that post by creating a new object with the value:
 
-\begin{lstlisting}[language=javascript]
+\begin{minted}{javascript}
 {
   activity: "like",
   target: "graffiti:remote:pod.graffiti.garden/123",
 }
-\end{lstlisting}
+\end{minted}
 
 This like activity is an example of \emph{reification},
-a concept introduced by the semantic web community
-which permits actions on data to be reprepresented as data themselves.
+a technique frequently used in the semantic web community~\cite{rdfprimer},
+which permits actions on data to be represented as data themselves.
 Rather than a post object being an object that has a ``like'' method,
 the ``like'' here is a separate object that points to the post object.
 Reification allows for new interaction mechanisms to be introduced as easily as new properties,
 without changing the underlying system.
-In other systems only some interactions are reified,
-but Graffiti employs \emph{total reification} where
+While AcitivityStreams and other systems use reification,
+Graffiti employs \emph{total reification} where
 all interactions, including moderation actions, are reified,
-which we discuss in the following
+which we discuss in
 Section~\ref{concepts:total-reification}.
-
 
 Finally, objects are mutable, meaning that they can be changed or deleted,
-and they can be access-controlled, visable to only a limited set of actors.
-Mutability is necessary for the system to be forgiving as required by \ref{requirements:forgiving}.
-The question of \emph{who} can mutate the objects is relevant to
-total reification which,
-again, we discuss in the following
-Section~\ref{concepts:total-reification}.
-Access controls enable private message which mitigates some forms of context collapse,
-while others will handled with the \emph{channels} concept
-which we discuss in Section~\ref{concepts:channels}.
+Mutability is necessary for the system to be forgiving per requirment~\ref{requirements:forgiving}.
+The question of \emph{who} can mutate the objects
+will be answered once discuss identity, next, and then total reification.
 
 In summary Graffiti objects are:
 
@@ -148,8 +126,6 @@ Flexible: Objects can take on any value according to a self-describing folksonom
 Globally-Addressable: Every object has a globally unique URL that can be used to fetch it.
 \item
 Mutable: Objects can be changed or deleted.
-\item
-Access-Controllable: Objects can be made private and only visible to a limited set of actors.
 % we add the two following contraints on objects
 % \item
 % Proprietary: Only the creator of an object can modify or delete it.
@@ -165,14 +141,91 @@ Access-Controllable: Objects can be made private and only visible to a limited s
 % \item
 % You can either get an object by one of its channels or by its URI.
 
+\subsection{Actors}
+
+An actor is an account that a user can ``log in'' as
+to identify themselves, publish objects, and receive ``private'' objects.
+The actor is represented by a globally unique string or \emph{URI},
+just like an email account is represented by an email address.
+The term \emph{actor} is again inherited from ActivityStreams
+and is used rather than \emph{user} since the user may own
+multiple actors or
+an actor may be a non-human entity
+like a bot or recommendation service.
+All Graffiti objects are associated with actors, the actor
+that created the object, but anonymous
+or meronymous~\cite{meronymous} interactions are possible by
+creating ``throw away'' actors.
+
+% We also use the actor almost synonymously with a user,
+% In most cases an actor can be considered synonymous with a user,
+% however, like an email address, a user can own multiple actors
+% or actors may be non-human entities like bots or recommendation services.
+% The term \emph{actor} was originally used for this purpose
+% in the ActivityPub standard~\cite{activitypub}.
+
+% A user can ``log in'' to an actor and then publish objects as that actor.
+% In fact, it is not possible create objects without an actor,
+
+% a person can create ``throw away'' actors.
+% It is not possible for one user to impersonate another user's actor.
+% Importantly, to enable interoperability
+% as required by \ref{requirements:adversarial-interop},
+% a Graffiti actor is not tied to any particular application so that users can freely move between
+% different applications.
+
+A Graffiti actor does not embody any identifiable information other than its
+URI.
+Properties like a display name or pronouns are instead
+defined in separate objects.
+For example, with Alice's actor URI in the \texttt{describes}
+property, a profile object for her is:
+\begin{minted}{javascript}
+{
+  name: "Alice",
+  pronouns: "she/her",
+  describes: "https://alice.example.com",
+}
+\end{minted}
+This seperation allows for new profile
+properties to freely evolve
+and it also allows people to have different profiles for different contexts.
+For example, a trans person who is not publicly ``out'' may want to
+change their name within their queer community without
+changing their name to the broader public.
+Alternatively, users could create nicknames
+or ``petnames'' for each other~\cite{petnames}.
+% Pet names
+
+Actors are also used for privacy.
+Objects can be \emph{access-controlled} and only
+made visible to a limited set of actors, enabling
+direct messaging.
+Forms of privacy that don't revolve around identity
+like ``unlisted'' groups are handled
+with the \emph{channels} concept we discuss in
+Section~\ref{concepts:channels}.
+
+% For example, an actor does not includ a
+% name, profile picture, or biography associated with it.
+% Instead, profiles are defined by seperate profile \emph{objects}
+% (described in the following Section~\ref{concepts:objects}),
+% allowing applications to freely introduce new profile
+% metadata or for users to have multiple profiles for different contexts,
+% making profiles autonomously extensible as required by \ref{requirements:autonomous-extensibility}.
+% Objects and their relation to autonomous extensibility are described next.
+% \item
+% Access-Controllable: Objects can be made private and only visible to a limited set of actors.
+
+
 \subsection{Total Reification}
 \label{concepts:total-reification}
 
 Within Graffiti, not some but \emph{all} interactions between actors
 are reified.
 This allows developers to freely introduce new interactions
-as required by \ref{requirement:autonomous-extensibility} without
-breaking interoperability as required by \ref{requirement:adversarial-interop}.
+per our requirement for autonomous extensibility (\ref{requirements:autonomous-extensibility}),
+without breaking interoperability.
 
 % We define interaction relativity to mean that ``interaction between two individuals only
 % exists relative to an application'' or equivalently that not some but \emph{all} interactions
@@ -304,9 +357,14 @@ it is possible with the use of conflict-free replicated data types (CRDTs)~\cite
 \subsection{Channels}
 \label{concepts:channels}
 
-Channels are our solution to mitigating context collapse, as required by
-\ref{requirements:context-differentiation}, while still being
+Objects have access control which enables private messages,
+however other forms of context collapse can occur when
+content is technically public but only intended for a particular audience.
+Channels are our solution to representing this need in the API,
+as required by \ref{requirements:context-differentiation},
+while still being
 interoperable as required by~\ref{requirements:adversarial-interop}.
+
 Like a television channel, users can publish content to a particular channel
 and user watching that channel will receive it.
 Unlike a television channel, Graffiti channels are:
@@ -337,10 +395,21 @@ Ownerless: No actor can prevent any other actor from reading from or writing to 
 \emph{that they know about}.
 \end{enumerate}
 
+
 IRC or Slack channels and Matrix rooms are similarly bidirectional and persistent
 but are not global, obscure, ownerless, or crosspostable.
-The World Wide Web is global, obscure, and persistent
+The web is global, obscure, and persistent
 but not bidirectional, ownerless, or crosspostable.
+
+((make this into a table and also include publish/subscribe, e.g. webSub))
+
+Note that while we have obscurity, there are many channels where you implicitly know
+the string.
+Access control and reifiecation can be combined with channels to create private
+or moderated channels.
+% Fortunately, we have access control.
+% However this is still not \emph{enough} and channels provide forms of
+% social access control in public spaces.
 
 % The fact that channels are ownerless seems ripe for harm, but it is necessary for
 % for moderation policies to be ``autonomously extensible'' as per requirement
@@ -466,7 +535,7 @@ which cover the contextual needs of most microblogging applications,
 but channels can also represent
 media, topics, websites, locations, and more,
 each of which can form the basis for a different class of
-social application, as shown in Table~\ref{concepts:tab:channels}.
+social application, as shown in Table~\ref{concepts:channels-and-applications}.
 
 Like with object properties, channels represent a \emph{folksonomy}.
 They have no inherent meaning other than the meaning ascribed to them
@@ -481,7 +550,7 @@ application developers to establish shared conventions.
         \hline
         \textbf{Channel Meaning} & \textbf{Application} \\ \hline
         External Media & Letterboxd, GoodReads, Genius, last.fm \\ \hline
-        User-Created Media & SoundCloud, YouTube, Medium \\ \hline
+        User-Created Media & SoundCloud, YouTube, Medium, Github \\ \hline
         User-Generated Topics & Reddit, Discord, Slack, IRC \\ \hline
         User-Generated Collections & are.na, Pinterest, Spotify playlists \\ \hline
         Website & Hypothes.is, Pinboard, Delicious \\ \hline
@@ -492,7 +561,7 @@ application developers to establish shared conventions.
         Collaborative Documents & Wikipedia, Google Docs \\ \hline
     \end{tabular}
     \caption{Channels and Their Applications}
-    \label{concepts:tab:channels}
+    \label{concepts:channels-and-applications}
 \end{table}
 
 In some cases, there is an existing identifier that can be used as a channel
@@ -519,7 +588,7 @@ profiles to channels of the form \texttt{dating+zip:12345} rather than
 \texttt{zip:12345} so that they can be sure their profile won't
 \emph{accidentally} be seen by neighbors casually browsing a Nextdoor-like application.
 Concatenation may also happen in natural language.
-For example, on Reddit when one wants to post programming-related memes they post to \texttt{r/programmerhumor} rather than \texttt{r/programming+r/funny}.
+For example, on Reddit when one wants to post programming-related memes they post to \texttt{r/programmerhumor} rather than \texttt{r/programming+\allowbreak{}r/funny}.
 
 % These concatenations may themselves take on new meaning.
 
@@ -540,6 +609,7 @@ they would be shamed for violating these norms.
 Similarly, in Graffiti, while you could spider public channels like a search engine
 to find content about a person, revealing that you've done such a thing
 would be shameful.
+TODO robots.txt
 % Moreover it will not happen by accident --- the spidering
 % user ``knew what they were getting into'' and so if they come across information
 % the poster

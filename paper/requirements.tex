@@ -185,13 +185,15 @@ build their own applications, giving them autonomy over their digital spaces.
 % We believe user-guided evolution is not possible when only a small handful of technically savvy people have the means to create and change the social application landscape.
 \begin{requirement}[Adversarial Interoperability]
 \label{requirements:adversarial-interop}
-Any application $A$ can be built to interoperate with an application $B$ without any compliance from application $B$.
+Any application \emph{A} can be built to interoperate with an application \emph{B} without any compliance from application \emph{B}.
 \end{requirement}
 
 Communities are not monoliths, they are composed of individuals
 with different and evolving preferences.
 With interoperability, it becomes possible for individual users and groups of users to explore new application designs
 without breaking from their existing communities.
+This is especially important when online a ``small''
+community may consist of tens of thousands of people.
 
 For example, it should be possible for a group of users to
 modify an application so that it only shows 5 posts per day (to combat screen addiction)
@@ -205,7 +207,7 @@ to either conform to a particular design or abandon community altogether.
 % requirement~\ref{}.
 
 We use the term ``adversarial interoperability''~\cite{adversarialinterop} because it may not be in the
-interest of a large existing application to interoperate with a new application that may coopt some of its market share.
+interest of a large existing application to interoperate with a new application that may co-opt some of its market share.
 For example, Facebook, Twitter/X, and Reddit all have a history of intentionally breaking
 the interoperability of third-party applications by either changing or limiting access to their APIs.
 Even in small group chats, where the power dynamics are less extreme,
@@ -339,26 +341,41 @@ lock applications into a particular set of features,
 just as an ecosystem without interoperability can lock users into a
 particular set of applications.
 
-For example, in the ActivityPub standard, described in Section~\ref{related-work:activitypub},
-when user \emph{A} replies to a post by user \emph{OP}, \emph{A}'s application
-sends \emph{A}'s reply to \emph{OP}'s server, which then automatically forwards
-it to users who wish to view the replies to \emph{OP}'s post.
-This setup makes it impossible to reply to posts that are hosted on servers
-without automatic reply forwarding;
-the introduction of the reply feature (or any similar feature) requires \emph{compliance}
-from interoperating applications.
+For example, if a developer wants to introduce the feature
+``reactable reactions,'' they should not need to draft an RFC,
+convince an elite group of server admins to implement the feature\footnote{
+    See Section~\ref{related-work:activitypub}
+},
+and rewrite the reaction ontology that they've broken~\cite{ecosystemmoving, herdingdnscamel, semanticwebtwodecades}.
+They should be able to build the feature into their application
+entirely \emph{on their own}, and then other applications can adopt the
+feature as they see fit.
+
+It is to important remember here that these applications are
+intended for \emph{people} rather than machines, which invites
+the possibility of messy and imperfect solutions so long as the ecosystem
+can, again, move quickly to clean things up.
+
+% For example, in the ActivityPub standard, described in Section~\ref{related-work:activitypub},
+% when user \emph{A} replies to a post by user \emph{OP}, \emph{A}'s application
+% sends \emph{A}'s reply to \emph{OP}'s server, which then automatically forwards
+% it to users who wish to view the replies to \emph{OP}'s post.
+% This setup makes it impossible to reply to posts that are hosted on servers
+% without automatic reply forwarding;
+% the introduction of the reply feature (or any similar feature) requires \emph{compliance}
+% from interoperating applications.
 % It is also not possible to introduce other features that require similar
 % ``side effects'' without all existing applications from complying.
 
-Notably, we also require that \emph{moderation} features are extensible.
-For example, it should be possible for one application to introduce the feature
-``certain users (moderators) can delete other users' posts.''
-This allows moderation policies to evolve flexibly according to user needs
-but there is an obvious tension between this requirement
-and our requirement for interoperability (\ref{requirements:adversarial-interop}).
-What happens when two interoperating applications have conflicting moderation policies?
-This tension is resolved by our design concept ``Total Reification,''
-discussed in section~\ref{concepts:total-reification}.
+% Notably, we also require that \emph{moderation} features are extensible.
+% For example, it should be possible for one application to introduce the feature
+% ``certain users (moderators) can delete other users' posts.''
+% This allows moderation policies to evolve flexibly according to user needs
+% but there is an obvious tension between this requirement
+% and our requirement for interoperability (\ref{requirements:adversarial-interop}).
+% What happens when two interoperating applications have conflicting moderation policies?
+% This tension is resolved by our design concept ``Total Reification,''
+% discussed in section~\ref{concepts:total-reification}.
 
 \begin{requirement}[Serverless]
 \label{requirements:serverless}
@@ -385,10 +402,10 @@ For example, constructing something like TikTok's For You feed requires
 analyzing billions of posts, well beyond the capability of any user's personal device.
 However, it is certainly possible for even mobile devices to handle many thousands of posts.
 
-Relying on generic servers also rules out the possibility that
-the ecosystem inadvertently relies on server ``side effects,''
-like ActivityPub's reply forwarding which, as mentioned in
-requirement~\ref{requirements:autonomous-extensibility}, can impede extensibility.
+% Relying on generic servers also rules out the possibility that
+% the ecosystem inadvertently relies on server ``side effects,''
+% like ActivityPub's reply forwarding which, as mentioned in
+% requirement~\ref{requirements:autonomous-extensibility}, can impede extensibility.
 
 \begin{requirement}
 \label{requirements:context-differentiation}
@@ -405,7 +422,7 @@ Either self-supressing to appeal to the ``lowest-common denominator'' or ignorin
 and simply posting to an ``imagined audience'' can lead to harm for both
 the users involved and society at large~\cite{contextcollapse, contextcollapseimpact, contextcollapsequeer, spiralofsilencesocialmedia}.
 
-Interoperability between applications as required by \ref{requirements:adversarial-interop} introduces the possibility
+Interoperability between applications introduces the possibility
 of \emph{much more} context collapse.
 For example, both Tinder, a dating app, and Linkedin, a professional networking app, involve the authoring
 and browsing of user profiles.
@@ -413,7 +430,7 @@ These user profiles have many semantic similarities (name, biography, employment
 it would not be unreasonable to imagine that in a system of interoperable applications,
 the profile a user created in one application
 naturally shows up in the other.
-Of course, this could be confusing, highly embarassing, and might get someone fired.
+Of course, this could be confusing, highly embarrassing, and might get someone fired.
 
 Therefore, Graffiti must give application developers affordances to mitigate traditional sources
 of context collapse (\emph{e.g.} the ability to post to Subreddit-like scopes)
@@ -430,7 +447,7 @@ he created a poll that asked users whether Twitter should add an edit button.
 Out of over four million respondents, 73.6\% voted ``yse'' [sic] and 26.4\% ``no.''\footnote{
   X now lets users edit their tweets within 30 minutes of posting but only
   if they pay for X Premium.
-} These results are not suprising as many users of Twitter and Facebook regret
+} These results are not surprising as many users of Twitter and Facebook regret
 their posts for a variety of reasons
 including misjudging social norms, posting while extremely emotional or inebriated,
 or posting to an unintended audience~\cite{regret, regrettwitter}.
@@ -464,4 +481,4 @@ as some people do with their emails, to make them non-repudiable.
 \end{enumerate}
 Some users, like politicians, may face social pressure to use applications
 that employ some of these technologies as a form of accountability.
-However, to give users as much autonomy as possible, the API must be forgiving by default.
+However, to leave the most room for personalization, forgiveness should be the default.

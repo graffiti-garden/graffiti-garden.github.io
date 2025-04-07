@@ -81,3 +81,61 @@ describing an early web annotation system, Third Voice,
 as Graffiti on the web.
 The authors meant it as a slur, but we believe graffiti
 can be a beautiful art form and a powerful tool for social change.
+
+\subsubsection{Announce Protocol}
+\label{above-and-below:announce-protocol}
+
+To resolve the issue of server discovery in the remote protocol,
+a tracker-like service can be built on the protocol itself.
+When an actor publishes an object to a small, perhaps self-hosted
+server their client also publishes an \texttt{"announce-server"}
+activity, pointing to their small server, on several ``well-known'' servers.
+To handle an actor's \texttt{discover} request, a client first \texttt{discover}s
+for \texttt{"announce-server"} activities on each of the well-known
+servers and then makes the original \texttt{discover} request on each
+announced server.
+Announce activities are only posted to the channels
+that an actor has published to, ensuring that a client
+will not unnecessarily call \texttt{discover} on servers
+that have no objects.
+
+This protocol is guaranteed not to miss objects so long as
+the posting actor's ``well known'' servers overlap with the
+\texttt{discover}ing actor's.
+We are assuming again that, like email or Mastodon, there are several
+``large'' servers, like Gmail or mastodon.social, that can be used as these
+rendezvous points.
+
+By implementing the tracker using Graffiti objects,
+it is possible to flexibly add new features to the tracker
+in the same way that it is possible to flexibly add
+functionality to any other Graffiti object.
+
+We developed a proof of concept implementation of the announce protocol\footnote{
+    \url{https://github.com/graffiti-garden/implementation-federated}
+},
+however it is not currently in use as the Graffiti ecosystem is not
+large enough for it to be relevant.
+It is not possible for the commodity-storage protocol to implement
+the announce protocol, removing the need for a tracker,
+because commodity storage servers do not allow clients to
+query multiple users' data at once.
+
+
+Locations are continuous and so to be represented as channels,
+space must be broken into discrete regions which could be done with
+human-generated divisions like zip codes or automatic division like
+what3words. Fine-grained location channels could be used for
+augmented reality applications, like Pokemon Go,
+while more coarse grained ones should be used for applications like Tinder
+to prevent a user's exact location from being revealed.
+Applications similar Craigslist may post to channels at multiple levels in
+a resolution pyramid to increase a post's visibility.
+
+Channels can also be concatenated to produce new, more specific channels.
+For example, users may prefer to use a Tinder-like application that posts
+profiles to channels of the form \texttt{dating+zip:12345} rather than
+\texttt{zip:12345} so that they can be sure their profile won't
+\emph{accidentally} be seen by neighbors casually browsing a Nextdoor-like application.
+Concatenation may also happen in natural language.
+For example, on Reddit when one wants to post programming-related memes they post to \texttt{r/programmerhumor} rather than \texttt{r/programming+\allowbreak{}r/funny}.

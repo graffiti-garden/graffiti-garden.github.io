@@ -37,36 +37,36 @@ without upheaving all the tools and applications that have been built on top.
 While the API has hidden a lot of complexity below,
 like the need to write and deploy server code or the need to
 consider the server infrastructure at all,
-writing JavaScript or TypeScript code is still inaccessible
+writing frontend code is still inaccessible
 to many people.
 We have made some initial steps towards reducing the
 programming complexity by allowing for the \emph{reactive} and
 \emph{declarative} programming of Graffiti applications
-and by providing a growing library of drop-in components for common designs.
+and by providing a growing library of resusable design patterns.
 We also point to a future where Graffiti applications could be built
 without any code at all.
 
-\subsubsection{Internal Synchronization}
+% \subsubsection{Internal Synchronization}
 
-When a user likes a post or sends a message,
-it is necessary, for the usability of the interface, for the user
-to get instant feedback that their action completed
-successfully, by seeing a like counter increment or seeing their message
-appear in the chat.
-While it is possible to manually update the relevant sections of the UI,
-this is unnecessary work for the developer and
-can become unwieldy with many interconnected components.
+% When a user likes a post or sends a message,
+% it is necessary, for the usability of the interface, for the user
+% to get instant feedback that their action completed
+% successfully, by seeing a like counter increment or seeing their message
+% appear in the chat.
+% While it is possible to manually update the relevant sections of the UI,
+% this is unnecessary work for the developer and
+% can become unwieldy with many interconnected components.
 
-Instead, we built a library for internal synchronization\footnote{
-  \url{https://sync.graffiti.garden/classes/GraffitiSynchronize.html}
-} that wraps around the Graffiti API to make these updates automatic.
-Whenever the library encounters a new or changed object, either because
-the user created, modified, or deleted an object,
-or because an object was received from \texttt{get}
-or \texttt{discover}, that change is internally forwarded to an
-appropriate listener.
-These listeners can be set up manually with the new methods \texttt{synchronizeDiscover}
-and \texttt{synchronizeGet} or automatically by our Vue Plugin, described next.
+% Instead, we built a library for internal synchronization\footnote{
+%   \url{https://sync.graffiti.garden/classes/GraffitiSynchronize.html}
+% } that wraps around the Graffiti API to make these updates automatic.
+% Whenever the library encounters a new or changed object, either because
+% the user created, modified, or deleted an object,
+% or because an object was received from \texttt{get}
+% or \texttt{discover}, that change is internally forwarded to an
+% appropriate listener.
+% These listeners can be set up manually with the new methods \texttt{synchronizeDiscover}
+% and \texttt{synchronizeGet} or automatically by our Vue Plugin, described next.
 
 % a user makes or receives a change, that change is internally forwarded
 % to an appropriate listener.
@@ -93,15 +93,14 @@ We built a plugin for Vue\footnote{
   \url{https://vue.graffiti.garden/variables/GraffitiPlugin.html}
 }
 that provides a variant of
-\texttt{discover} that returns a reactive array of objects rather than
+\texttt{discover} which returns a reactive array of objects rather than
 an asynchronous stream.
-Local user actions update the array automatically, thanks to
-\texttt{synchronizeDiscover}, while remote changes
-can be polled either manually with \texttt{poll()} or automatically
+Any CRUD operation that the user triggers locally instantly update
+the relevant array, while remote changes can be polled manually
+with \texttt{poll()} or automatically
 with an \texttt{autopoll} setting.
-All updates to the array automatically propagate to UI components.
-The plugin similarly provides reactive variants of \texttt{get} and
-\texttt{recoverOrphans}.
+% The plugin similarly provides reactive variants of \texttt{get} and
+% \texttt{recoverOrphans}.
 
 % the array automatically while the \texttt{poll}
 % function can be called to fetch remote changes.
@@ -120,108 +119,90 @@ The plugin similarly provides reactive variants of \texttt{get} and
 % It is still possible for a user to manually manage other \texttt{session}s
 % for multi-actor applications.
 
-The plugin exposes this reactive functionality with both
-``composable'' functions,
-% \footnote{
-%   \url{https://vuejs.org/guide/reusability/composables.html}
-% }
-like \texttt{useGraffitiDiscover}, which can be used
-in a more traditional programming environment, as well as
-``renderless components,''
+% The plugin exposes this reactive functionality with both
+% ``composable'' functions,
+% % \footnote{
+% %   \url{https://vuejs.org/guide/reusability/composables.html}
+% % }
+% like \texttt{useGraffitiDiscover}, which can be used
+% in a more traditional programming environment, as well as
+% ``renderless components,''
 % \footnote{
 %   \url{https://vuejs.org/guide/components/slots#renderless-components}
 % }
-like \texttt{<GraffitiDiscover>},
-which can be used declaratively within an HTML template.
-Additionally, for convenience,
-the plugin sets up a global Graffiti class instance, \texttt{\$graffiti},
-as well as a global
-\texttt{\$graffitiSession}.
+% like \texttt{<GraffitiDiscover>},
+% which can be used declaratively within an HTML template.
+% Additionally, for convenience,
+% the plugin sets up a global Graffiti class instance, \texttt{\$graffiti},
+% as well as a global
+% \texttt{\$graffitiSession}.
+This reactivity is available in a traditional programming
+environment as well as in a declarative HTML-like template.
 The plugin maintains complete TypeScript support and
-is a relatively light wrapper over our internal synchronization library,
+is a relatively light wrapper over a Graffiti-specific reactivity library we've developed\footnote{
+   \url{https://sync.graffiti.garden/classes/GraffitiSynchronize.html}
+}
 and so support for other front-end frameworks, like React, will be
 fairly easy to add in the future.
 
-Below is the complete code for a micro social application built with
-the Vue plugin.\footnote{
-  Try it out at \url{https://graffiti.garden/}
-}
-Once the application loads, the user can see how many people ``waved''
-and can log in to wave themselves.
-As soon as they click the 👋 button, the wave count updates automatically and
-(with appropriate CSS) the button displays an animated waving motion.
-If they click the button again, the waving stops and the count decrements.
-Waves from other users also change the count, live.
-
+Below is the complete template for a micro social application,
+built with the plugin,
+that allows users to post to a realtime
+group chat:
 \begin{minted}{vue}
+<form v-if="$graffitiSession.value"
+  @submit.prevent="$graffiti.put({
+    value: { content },
+    channels: [ 'my-group' ]
+  }, $graffitiSession.value)"
+>
+  <input v-model="content" />
+  <input type="submit" value="Post" />
+</form>
+<button v-else @click="$graffiti.login()">
+  Log In to Post!
+</button>
 <GraffitiDiscover autopoll
-  v-slot="{ objects: waves, isInitialPolling }"
-  :channels="[ 'https://graffiti.garden' ]"
+  v-slot="{ objects: messages, isInitialPolling }"
+  :channels="[ 'my-group' ]"
   :schema="{
     properties: {
       value: {
-        required: ['activity'],
+        required: ['content'],
         properties: {
-          activity: { enum: ['Wave'] }
+          content: { type: 'string' },
         }
       }
     }
   }"
 >
-  <template v-if="$graffitiSession.value">
-    <button
-      v-if="!waves.some(
-        wave=> wave.actor ===
-          $graffitiSession.value.actor
-      )"
-      @click="$graffiti.put({
-        value: { activity: 'Wave' },
-        channels: [ 'https://graffiti.garden' ]
-      }, $graffitiSession.value)"
-    >
-      👋
-    </button>
-    <button v-else
-      class="waving"
-      @click="waves.filter(
-        wave=> wave.actor ===
-          $graffitiSession.value.actor
-      ).map(wave=>
-        $graffiti.delete(wave, $graffitiSession.value))"
-    >
-      👋
-    </button>
-  </template>
-  <button v-else @click="$graffiti.login()">
-    Log In to Wave
-  </button>
-
   <p v-if="isInitialPolling">Loading...</p>
-  <p v-else>
-    {{ waves.length }}
-    people have waved from this page 👋!
-  </p>
+  <ul>
+    <li v-for="message in messages">
+      {{ message.value.content }}
+    </li>
+  </ul>
 </GraffitiDiscover>
 \end{minted}
 
-\subsubsection{Component Library}
+\subsubsection{Pattern Library}
 
-We have started compiling a library of Vue components
-for common social functionality\footnote{
-    TODO: Link to components library
-}
-such as \texttt{<GraffitiLike>} and \texttt{<GraffitiProfile>}.
-The components are designed to be fairly extensible.
-For example, a ``Like'' button can be configured to be a
-``Dislike'' button by changing its \texttt{activity} and
-\texttt{text} attributes.
-Of course, for sufficiently unique applications, it will be necessary to
-write custom components.
+We have started compiling a library of common patterns\footnote{
+    \url{https://vue.graffiti.garden/examples/}
+} that currently includes likes, profiles, threaded comments,
+and different messaging patterns.
+These patterns build on top of the Vue plugin
+and are self-contained in \emph{single HTML files}
+which can be downloaded, modified, and copied into other
+applications.
+Perhaps this format can encourage the copy and paste ``pimp my page''
+programming that was once possible on MySpace, but with the ability
+add new \emph{functionality} rather than just styling~\cite{copypasteliteracy}.
 
 \subsubsection{Future Work}
 \label{above-and-below:above:future-work}
 
-There is certainly potential for more low- or even no-code tools
+There is certainly potential for more low or even no-code tools
 to be developed on top of the Graffiti API. It is an open
 question as to whether it is possible to build an intuitive and completely
 no-code system for Graffiti, like a graphical editor, without limiting
@@ -231,7 +212,7 @@ Additionally, in our own application development,
 we found that inline AI tools like GitHub Copilot are already
 capable of generating large portions of functional Graffiti code.
 This is especially true when writing applications with the
-Vue plugin --- perhaps because of the reduction in boilerplate
+Vue plugin, perhaps because of the reduction in boilerplate
 code and the declarative nature of the templates.
 It is not hard to imagine a future where a developer asks
 a large language model to ``make a messaging app''
@@ -247,62 +228,66 @@ which could represent different feed sorting algorithms
 (similar to \cite{threeleggedstool, bluesky}),
 different moderation policies, different styles,
 or different features.
-Or portions of applications may become represented within social objects themselves.
-MySpace, for example, let users style their own pages --- what if users could easily add
-custom social functionality to their own
-or their community's ``pages''?
+A code-as-data approach would allow these plugins to be shared
+as Graffiti objects themselves~\cite{webstrates}.
+% Or portions of applications may become represented within social objects themselves.
+% MySpace, for example, let users style their own pages --- what if users could easily add
+% custom social functionality to their own
+% or their community's ``pages''?
 
 \subsection{Below}
 
-The Graffiti API we describe in Section~\ref{api} is relatively
-simple and its implementation requires just two main pieces:
-storing data and discovering ``where'' data of interest is stored.
-One solution is to store data on a single massive database
-and then discovery can be answered by simply querying the database.
+The Graffiti API is relatively simple,
+so its implementation must solve just two main problems:
+storing objects and discovering objects according to their.
+One solution is to store objects on one massive database
+and then discovery is trivially a query on that database.
 Unfortunately, this centralizes all control of the network
 on that single server.
 
-Instead, we explore possible \emph{decentralized protocols}
-for the API. For example, data can be served by a ``federation'' of databases,
-each of which look like a small version of the centralized server,
-or the problems of storage and discovery can be split up,
-relying on existing storage solutions similar to Dropbox,
-and a new entity called a ``tracker'' to coordinate discovery.
+Instead, we explore \emph{decentralized protocols} for the API.
+In one protocol, objects are served by a ``federation'' of databases,
+each of which is like a small version of the centralized database.
+In another, the problems of storage and discovery are split up,
+with existing providers similar to Dropbox handling storage
+and a new entity called a ``tracker'' handling discovery.
 
-There are tradeoffs between these in terms of efficiency, scalability,
-robustness, and privacy. Fortunately, multiple \emph{protocols} can
-be understood by one \emph{implementation} allowing new protocols
+The former protocol is more efficient while the latter is more robust.
+% There are tradeoffs between these in terms of efficiency, scalability,
+Fortunately, multiple \emph{protocols} can be understood within one \emph{implementation},
+allowing new protocols
 with different tradeoffs to be organically adopted without requiring
 everyone to collectively switch all at once.
 This is possible because, as we've mentioned, an object's URL starts with a scheme that indicates
 how the various CRUD methods should resolve and interact with the object.
 If a user tries to \texttt{delete} an object whose URL starts with the schema
 \texttt{graffiti:remote:}, their implementation will use the \emph{remote}
-protocol, while if the URL starts with the schema \texttt{graffiti:solid:},
-their implementation will use the \emph{solid} protocol.
+protocol, while if the URL starts with the schema \texttt{graffiti:csp:},
+their implementation will use the \emph{commodity storage} protocol.
 For \texttt{discover}, multiple protocol-specific \texttt{discover}
 calls can simply be aggregated together into one stream.
 
-There are two additional questions we need to resolve to make
-coexisting protocols work.
+There are two additional questions we need to resolve to
+make coexisting protocols work.
 Which protocol should an implementation use
 when an actor \emph{first} \texttt{put}s an object?
-And what \emph{identity} system will work across multiple existing
+And what \emph{identity} system will work across multiple
 protocols?
 
-For the first question of first-\texttt{put}s, we simply give the user the choice.
-As shown in Figure~\ref{above-and-below:choose-protocol},
-the first time a user attempts to \texttt{put} an object,
-they must indicate which protocol they would like to use
-as well as other protocol-specific information, such as what
-remote server they would like to use.
-While there is more work to be done on this,
-we have tried to make the experience frictionless, with
+For the question of first \texttt{put}s, we simply give the user the choice.
+The first time a user attempts to \texttt{put} an object
+a popup opens,
+as shown in Figure~\ref{above-and-below:choose-protocol},
+asking them which protocol they would like to use
+as well as protocol-specific information like what server
+they want to store their data on.
+While our current interface isn't perfect,
+we have tried to make the experience relatively frictionless, with
 reasonable defaults for
 users who do not know or care about the underlying infrastructure.
-Importantly, this interface is built in to the \emph{implementation}
-of the API and so is not the concern of developers building
-applications on top of it.
+Importantly, this interface is built into the \emph{implementation}
+of the API and so it is not the concern of developers building
+applications on top of the API.
 % As mentioned in Section~\ref{above-and-below:delegation},
 % a user can later migrate their data to a different protocol
 % or server without breaking their object's URLs.
@@ -332,7 +317,7 @@ the useful property that a user only needs to log in once
 with an ``identity provider'' before silently authenticating
 them with other services.
 It is also already used by the Solid protocol~\cite{solid},
-which we use in one of our protocols as a ``decentralized Dropbox.''
+which we use in our commodity storage protocol as a ``decentralized Dropbox.''
 
 Unfortunately, Solid OIDC is incompatible with many familiar
 identity solutions, like ``Log in with Google,''
@@ -444,23 +429,38 @@ We hope that DIDs or new specifications evolve past this restriction.
 \subsubsection{Remote Protocol}
 \label{above-and-below:remote-protocol}
 
-The remote protocol maps the Graffiti API onto
-a monolithic HTTP server.
-The protocol is a relatively straightforward transformation of
-Graffiti's API methods to HTTP requests: the CRUD operations
-easily translate to HTTP PUT, GET, PATCH, and DELETE while
-\texttt{discover}, \texttt{recoverOrphans}, and \texttt{channelStats}
-are additional POST endpoints.
-Object URLs start with the scheme \texttt{graffiti:remote:}
-followed by the domain name of the server and the
-path to the object. The result is similar to a traditional
-web URL only with \texttt{https://} replaced by \texttt{graffiti:remote:}.
-For example, \texttt{graffiti:remote:pod.graffiti.garden/123}.
+The remote protocol exposes the Graffiti API as a.
+We've implemented it as a node.js server and a Docker
+Users can stand up their own server like an email or Mastodon
+server enabling more control.
 
-When there is only one server in use, the protocol is essentially
-\emph{centralized} which is extremely efficient and scalable but requires
-enourmous trust in the central server.
-Alternatively, with multiple servers deployed,
+Unlike those other services, which pass messages between
+server, federation happens at the client, ensuring that
+a user's experience can be flexibly changed by what
+application they are using not what storage service they happen to use.
+
+We currently provide a \emph{registry} of servers which
+users can use to find other servers to communicate with.
+This is a central point of control and has efficiecy issues which we discuss later.
+
+% The remote protocol maps the Graffiti API onto
+% a monolithic HTTP server.
+% The protocol is a relatively straightforward transformation of
+% Graffiti's API methods to HTTP requests: the CRUD operations
+% easily translate to HTTP PUT, GET, PATCH, and DELETE while
+% the other operations are additional POST endpoints.
+% \texttt{discover}, \texttt{recoverOrphans}, and \texttt{channelStats}
+% are additional POST endpoints.
+% Object URLs start with the scheme \texttt{graffiti:remote:}
+% followed by the domain name of the server and the
+% path to the object. The result is similar to a traditional
+% web URL only with \texttt{https://} replaced by \texttt{graffiti:remote:}.
+% For example, \texttt{graffiti:remote:pod.graffiti.garden/123}.
+
+% When there is only one server in use, the protocol is essentially
+% \emph{centralized} which is extremely efficient and scalable but requires
+% enourmous trust in the central server.
+With multiple servers deployed,
 a user can choose which they would like to use to store their own data
 (see Figure~\ref{above-and-below:choose-protocol})
 and their client can call \texttt{discover} on
@@ -515,16 +515,16 @@ We discuss it in Section~\ref{above-and-below:announce-protocol} after introduci
 of a \emph{tracker}
 in Section~\ref{above-and-below:commodity-storage-protocol}.
 
-\paragraph{Authentication}
-Actors in the remote protocol are authenticated with an existing
-identity protocol called Solid OIDC.
-Solid OIDC allows an actor to log in \emph{once} to an
-``identity provider'' (see Figure~\ref{above-and-below:login})
-and then silently authenticate with multiple
-other servers.
-The user's actor URI is a URL called a \emph{webId}.
-We discuss Solid OIDC and identity in general in our discussion of
-coexisting protocols, Section~\ref{above-and-below:coexisting-protocols}.
+% \paragraph{Authentication}
+% Actors in the remote protocol are authenticated with an existing
+% identity protocol called Solid OIDC.
+% Solid OIDC allows an actor to log in \emph{once} to an
+% ``identity provider'' (see Figure~\ref{above-and-below:login})
+% and then silently authenticate with multiple
+% other servers.
+% The user's actor URI is a URL called a \emph{webId}.
+% We discuss Solid OIDC and identity in general in our discussion of
+% coexisting protocols, Section~\ref{above-and-below:coexisting-protocols}.
 % with different
 % which provides a webId.
 % We will delve into identity later when we talk about coexisting protocols
@@ -684,45 +684,6 @@ For our purposes, Solid is essentially a federated form of Dropbox.
 It also shares the same identity system as our remote protocol,
 which we discuss in Section~\ref{above-and-below:coexisting-protocols}.
 Objects stored on the protocol have URLs that start with \texttt{graffiti:solid:}.
-
-\subsubsection{Announce Protocol}
-\label{above-and-below:announce-protocol}
-
-To resolve the issue of server discovery in the remote protocol,
-a tracker-like service can be built on the protocol itself.
-When an actor publishes an object to a small, perhaps self-hosted
-server their client also publishes an \texttt{"announce-server"}
-activity, pointing to their small server, on several ``well-known'' servers.
-To handle an actor's \texttt{discover} request, a client first \texttt{discover}s
-for \texttt{"announce-server"} activities on each of the well-known
-servers and then makes the original \texttt{discover} request on each
-announced server.
-Announce activities are only posted to the channels
-that an actor has published to, ensuring that a client
-will not unnecessarily call \texttt{discover} on servers
-that have no objects.
-
-This protocol is guaranteed not to miss objects so long as
-the posting actor's ``well known'' servers overlap with the
-\texttt{discover}ing actor's.
-We are assuming again that, like email or Mastodon, there are several
-``large'' servers, like Gmail or mastodon.social, that can be used as these
-rendezvous points.
-
-By implementing the tracker using Graffiti objects,
-it is possible to flexibly add new features to the tracker
-in the same way that it is possible to flexibly add
-functionality to any other Graffiti object.
-
-We developed a proof of concept implementation of the announce protocol\footnote{
-    \url{https://github.com/graffiti-garden/implementation-federated}
-},
-however it is not currently in use as the Graffiti ecosystem is not
-large enough for it to be relevant.
-It is not possible for the commodity-storage protocol to implement
-the announce protocol, removing the need for a tracker,
-because commodity storage servers do not allow clients to
-query multiple users' data at once.
 
 \subsubsection{Local Protocol}
 

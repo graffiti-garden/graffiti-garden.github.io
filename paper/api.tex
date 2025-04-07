@@ -31,7 +31,7 @@ any build step.
 These web technologies can also be used to build desktop applications
 with Electron\footnote{
     \url{https://www.electronjs.org/}
-} or mobile applications with progressive web applications\footnote{
+} or mobile applications as progressive web applications\footnote{
     \url{https://developer.mozilla.org/en-US/docs/Web/Progressive_web_apps}
 }.
 
@@ -63,7 +63,7 @@ to evolving security standards, the API provides a simple \texttt{login} method 
 \begin{enumerate}
 \item
 A user performs an action, like clicking a ``log in'' button, that triggers
-the application to call \texttt{graffiti.login()}.
+the application to call \texttt{login()}.
 \item
 In response, the implementation of the API may do any manner of things,
 including opening up a pop up or redirecting the user to a new page.
@@ -79,10 +79,10 @@ a token or a signing function, however those details are entirely opaque to the 
 \item
 When the application wants to perform an action that requires authentication,
 it must provide the \texttt{session} object. For example,
-\texttt{graffiti.delete(object, session)}.
+\texttt{delete(object, session)}.
 \item
 Finally, to log out, a user simply needs to call \texttt{logout} on the appropriate
-\texttt{session} object: \texttt{graffiti.logout(session)}.
+\texttt{session} object: \texttt{logout(session)}.
 \end{enumerate}
 
 We chose to keep the \texttt{session} object external from the \texttt{graffiti} class

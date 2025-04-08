@@ -237,10 +237,10 @@ as Graffiti objects themselves~\cite{webstrates}.
 
 \subsection{Below}
 
-The Graffiti API is relatively simple,
-so its implementation must solve just two main problems:
-storing objects and discovering objects according to their.
-One solution is to store objects on one massive database
+The Graffiti API is relatively simple
+and so its implementation must solve just two main problems:
+storing objects and discovering objects by channel.
+One solution is to store all objects on a massive database
 and then discovery is trivially a query on that database.
 Unfortunately, this centralizes all control of the network
 on that single server.
@@ -279,7 +279,7 @@ The first time a user attempts to \texttt{put} an object
 a popup opens,
 as shown in Figure~\ref{above-and-below:choose-protocol},
 asking them which protocol they would like to use
-as well as protocol-specific information like what server
+as well as protocol-specific information, like what server
 they want to store their data on.
 While our current interface isn't perfect,
 we have tried to make the experience relatively frictionless, with
@@ -312,8 +312,7 @@ applications on top of the API.
 \end{figure}
 
 As for identity, we currently use a decentralized protocol called Solid OIDC~\cite{solidoidc}.
-It has open source client and server-side libraries and has
-the useful property that a user only needs to log in once
+It has the useful property that a user only needs to log in once
 with an ``identity provider'' before silently authenticating
 them with other services.
 It is also already used by the Solid protocol~\cite{solid},
@@ -429,19 +428,75 @@ We hope that DIDs or new specifications evolve past this restriction.
 \subsubsection{Remote Protocol}
 \label{above-and-below:remote-protocol}
 
-The remote protocol exposes the Graffiti API as a.
-We've implemented it as a node.js server and a Docker
-Users can stand up their own server like an email or Mastodon
-server enabling more control.
+The remote protocol involves a federation of servers,
+each of which exposes the Graffiti API through an HTTP API.
+Like email, users can choose which server they would
+like to use or run their own.
+Unlike email, the servers do not send objects to each other.
+Instead, the client fetches objects directly from servers,
+differentiating servers by \emph{domain} much like
+protocols are differentiated by \emph{scheme}.
 
-Unlike those other services, which pass messages between
-server, federation happens at the client, ensuring that
-a user's experience can be flexibly changed by what
-application they are using not what storage service they happen to use.
+For discovery, we currently provide a registry of servers
+and clients call \texttt{discover} on all servers in the registry.
+As more servers are deployed, discovering from every one
+will be infeasible and so instead we can use an ``anounce''
+protocol, built on top of the remote protocols,
+that allows the client to only call discover on the servers
+of interest plus a small constant number of well-known
+``rendez-vous'' servers.
 
-We currently provide a \emph{registry} of servers which
-users can use to find other servers to communicate with.
-This is a central point of control and has efficiecy issues which we discuss later.
+% However, unlike email federation happens at the
+% \emph{client}. Individual servers do not pass messages to
+% each other, the client implementation just polls multiple servers, similar
+% to the way that it can pull data from multiple protocols.
+Our reference implementation of the remote protocol
+consists of a a NestJS server with a CouchDB database,
+bundled as a Docker image for easy cross-platform
+deployment\footnote{
+\url{https://github.com/graffiti-garden/implementation-remote}
+}.
+
+% The remote protocol exposes the Graffiti API as a.
+% We've implemented it as a node.js server and a Docker
+% Users can stand up their own server like an email or Mastodon
+% server enabling more control.
+
+% Unlike those other services, which pass messages between
+% server, federation happens at the client, ensuring that
+% a user's experience can be flexibly changed by what
+% application they are using not what storage service they happen to use.
+
+% We currently provide a \emph{registry} of servers which
+% users can use to find other servers to communicate with.
+% This is a central point of control and has efficiecy issues which we discuss later.
+% Currently we only offer one server so this is not an issue,
+% but we provide an alternative ``anouncement protocol''
+% built on the system themselves in the appendix.
+% The simplest way for a client to know which
+% servers to query is for there to
+% be a public ``registry'' of servers.
+% This is the method used by BlueSky~\cite{bluesky}
+% % and by other federated services like
+% % the \texttt{apt} package manager
+% % certificate authorities
+% % and package managers
+% and is available in our
+% own implementation.
+% A registry is simple, but it is a potential central point of control
+% and it does not allow for new
+% servers to easily enter the network.
+% Additionally, if there are too many servers, a registry can become
+% incredibly inefficient as each \texttt{discover} operation needs to be called
+% on \emph{every} registered server, when it is likely that relavent data
+% will only exist on a sparse subset of servers.
+
+% We provide a more decentralized and efficient
+% solution that works \emph{on top} of the remote protocol,
+% however it is involved enough that we consider it its own sub-protocol.
+% We discuss it in Section~\ref{above-and-below:announce-protocol} after introducing the concept
+% of a \emph{tracker}
+% in Section~\ref{above-and-below:commodity-storage-protocol}.
 
 % The remote protocol maps the Graffiti API onto
 % a monolithic HTTP server.
@@ -460,24 +515,24 @@ This is a central point of control and has efficiecy issues which we discuss lat
 % When there is only one server in use, the protocol is essentially
 % \emph{centralized} which is extremely efficient and scalable but requires
 % enourmous trust in the central server.
-With multiple servers deployed,
-a user can choose which they would like to use to store their own data
-(see Figure~\ref{above-and-below:choose-protocol})
-and their client can call \texttt{discover} on
-multiple servers and aggregate the results,
-allowing the user to communicate with others regardless
-of their choice of server.
+% With multiple servers deployed,
+% a user can choose which they would like to use to store their own data
+% (see Figure~\ref{above-and-below:choose-protocol})
+% and their client can call \texttt{discover} on
+% multiple servers and aggregate the results,
+% allowing the user to communicate with others regardless
+% of their choice of server.
 
-This network topology is an example of \emph{federation},
-a form of decentralization, which is used by most of the
-existing social protocols that we survey in Section~\ref{related-work},
-as well as familiar services like email.
-Federation provides defense against a centralized entity
-co-opting the network.
-However, our use of it here begs the questions:
-How does a client know which servers to federate with?
-How can an actor authenticate with multiple servers?
-We answer these questions and others below.
+% This network topology is an example of \emph{federation},
+% a form of decentralization, which is used by most of the
+% existing social protocols that we survey in Section~\ref{related-work},
+% as well as familiar services like email.
+% Federation provides defense against a centralized entity
+% co-opting the network.
+% However, our use of it here begs the questions:
+% How does a client know which servers to federate with?
+% How can an actor authenticate with multiple servers?
+% We answer these questions and others below.
 
 % There are several questions:
 % \begin{enumerate}
@@ -488,32 +543,8 @@ We answer these questions and others below.
 %     was created by a particular actor?
 % \end{enumerate}
 
-\paragraph{Server Discovery}
+% \paragraph{Server Discovery}
 
-The simplest way for a client to know which
-servers to query is for there to
-be a public ``registry'' of servers.
-This is the method used by BlueSky~\cite{bluesky}
-% and by other federated services like
-% the \texttt{apt} package manager
-% certificate authorities
-% and package managers
-and is available in our
-own implementation.
-A registry is simple, but it is a potential central point of control
-and it does not allow for new
-servers to easily enter the network.
-Additionally, if there are too many servers, a registry can become
-incredibly inefficient as each \texttt{discover} operation needs to be called
-on \emph{every} registered server, when it is likely that relavent data
-will only exist on a sparse subset of servers.
-
-We provide a more decentralized and efficient
-solution that works \emph{on top} of the remote protocol,
-however it is involved enough that we consider it its own sub-protocol.
-We discuss it in Section~\ref{above-and-below:announce-protocol} after introducing the concept
-of a \emph{tracker}
-in Section~\ref{above-and-below:commodity-storage-protocol}.
 
 % \paragraph{Authentication}
 % Actors in the remote protocol are authenticated with an existing
@@ -531,27 +562,6 @@ in Section~\ref{above-and-below:commodity-storage-protocol}.
 % Our implementation of the remote protocol builds upon
 % our implementation of the local protocol.
 
-\paragraph{Delegation}
-\label{above-and-below:delegation}
-
-When a remote server returns an object that it claims
-was created by a particular actor, how can the client verify that claim?
-Many decentralized systems use public key cryptography to sign messages,
-however this has the potential to disable \emph{repudiation},
-violating requirement~\ref{requirements:forgiving}.
-
-Instead, we use delegation. When a user first \texttt{put}s an object
-to a new remote server, they mark that server as ``delegated'' in their
-webId \emph{document}. This document is public and so others can verify
-that the user has delegated permission to the server.
-Once an actor deletes an object from a server there is no
-``paper trail'' still connecting them to the object.
-
-The webId document can also be used to set up "forwarding rules" for
-situations where an actor wants to move their data from one server to
-another without breaking all their object's \texttt{url}s.
-This enables \emph{data portability}.
-
 % As we saw in \cref{identity-provider}, the Solid OIDC specification
 % allows a user to store some amount of data at their webId.
 % That data is a URL which points to a Graffiti object owned by the user
@@ -568,22 +578,22 @@ This enables \emph{data portability}.
 % containing delegation and forwarding rules.
 % This means there are no signatures which would violate the deniability property.
 
-\paragraph{Implementation}
+% \paragraph{Implementation}
 
-Our implementation of the remote protocol server\footnote{
-    \url{https://github.com/graffiti-garden/implementation-remote}
-} wraps our local implementation behind
-a web server built on node.js with NestJS and Fastify.
-We point the local implementation's PouchDB instance
-to use a CouchDB database for efficiency and robustness.
-We also use a library from the Community Solid Server project
-for Solid OIDC authentication~\cite{communitysolidserver}.
-The server is bundled as a Docker image for easy
-cross-platform deployment.
+% Our implementation of the remote protocol server\footnote{
+%     \url{https://github.com/graffiti-garden/implementation-remote}
+% } wraps our local implementation behind
+% a web server built on node.js with NestJS and Fastify.
+% We point the local implementation's PouchDB instance
+% to use a CouchDB database for efficiency and robustness.
+% We also use a library from the Community Solid Server project
+% for Solid OIDC authentication~\cite{communitysolidserver}.
+% The server is bundled as a Docker image for easy
+% cross-platform deployment.
 
-The client-side library makes sure to validate
-incoming data and to verify delegation in case a server attempts
-to lie or otherwise misbehave.
+% The client-side library makes sure to validate
+% incoming data and to verify delegation in case a server attempts
+% to lie or otherwise misbehave.
 
 \subsubsection{Commodity Storage Protocol}
 \label{above-and-below:commodity-storage-protocol}
@@ -591,30 +601,24 @@ to lie or otherwise misbehave.
 An alternative Graffiti protocol builds on top of existing
 \emph{commodity storage} providers,
 similar to Dropbox.
-While the protocol is less efficient than the remote
-protocol, its bootstrapping off of existing
-storage solutions makes it more familiar and robust.
-A user does not need to worry that an experimental new service
-will go offline or lose their data.
 % Additionally, storage providers have already established
 % a viable economic model with a freemium tier and paid service
 % for more storage or bandwidth.
 % A user does not need to worry about an experimental new service going down.
 % However they post performance issues:
-
-At a high level, the protocol works as follows.
-Actors on the protocol store their objects on a storage
-provider of their choice.
-Their client manages channel-specific files on that provider,
+% At a high level, the protocol works as follows.
+Similar to the remote protocol, users get to choose which storage
+service they would like to store their objects on, including
+from one they host themselves.
+The client-side implementation of the API (for brevity, ``the client'')
+manages channel-specific files on the storage provider,
 each containing all the objects the actor has published to that channel.
-A user's client shares links to those channel files
-with a \emph{tracker}.
+The client shares links to those channel files with a \emph{tracker}.
 The tracker is similar to a BitTorrent tracker~\cite{bittorrent} but
 rather than mapping torrent IDs to IP addresses
 it maps channel strings to channel file URLs.
 To run \texttt{discover}, a client queries the tracker
-about each channel of interest,
-and then fetches each of the resulting URLs for objects.
+about each channel of interest and then fetches each of the resulting URLs for objects.
 
 % More specifically, to \texttt{put} a new object, a client
 % performs the following:
@@ -645,15 +649,15 @@ and then fetches each of the resulting URLs for objects.
 % and publish it to the tracker, if not already done.
 % \end{enumerate}
 
-There is some additional bookkeeping that must be done to
-keep objects in multiple channels in sync, and to enforce an object's
-\texttt{allowed} list using the storage provider's built-in access control,
-but we've omitted those details for brevity.
+% There is some additional bookkeeping that must be done to
+% keep objects in multiple channels in sync, and to enforce an object's
+% \texttt{allowed} list using the storage provider's built-in access control,
+% but we've omitted those details for brevity.
 % The procedure of \texttt{discover}ing an object happens essentially in
 % reverse.
 % Some additional bookkeeping and privacy details have been ommitted for brevity.
-Additionally, like the remote protocol, the commodity storage protocol
-relies on delegation for verifying that an object was created by a particular actor.
+% Additionally, like the remote protocol, the commodity storage protocol
+% relies on delegation for verifying that an object was created by a particular actor.
 
 The commodity storage protocol is less efficient than the remote protocol because each
 \texttt{discover} call requires a network request per-channel-per-actor,
@@ -666,28 +670,39 @@ the commodity storage protocol scale with the number of actors.
 Additionally, the schema provided to \texttt{discover} cannot be used for any
 server-side filtering --- a client must download \emph{all} objects in a channel
 and discard ones that do not match the schema.
+
 Still, for users who tend to participate in small networks, these issues
 of scale are not a concern and the use of ``simple'' storage servers can be appealing.
+The user does not need to worry that an experimental new service
+will go offline or lose their data, and we, as implementers do not need to
+worry about developing the infrastructure.
+% While the protocol is less efficient than the remote
+% protocol, its bootstrapping off of existing
+% storage solutions makes it more familiar and robust.
 
-We implemented the commodity storage protocol
-% \footnote{
-%     TODO link to solid implementation
-% }
-on top of a custom tracker\footnote{
-    \url{https://github.com/graffiti-garden/link-service},
-    \url{https://github.com/graffiti-garden/link-service-client}.
-    WebTorrent was considered instead of a custom tracker,
-    but unfortunately it does not persist announcements more than a few hours.
-} and the Solid protocol.
-For our purposes, Solid is essentially a federated form of Dropbox.
-% where people can stand up their own Dropbox instance.
-It also shares the same identity system as our remote protocol,
-which we discuss in Section~\ref{above-and-below:coexisting-protocols}.
-Objects stored on the protocol have URLs that start with \texttt{graffiti:solid:}.
+At the time of writing, we have built the tracker
+\footnote{
+  \url{https://github.com/graffiti-garden/link-service},
+  \url{https://github.com/graffiti-garden/link-service-client}.
+  WebTorrent was considered instead of a custom tracker,
+  but unfortunately it does not persist announcements more than a few hours.
+}, but the reference \emph{implementation} of the protocol as a whole,
+using Solid as the storage providers,
+is not yet complete.
+
+
+% and the Solid protocol.
+% For our purposes, Solid is essentially a federated form of Dropbox.
+% % where people can stand up their own Dropbox instance.
+% It also shares the same identity system as our remote protocol,
+% which we discuss in Section~\ref{above-and-below:coexisting-protocols}.
+% Objects stored on the protocol have URLs that start with \texttt{graffiti:solid:}.
 
 \subsubsection{Local Protocol}
 
-Our first ``protocol'' is one that runs locally
+One final ``protocol'' demonstrates additional power of the protocol-agnostic
+API by creating ``utility'' protocols.
+This protocol runs locally
 and handles objects with the URL scheme \texttt{graffiti:local:}.
 Any data created on the local protocol is only visible on the device
 it was created on.
@@ -706,9 +721,9 @@ having to create or log in to an account, as shown in
 Figure~\ref{above-and-below:login}.
 
 \begin{figure}
-    \label{above-and-below:login}
     \includegraphics[width=\columnwidth]{figures/login.png}
     \caption{The modal that pops up when the user triggers a \texttt{login()}. TODO: Update the figure to show the whole flow.}
+    \label{above-and-below:login}
 \end{figure}
 
 We implemented the local protocol\footnote{
@@ -718,6 +733,28 @@ storage in both the browser and in node.js.
 Because of its relative simplicity, the local implementation also serves
 as a reference implementation of the Graffiti API and pieces of its code are also used
 throughout other implementations.
+
+\subsubsection{Delegation and Portability}
+\label{above-and-below:delegation}
+
+When a remote server returns an object that it claims
+was created by a particular actor, how can the client verify that claim?
+Many decentralized systems use public key cryptography to sign messages,
+however this has the potential to disable \emph{repudiation},
+violating requirement~\ref{requirements:forgiving}.
+
+Instead, we use delegation. When a user first \texttt{put}s an object
+to a new remote server, they mark that server as ``delegated'' in their
+webId \emph{document}. This document is public and so others can verify
+that the user has delegated permission to the server.
+Once an actor deletes an object from a server there is no
+``paper trail'' still connecting them to the object.
+
+The webId document can also be used to set up "forwarding rules" for
+situations where an actor wants to move their data from one server to
+another without breaking all their object's \texttt{url}s.
+This enables \emph{data portability}.
+
 
 % Solid OIDC has some shortcomings
 % In the future we would like to support a more extensible identity system

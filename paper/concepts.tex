@@ -4,18 +4,18 @@
 
 This section outlines the primary concepts that make up the design of Graffiti
 according to our requirements.
-We follow with Section~\ref{api} which outlines the \emph{specific} API that is built out of these
+We follow with Section~\ref{api}, which outlines the \emph{specific} API that is built out of these
 concepts.
 
-At a high level the Graffiti API works as follows.
+At a high level, the Graffiti API works as follows.
 \emph{Actors} (basically users) create \emph{objects} which can represent
 social artifacts like posts or \emph{activities} like ``likes.''
 Objects are associated with a set of \emph{channels} and other users can
 discover an object by querying one of its channels. Channels a are flexible representation
-of different \emph{contexts} which may include identities, topics, pieces of media, locations,
+of different \emph{contexts} which may include identities, topics, locations,
 and more.
 Actors can not modify other actors' objects and so for actors to interact with each others' content
-those interactions must be \emph{reified} into indivdual activities,
+those interactions must be \emph{reified} into individual activities,
 allowing for different interpretations of the interactions.
 
 % Our objects and actors inherit from the
@@ -28,7 +28,7 @@ allowing for different interpretations of the interactions.
 
 Objects are the atomic units that encapsulate \emph{all}
 of the social data in Graffiti, including
-both social artifacts (such as posts and profiles) and social activities (such as likes and follows).
+both social artifacts (such as posts and profiles) and social ``activities'' (such as likes and follows).
 Each Graffiti object includes some structured metadata,
 such as the actor who created the object,
 but an object's ``value'' can be \emph{any} valid JSON object.
@@ -36,9 +36,9 @@ For example, a blog post object may have the value:
 
 \begin{minted}{javascript}
 {
-  title: "My First Post",
-  content: "Hello, world!",
-  published: 1611972000, // The time in seconds
+  title: "My First Post",
+  content: "Hello, world!",
+  published: 1611972000, // The time in seconds
 }
 \end{minted}
 
@@ -62,15 +62,15 @@ they can freely add an \texttt{ingredients} property to their objects.
 % \texttt{ingredients} property to objects.
 % allowing them to benefit from pre-existing data
 % made in other applications
-We're leveraging an idea here called a \emph{folksonomy}~\cite{folksonomy}.
+We are leveraging an idea here called a \emph{folksonomy}~\cite{folksonomy}.
 Social applications
-benefit from network effects and so we expect that developers will make use of
-existing properties where possible,
+benefit from network effects, and so we expect that developers will make use of
+existing properties where possible
 but will introduce new properties when necessary.
-The result will inevitably be messy and inconsistent but, as with the evolution of
+The result will inevitably be messy and inconsistent, but, as with the evolution of
 particular hashtags, we expect there will be an effective balance of creativity and convergence.
 Importantly, the barrier to participating in the folksonomy is low
-and does not require a precise ontological agreement
+and does not require a precise ontological agreement,
 which some argue contributed to the failure of the semantic
 web~\cite{semanticwebtwodecades}.
 The folksonomy approach encourages autonomous extensibility
@@ -81,7 +81,7 @@ as per requirement \ref{requirements:autonomous-extensibility}.
 % fallbacks for data they can't parse.
 
 Graffiti objects also have URLs that
-start with a \emph{scheme}, just like URLs on the World Wide Web,
+start with a \emph{scheme}, just like URLs on the web,
 enabling objects to be served by different \emph{coexisting} protocols.
 For example, a post might have the URL
 \texttt{graffiti\allowbreak:remote\allowbreak:pod\allowbreak.graffiti\allowbreak.garden\allowbreak/123},
@@ -89,18 +89,18 @@ where the scheme \texttt{graffiti:remote:} refers to a protocol we describe
 in Section~\ref{above-and-below:remote-protocol}
 instead of \texttt{https:} as seen on the web.
 URLs allow the object to be directly fetched\footnote{
-    In Section~\ref{above-and-below} we describe how fixed URLs
-    are still compatible with ``data portability,'' allowing
-    a user to move their data to a new place or protocol without
-    changing the URL.
+  In Section~\ref{above-and-below} we describe how fixed URLs
+  are still compatible with ``data portability,'' allowing
+  a user to move their data to a new place or protocol without
+  changing the URL.
 }, but also pointed to, as in the
 ``like'' activity below.
 % enabling other users to ``like'' that post by creating a new object with the value:
 
 \begin{minted}{javascript}
 {
-  activity: "like",
-  target: "graffiti:remote:pod.graffiti.garden/123",
+  activity: "like",
+  target: "graffiti:remote:pod.graffiti.garden/123",
 }
 \end{minted}
 
@@ -118,17 +118,17 @@ which we discuss in
 Section~\ref{concepts:total-reification}.
 
 Finally, objects are mutable, meaning they can be changed or deleted,
-Mutability is necessary for the system to be forgiving per requirment~\ref{requirements:forgiving}.
+Mutability is necessary for the system to be forgiving per requirement~\ref{requirements:forgiving}.
 The question of \emph{who} can mutate the objects
-will be answered once discuss identity, next, and then total reification.
+will be answered once we discuss identity next and then total reification.
 
-In summary Graffiti objects are:
+In summary, Graffiti objects are:
 
 \begin{enumerate}
 \item
 Flexible: Objects can take on any value according to a self-describing folksonomy.
 \item
-Globally-Addressable: Every object has a globally unique URL that can be used to fetch it.
+Globally-Addressable: Every object has a globally unique URL that can be used to fetch or point to it.
 \item
 Mutable: Objects can be changed or deleted.
 % we add the two following contraints on objects
@@ -152,13 +152,13 @@ Mutable: Objects can be changed or deleted.
 An actor is an account that a user can ``log in'' as
 to identify themselves, publish objects, and receive ``private'' objects.
 The actor is represented by a globally unique string or \emph{URI},
-just like an email account is represented by an email address.
+just as an email account is represented by an email address.
 The term \emph{actor} is again inherited from ActivityStreams
 and is used rather than \emph{user} since a user may own
 multiple actors or
 an actor may be a non-human entity
 like a bot or recommendation service.
-All Graffiti objects are associated with actors, the actor
+All Graffiti objects are associated an actor, the actor
 that created the object, but anonymous
 or meronymous~\cite{meronymous} interactions are possible by
 creating ``throw away'' actors.
@@ -180,7 +180,7 @@ creating ``throw away'' actors.
 % a Graffiti actor is not tied to any particular application so that users can freely move between
 % different applications.
 
-Unlike an ActivityStreams actor, A Graffiti actor does not embody any identifiable information other than its
+Unlike an ActivityStreams actor, a Graffiti actor does not embody any identifiable information other than its
 URI.
 Properties like a display name or pronouns are instead
 defined in separate objects.
@@ -188,12 +188,13 @@ For example, with Alice's actor URI in the \texttt{describes}
 property, a profile object for her is:
 \begin{minted}{javascript}
 {
-  name: "Alice",
-  pronouns: "she/her",
-  describes: "https://alice.example.com",
+  name: "Alice",
+  pronouns: "she/her",
+  describes: "https://alice.example.com",
 }
 \end{minted}
-This seperation allows for new profile
+
+This separation allows for new profile
 properties to freely evolve
 and it also allows people to have different profiles for different contexts.
 For example, a trans person who is not publicly ``out'' may want to
@@ -207,7 +208,7 @@ Actors are also used for privacy.
 Objects can be \emph{access-controlled} and only
 made visible to a limited set of actors, enabling
 direct messaging.
-Forms of privacy that don't revolve around identity
+Forms of privacy that do not revolve around identity
 like ``unlisted'' groups are handled
 with the \emph{channels} concept we discuss in
 Section~\ref{concepts:channels}.
@@ -350,12 +351,12 @@ section, and therefore:
 \item
 Channels are \emph{permissionless}: actors can freely read from and write to channels.
 \end{enumerate}
-All permission structures are built on top of permissionless base
-through reified actions and application interpretation.
+% All permission structures are built on top of permissionless base
+% through reified actions and application interpretation.
 
 Our case studies in Section~\ref{case-studies} demonstrate
-the new and interesting interactions that are possible with
-total reification.
+some of the new and interesting interactions within and between applications
+that are possible with total reification.
 We also are concurrently writing about its social
 ramifications: its annihilation of any ``paternalistic''
 rule systems and also its great potential for empowerment.
@@ -399,12 +400,13 @@ The channel namespace is also \emph{global} with every string (up to a certain l
 corresponding to exactly one channel.
 Like object properties, these channels strings have no inherent meaning
 other than the meaning ascribed to them by applications.
-In practive, the meaning of a channel is a particular \emph{context} and the channel
+In practice, the meaning of a channel is a particular \emph{context} and the channel
 string is some sort of \emph{shared information} implicit to that context.
 We will first illustrate the power of channels
 to model different types of \emph{replies},
 preventing context collapse per requirement~\ref{requirements:context-differentiation}
 while maintaining interoperability.
+Then, we describe the formal properties of channels and their other uses.
 
 % as part of
 % an evolving folksonomy.
@@ -618,15 +620,13 @@ Security by obscurity doesn not allow for \emph{revocation}\footnote{
 of access,
 hence why objects are also access-controlled as mentioned in Section~\ref{concepts:actors}
 To send someone a direct message that message should be placed in
-the recieving actor's channel, where by convention they know to look for it,
+the receiving actor's channel, where by convention they know to look for it,
 and access control on it should be limited to only the recipient.
 
 Many channels, like the ``post's channel'' in our replies example,
 can be found by spidering Graffiti like a search engine and so a determined
-developer could make an application that intentionally collapses context
-that ``feel'' private.
-We hope to cultivate similar social norms to real-world spaces that
-are public but feel private.
+developer could make an application that intentionally collapses contexts.
+While this is a possibility and another reason why access control is necessary for privacy-critical situations, we hope to cultivate social norms that dissuade this behavior, similar to informal notions of privacy in the real world.
 For example, it is entirely possible for a person in the real world
 to attend various support groups, like alcoholics anonymous,
 just to spread people's secrets, but doing so would be shameful.
@@ -675,7 +675,7 @@ to prevent web scraping.
 
 \subsubsection{Other Channel Meanings}
 
-We've seen how channels can represent \emph{people} and \emph{posts}
+We have seen how channels can represent \emph{people} and \emph{posts}
 which cover the contextual needs of most microblogging applications,
 but channels can also represent media, topics, websites, and locations,
 and more meanings can be freely introduced in an evolving folksonomy~\cite{folksonomy}.
@@ -704,7 +704,7 @@ Collections & are.na, Pinterest, Spotify playlists \\ \hline
 Website & Hypothes.is, Pinboard \\ \hline
 Physical Locations & Tinder, Craigslist, Nextdoor \\ \hline
 Virtual Locations & Second Life, Minecraft \\ \hline
-Events & Meetup, Partiful, Facebook Events \\ \hline
+Events & Partiful, Facebook Events \\ \hline
 Products/Services & Amazon reviews, Yelp \\ \hline
 Documents & Wikipedia, Google Docs \\ \hline
 \end{tabular}
@@ -713,7 +713,7 @@ Documents & Wikipedia, Google Docs \\ \hline
 In some cases, an existing standard can be used as a channel
 string, like the URL of a website (Hypothes.is),
 or the ISBN of a book (GoodReads).
-In other cases the channel string may be user generated,
+In other cases, the channel string may be user generated,
 as with public contexts like SubReddits or a Wikipedia pages,
 or randomly generated for ``unlisted'' contexts like
 Discord channels, Pinterest boards, or Google documents.

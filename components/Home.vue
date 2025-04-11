@@ -30,10 +30,10 @@
             Graffiti.
         </p> -->
 
-        <p>
+        <!-- <p>
             All of the code behind Graffiti is open source on
             <a href="https://github.com/graffiti-garden">Github</a>.
-        </p>
+        </p> -->
 
         <!-- <footer>
             <RouterLink to="/motivation"> Motivation </RouterLink>

@@ -26,7 +26,7 @@ watch(route, () => (navOpen.value = false));
                 <RouterLink to="/"> Graffiti </RouterLink>
             </h1>
             <TOC />
-            <ul>
+            <!-- <ul>
                 <li>
                     <a
                         target="_blank"
@@ -37,7 +37,7 @@ watch(route, () => (navOpen.value = false));
                         Github
                     </a>
                 </li>
-            </ul>
+            </ul> -->
         </nav>
         <main v-if="$graffitiSession.value === undefined">
             <p>Loading...</p>

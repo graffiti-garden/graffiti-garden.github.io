@@ -9,7 +9,7 @@
 % The latter demonstrate how ``weird'' social applications
 % can become when there is not central moderator.
 The case studies below demonstrate the diversity of applications
-that can be build on top of the Graffiti API and explore interoperation
+that can be built on top of the Graffiti API and explore interoperation
 between those applications.
 The studies also demonstrate some of the unusual design patterns that
 Graffiti makes possible when the boundaries between applications
@@ -24,41 +24,58 @@ because they are each posted to different channels.
 All of the applications are written with pure client-side code on
 top of the Graffiti Vue plugin.
 
-\subsection{Namebook and The Gloof}
+\subsection{Glitter and The Glue Factory}
+%DK Why lump these together?   Describe Glitter first (and discuss how easy it is to implement) than describe Gloof and explain how they interoperate
 
 The following example demonstrates how a community-specific application,
-\emph{The Gloof}, can interoperate with a general-purpose application, \emph{Namebook},
-without the explicit permission of Nambook.
-Not all of the community-specific features on The Gloof
-translate to Namebook, and not all of the interconnectedness on Namebook
-is forced upon The Gloof.
+%DK I would call this a social site rather than an application (and explain why).
+\emph{The Glue Factory}\footnote{
+\url{https://gluefactory.live}
+}, can interoperate with a general-purpose application, \emph{Glitter}\footnote{
+\url{https://glitter.graffiti.garden}
+},
+without the explicit permission of Glitter.
+Not all of the community-specific features on The Glue Factory
+translate to Glitter, and not all of the interconnectedness on Glitter
+is forced upon The Glue Factory.
 Still, there is enough interoperation between the two to be meaningful.
 
-\emph{Namebook} is a text-centric microblogging platform
+\emph{Glitter} is a text-centric microblogging platform
 where users can post, follow, reply, and change their display name.
-Replies are threaded and, like Twitter, appear in the replier's followers' feeds
-in addition to the reply thread.
-There is also a literal ``name book,'' a directory
-users can add themselves to so others can find them.
+Replies are threaded and, like Twitter, appear in the replier's followers' feeds in addition to the reply thread.
+There is also a a directory that users can add themselves to,
+so others can find them.
+%DK Is the directory glitter specific?   why?   finding users seems important for most applicatoins.
 
-\emph{The Gloof} is an application made for a local
+\emph{The Glue Factory} is an application made for a local
 venue to share event flyers.
 The flyers are displayed in a grid, similar to Instagram,
 but there is just one feed, collectively curated by
 the application's fixed set of venue organizers.
 Flyers can be replied to but the organizers can delete replies they disapprove of.
 
-Importantly, The Gloof gives the ability for
+Importantly, The Glue Factory gives the ability for
 top-level repliers to ``crosspost'' their replies
-to Namebook, effectively sharing the flyer like a quote tweet.
-Namebook does not support images and so only the
+to Glitter, effectively sharing the flyer like a quote tweet.
+Glitter does not support images and so only the
 event description appears.
-Replies to the crosspost made on Namebook also appear on The Gloof
-and vice versa, \emph{unless} the Gloof's organizers ``delete'' the reply,
-in which case it only appears on Namebook, regardless of where it originated.
-Additionally, replies to the crosspost made on Namebook appear in the replier's
-followers' feeds while replies made on The Gloof only appear in the reply thread,
-as expected of each.
+Replies to the crosspost made on Glitter also appear on The Glue Factory
+and vice versa, \emph{unless} the The Glue Factory's organizers ``delete'' the reply,
+in which case it only appears on Glitter, regardless of where it originated.
+Additionally, replies to the crosspost made on Glitter appear in the replier's followers' feeds while replies made on The Glue Factory only appear in the reply thread, as expected of each.
+Some of this interoperation is shown in Figure~\ref{case-studies:fig:gloof-and-glitter}\footnote{
+Flyers are blurred for anonymization during review.
+}.
+
+\begin{figure*}[h]
+    \Description[Two screen shots beside each other.]{Two screen shots that show textual content from the Gloof application being presented in the general purpose Glitter application.}
+    \centering
+    \includegraphics[width=\textwidth]{paper/figures/gloof-and-glitter.png}
+    \caption{A reply to a Glue Factory event appears like a quote Tweet on Glitter, with
+    interoperating replies.}
+    
+    \label{case-studies:fig:gloof-and-glitter}
+\end{figure*}
 % on Namebook but replies
 % to the crosspost show up on both applications,
 % allowing repliers ask clarifying questions.
@@ -70,24 +87,26 @@ as expected of each.
 % appear on the user's profile, even if they are in
 % reply to posts on The Gloof.
 
-The applications are built on the object schemas and channels
+The applications are built out of the objects and channels
 shown in Figure~\ref{case-studies:fig:schemas-and-channels}.
-Importantly, both applications use the same reply schema,
-and the post schema used by Namebook is a subset of the flyer
-schema used by The Gloof.
+Importantly, both applications use the same reply object schema,
+and the post object schema used by Glitter is a subset of the flyer
+object schema used by The Glue Factory.
 This overlap makes interoperation \emph{possible}
-but selecting ``crosspost'' in The Gloof collapses the
+but selecting ``crosspost'' in The Glue Factory collapses the
 channel usage of the two applications
 causing the interoperation to actually \emph{happen}.
 The difference in reply visibility between the two applications
 is exactly as described in Section~\ref{concepts:channels}.
 
-\begin{figure}
+\begin{figure*}[h]
+    \Description[Diagram showing four channels with examples of objects in each.]{Diagram showing that Glitter and Glue Factory each have a channel, each actor and each post has a channel, and an object can be in both the actor and post channels.  }
     \centering
-    \includegraphics[width=\columnwidth]{figures/schemas-and-channels.jpg}
-    \caption{Namebook and Gloof object schemas and channels}
+    \includegraphics[width=\textwidth]{figures/schemas-and-channels.png}
+    \caption{The objects and channels used by Glitter and the Glue Factory, and their overlap}
+
     \label{case-studies:fig:schemas-and-channels}
-\end{figure}
+\end{figure*}
 
 % Namebook employs four object schemas: posts and replies are represented
 % by one schema with \texttt{content}, a \texttt{published} timestamp, and an optional
@@ -123,7 +142,7 @@ is exactly as described in Section~\ref{concepts:channels}.
 % and available in a replies tab, unlike Gloof comments
 % which only show up under the post
 
-One additional note is that flyers posted to The Gloof include a \texttt{startTime}
+One additional note is that flyers posted to The Glue Factory include a \texttt{startTime}
 to display event dates.
 This metadata is also used to populate a separate calendar application
 used by the co-operative that owns the venue space.
@@ -142,7 +161,11 @@ used by the co-operative that owns the venue space.
 
 \subsection{Parallax and Provenance}
 
-\emph{Parallax} is a realtime group chat application that demonstrates
+%DK perhaps before getting into the crazy bits, talk about how easy it is to implement a basic group chat application ("Grack").   Each group is defined by a channel, and you invite someone to the group by notifyig them about the channel.  There is no admin---anyone in the group can invite others---and no way to remove people without their consent (but you can always create a new group excluding them).  Maybe also describe how you would design a facebook clone ("Gracebook") differently: a user can post content for friends by putting it in their own actorID channel but with an allowlist consisting of their friends.  alternatively they can create a different channel for sharing posts to their friends and invite all friends to subscribe to it.
+
+\emph{Parallax}\footnote{
+\url{https://parallax.graffiti.garden}
+} is a realtime group chat application that demonstrates
 how, under total reification, it is possible for \emph{every} user to employ a different
 moderation scheme.
 Specifically,
@@ -156,21 +179,36 @@ make to their own ``views'' of a group and are given the option
 to \emph{voluntarily} incorporate those changes,
 as shown in Figure~\ref{case-studies:fig:parallax}.
 
+\begin{figure*}[h]
+    \Description[Three screen shots.]{The screen shots on the right show the membership lists for Bob and Alice, which determine what each of them see in their version of the shared chat on the left.}
+    \centering
+    \includegraphics[width=\textwidth]{paper/figures/parallax.png}
+    \caption{An interaction on Parallax. On the left is Bob's view of an exchange. On the right are Alice and Bob's \emph{different} membership lists.}
+    
+    \label{case-studies:fig:parallax}
+\end{figure*}
+
 Under the hood, a group is represented by a random identifier,
 generated when the group is created, and also used as the group's channel.
-Changes to a group's name are similar to name changes on Namebook, only they
+Changes to a group's name are similar to name changes on Glitter, only they
 \texttt{describe} the group identifier.
 Changes to the group's membership are \texttt{"Add"}
 and \texttt{"Remove"} activities that \texttt{target} the relevant actor.
-Messages are like posts on Namebook, only they have \texttt{allowed} lists, which are determined
+Messages are like posts on Glitter, only they have \texttt{allowed} lists, which are determined
 by aggregating the user's own \texttt{"Add"} and \texttt{"Delete"} activities.
 
 Of course, complete independence is not always desirable:
 work usually done by just one group administrator must, in Parallax,
 be done by every single group user.
-We use Parallax to demonstrate an extreme, but by changing X lines of functional code,
-the application can be transformed into a more reasonable (but more restrictive) application called \emph{Provenance},
+We use Parallax to demonstrate an extreme,
+but it can be
+% transformed
+% but by changing X lines of functional code,
+transformed into a more reasonable (but more restrictive) application called \emph{Provenance}\footnote{
+\url{https://provenance.graffiti.garden}
+},
 where a group's administrator is the  \emph{creator} of the group chat.
+%DK not sure what this means.   how does being the creator give them administrator privileges?   and was does admin privilieges mean given adversarial interoperability?
 
 % Provenance determines the \texttt{allowed} list on a user's messages
 % by aggregating the \texttt{"Add"} and \texttt{"Remove"} activities made by the first
@@ -205,18 +243,30 @@ Graffiti's inevitable assymetry most accessible and engaging.
 
 \subsection{Wikiffiti}
 
-Wikiffiti is a Wikipedia-like application that demonstrates that
+Wikiffiti\footnote{
+\url{https://wikiffiti.graffiti.garden}
+} is a Wikipedia-like application that demonstrates that
 collaborative editing in Graffiti is possible,
 even though an actor can only mutate their own objects.
 Additionally, unlike Wikipedia,
 every user on Wikiffiti can choose which other users have ``permission'' to edit an article,
 \emph{retroactively} undoing edits by unpermissioned users,
-as shown in Figure~\ref{case-studies:fig:wikiffiti}.
+as shown in Figure~\ref{case-studies:fig:wikiffiti}.  Of course, the user can only control which users' edits \emph{they} see, not exert any global control---so different users may end up seeing different pages.
+
+\begin{figure*}[htb]
+    \Description[Four screen shots showing changes to a Wikifitti page.]{Four screen shots showing how the actions of successive edits evolve the text as viewed.}
+    \centering
+    \includegraphics[width=\textwidth]{paper/figures/wikiffiti.png}
+    \caption{(a) [REDACTED] 1 makes some edits to a Wikifitti page. (b) [REDACTED] 2 ``vandalizes'' the page (c) [REDACTED] 3 manually deletes some of [REDACTED] 2's edits and adds new content. (c) All of [REDACTED] 2's edits are retroactively removed.
+    }
+    
+    \label{case-studies:fig:wikiffiti}
+\end{figure*}
 % total reification provides every user with affordance
 
 Edits to each Wikiffiti article are published to
 the channel represented by the article's title.
-This allows for basic search and, like on Wikipedia,
+This allows for basic exact-match ``search'' on titles and, like on Wikipedia,
 ``disambiguation'' pages can serve as manual search indexes when necessary.
 
 Edits are published and composed together according to Logoot,

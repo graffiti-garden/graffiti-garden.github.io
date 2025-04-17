@@ -1,141 +1,268 @@
+\section{More Channel Name Constructions}
 
-While our use of objects is similar to ActivityPub, one subtle difference is
-    that the objects are ``ducktyped'' unlike ActivityPub's use of \texttt{type} properties.
-    This allows for slightly more flexibility and interoperability.
-},
+Graffiti channels, as described in
+Section~\ref{concepts:channels},
+are designed to allow for new contextual meanings to evolve according to a folksonomy.
+% with new channel name constructions.
+In Table~\ref{concepts:channels-and-applications},
+we listed some of those possible meanings.
+Here, we expand on how continuous
+contexts, like locations, can be represented with
+discrete channel names and how channels names
+can be combined to create new
+intersectional meanings.
+% we expand on how continuous contexts like
+% locations might be represented in channels and how
+% channels could be combined to make new channels.
 
-\subsubsection{Notes}
+% can evolve as a folksonomy to include
+% different meanings and different name constructions.
+% We provide a few more examples of channel name constructions
+% for contexts that are not obvious.
 
-One particular benefit of the channel concept over near misses, is that channels more naturally allow for BCCing.
-While many of the channels a user posts to are presumably related to properties of the data itself, it is also possible to post data to multiple channels without revealing those channels to each other.
-For example, a user may be part of several different contexts invite them to a party with a universal thread, but doesn't want to inundate one with another by including them directly.
+There are many standard models for representing
+discrete physical \emph{areas} that could be co-opted to construct channel
+names for location-centric contexts. These include
+human-generated divisions, like zip codes,
+and automatic divisions like what3words\footnote{
+    \url{https://what3words.com}
+}, a tiling of the earth into 3 meter squares.
+The construction chosen for a particular application will
+depend on that application's purpose,
+its ``reach'' needs, and its privacy needs.
+For example, a civic discussion application
+might benefit from using voting precincts and wards
+to construct the channel names.
+A classifieds application, like Craigslist, may benefit from posting
+advertisement objects to channels representing multiple \emph{scales}
+in a ``resolution pyramid,'' to encourage discoverability,
+using a hierarchical area standard such as H3\footnote{
+    \url{https://h3geo.org/}
+}.
+A location-based dating application, like Tinder, may intentionally
+post profile objects only to coarse area channels to prevent stalking.
+Conversely, when exact location is important,
+as is the case for geocaching, an application could post the geocache
+object to several coarse area-based channels to allow users
+to search for geocaches nearby, but include
+the exact cache location as an object \emph{property}
+so that receiving applications can mark the cache on a map.
 
+Channels can also be concatenated to produce new, more specific channels,
+which may help to prevent context collapse in overloaded domains.
+For example, a Tinder-like application may post profile objects
+to channels with names of the form
+\texttt{dating+\allowbreak{}zip:\allowbreak{}12345} rather than
+\texttt{zip:\allowbreak{}12345} so that dating profiles
+do not accidentally show up to neighbors browsing a local
+discussion platform, like Nextdoor.
+% Of course, the neighbors may
+Concatenation may also happen in natural language.
+For example, on Reddit,
+programming-related memes are posted to \texttt{r/\allowbreak{}Programmer\allowbreak{}Humor}
+rather than \texttt{r/\allowbreak{}programming+\allowbreak{}r/funny}.
 
-\subsubsection{Near Misses}
+% Posting to multiple channels, as in our example of posting
+% to multiple areas scales, effectively allows posting
+% to the \emph{union} of contexts while concatenation allows users
+% to post to the \emph{intersection} of contexts.
+% Prior to settling on the channels concept we
+% considered an alternate construction
+% that allows arbitrary logical formulas to be represented.
+% In this construction, rather than providing an array of channels,
+% the developer would supply one or more \emph{near misses}.
 
-Compared to near misses, the channel concept allows data recipients to only make queries on the \emph{union} of attributes --- a query can be for posts by Alice \emph{or} in reply to the target post but not for posts by Alice \emph{and} in reply to the target post. The recipient is left to do further filtering and in our implementation section we discuss the consequences this has on performance and client-side only design.
+% This construction allows for the creation of arbitrary \emph{logical}
+% intersections but the real-world use cases of those are limited.
 
-It is possible to \emph{intersect} channels by concatenating them.
-For example, if we only want a message to be seen by people interested in dating at a particular
-location the channel would be
-The order of the concatentation is ambiguous and there is the potential.
+\section{Announce Protocol}
 
-These union queries also limit the options that a poster has to specify where they want data to appear. However, we believe that in most cases where a user wants content to only be available in the intersection of two channels, it is appropriate to create a new channel through either automated or natural language concatenation.
-
-One possible generalization of `Channels' is near misses.
-The concept is hard to develop and the scope in which such logical interections
-might be useful is limited. However for completness we thought it is worth mentioning.
-
-BCCs don't work with near misses.
-
-One way to operationalize public contexts is similar to how people set boundaries in natural language.
-When asked a general question, like ``How are you?'', many people respond with a general answer, ``Good, and you?''
-When asked a more specific question, like ``What did you think of the game last night?'', many people respond with a more specific answer.
-
-Asking a more specific question can be a shibolleth
-signals the querier's interests
-which can give the responder confidence they are not oversharing. A more specific question may also signal whether the querier is part of some in-group, allowing the responder to disclose information that may technically be public but not readily shared (``Are you a friend of Dorothy's?'').
-
-This natural language analogy is a far cry from how database queries work.
-For example, in the Nostr infrastructure that allows users to make general queries on each others social data, a simple query for a users ID returns everything they've ever posted. This is the equivalent of asking someone ``How are you?'' and then sitting through their entire life history.
-
-What we are suggesting is that somehow when a user posts data, they should also be able to outline \emph{how specific} a query must be in order to retrieve that data.
-This way, while the data is still public, it won't be found by users not asking the ``right question.''
-Again, this is not about absolute privacy, which can be handled via standard access control, but about giving a content creator situational privacy about the audience that will consume their data.
-
-A first attempt would be for users to mask out fields they don't want queried.
-For example, suppose a user \texttt{alice@example.com} wants to reply to a post that can be identified with the URL \texttt{example.com/posts/12345}.
-Using the Activity Vocabulary, we can represent Alice's reply as follows:
-
-\begin{verbatim}
-{
-   type: 'Note',
-   content: "Thank you for a great post!",
-   inReplyTo: example.com/posts/12345,
-   actor: alice@example.com
-}
-\end{verbatim}
-
-Alice masks out all fields except for \texttt{inReplyTo} and gives the redacted post to an indexer.
-When someone queries for \texttt{\{ actor: alice@example.com \}} they won't be able to find the data, but when they query for \texttt{\{ inReplyTo: example.com/posts/12345 \}} they will.
-Unfortunately, if a friend of Alice's is only interested in her replies and queries for the appropriate actor \emph{and} reply fields, they won't see Alice's reply.
-
-One way to solve this generally and consistently by borrowing the concept of \emph{near misses} from classical artificial intelligence.
-When training a classifier, a near miss is something that is very close to being an example of a class of the concept without \emph{actually} being an example of that class.
-We can apply this to queries: to retrieve a piece of data a query must match the data, but must \emph{not} match the near misses.
-
-In our example, Alice's near miss should be examply the same as her post data, only
-the \texttt{inReplyTo} field should be changed to a random URL.
-A query for Alice's actor will match both will match both the reply \emph{and} its near miss, and so the reply \emph{will not} be returned.
-A query for posts \texttt{inReplyTo} the target post will match the reply but \emph{not} its near miss and so the reply \emph{will} be returned.
-Importantly, queries for posts that are both by Alice \emph{and} replies to the target post will also match the reply, but not its near miss and so will be returned.
-
-This system is quite general and with multiple near misses it can be used to qualify ``how specific'' a query is with arbitrary logical intersections.
-However, we found in initial prototypes that its contrapositive formulation is extremely confusing.
-Moreover, aside from some contrived examples, all use cases could be described by a simpler concept: \emph{channels}.
-
-
-Websites make it possible for everyone to annotate the web.
-In fact, Graffiti's namesake comes from an article
-describing an early web annotation system, Third Voice,
-as Graffiti on the web.
-The authors meant it as a slur, but we believe graffiti
-can be a beautiful art form and a powerful tool for social change.
-
-\subsubsection{Announce Protocol}
 \label{above-and-below:announce-protocol}
 
-To resolve the issue of server discovery in the remote protocol,
-a tracker-like service can be built on the protocol itself.
-When an actor publishes an object to a small, perhaps self-hosted
-server their client also publishes an \texttt{"announce-server"}
-activity, pointing to their small server, on several ``well-known'' servers.
-To handle an actor's \texttt{discover} request, a client first \texttt{discover}s
-for \texttt{"announce-server"} activities on each of the well-known
-servers and then makes the original \texttt{discover} request on each
-announced server.
-Announce activities are only posted to the channels
-that an actor has published to, ensuring that a client
-will not unnecessarily call \texttt{discover} on servers
-that have no objects.
+The remote protocol, described in Section~\ref{above-and-below:remote-protocol},
+is currently built with a \emph{registry} and applications must
+call \texttt{discover} on all the servers in the registry for
+each high-level \texttt{discover} call.
+This has the potential to be inefficient if the application queries
+servers that have no objects, and also adds friction to participation,
+as each new server needs to be ``registered'' to become discoverable
+to the rest of the network.
 
-This protocol is guaranteed not to miss objects so long as
-the posting actor's ``well known'' servers overlap with the
-\texttt{discover}ing actor's.
-We are assuming again that, like email or Mastodon, there are several
-``large'' servers, like Gmail or mastodon.social, that can be used as these
-rendezvous points.
+Alternatively, it is possible to use an ``announce'' protocol,
+which performs a similar service to that of the ``tracker'' used in
+the commodity storage protocol (see Section~\ref{above-and-below:commodity-storage-protocol}). However, the announce protocol is built on top of the isolated Graffiti
+API that is exposed by each remote server, without the need for a separate
+tracker service. Building on top of the Graffiti API also 
+allows the announce protocol to flexibly evolve as
+new object properties are introduced.
 
-By implementing the tracker using Graffiti objects,
-it is possible to flexibly add new features to the tracker
-in the same way that it is possible to flexibly add
-functionality to any other Graffiti object.
+The announce protocol assumes that the network is distributed like other
+federated services like Email or Mastodon, with a small handful of
+massive ``well-known'' servers, like GMail or mastodon.social, and a long
+tail of smaller, possibly self-hosted servers~\cite{mastodonchallenges}.
+When an actor publishes an object to one such small server,
+their client also publishes an \texttt{"announce-server"}
+activity, pointing to their small server, on several of the well-known
+servers:
+\begin{minted}{javascript}
+{
+  activity: "announce-server",
+  target: "https://my-small-server.com"
+}
+\end{minted}
+This announcement must be crossposted to all the channels
+that the actor posts to on the small server.
+If there are channels where the actor has only posted
+access-controlled objects, they must post additional announcement
+objects with appropriate \texttt{allowed} lists.
 
-We developed a proof of concept implementation of the announce protocol\footnote{
-    \url{https://github.com/graffiti-garden/implementation-federated}
+To fulfill a high-level \texttt{discover} request,
+the client must first \texttt{discover} for 
+\texttt{"announce-server"} activities in the channels of
+the high-level request
+on each of the well-known servers.
+Then, the client can \texttt{discover} for objects
+matching the high-level channels \emph{and} schema on each of the targeted servers.
+The protocol will not miss objects, so long as their
+is an overlap between the retrieving and posting actors' well-known
+servers lists.
+The protocol will also not make requests to any server
+that does not have objects in the channels of interest.
+The protocol could be updated to also include object
+\emph{schemas} in the announcements, as an additional
+filter to prevent querying unnecessary servers.
+This \texttt{"schemas"} property and other properties
+can be flexibly added to \texttt{"announce-server"} activities
+in a folksonomic way, like any other Graffiti objects.
+
+We developed a proof-of-concept implementation of the announce protocol\footnote{
+    See supplementary materials.
 },
-however it is not currently in use as the Graffiti ecosystem is not
+however, it is not currently in use as the Graffiti ecosystem is not
 large enough for it to be relevant.
 It is not possible for the commodity-storage protocol to implement
 the announce protocol, removing the need for a tracker,
 because commodity storage servers do not allow clients to
-query multiple users' data at once.
+query multiple actors' data at once.
+
+One downside of the announce protocol is that it leaks all
+channel names to the well-known servers.
+This may not be desirable to an individual or community that
+decides to self-host specifically for privacy purposes.
+This can be resolved by posting announcements to the channels
+named by the \emph{hashes} of the actual channel names.
+Alternatively, if the remote servers become end-to-end-encrypted,
+as mentioned in Section~\ref{above-and-below:below:future-work},
+this would no longer be an issue.
+
+% By implementing the tracker using Graffiti objects,
+% it is possible to flexibly add new features to the tracker
+% in the same way that it is possible to flexibly add
+% functionality to any other Graffiti object.
+
+% \subsubsection{Delegation and Portability}
+% \label{above-and-below:delegation}
+
+% When a remote server returns an object that it claims
+% was created by a particular actor, how can the client verify that claim?
+% Many decentralized systems use public key cryptography to sign messages,
+% however this has the potential to disable \emph{repudiation},
+% violating requirement~\ref{requirements:forgiving}.
+
+% Instead, we use delegation. When a user first \texttt{put}s an object
+% to a new remote server, they mark that server as ``delegated'' in their
+% webId \emph{document}. This document is public and so others can verify
+% that the user has delegated permission to the server.
+% Once an actor deletes an object from a server there is no
+% ``paper trail'' still connecting them to the object.
+
+% The webId document can also be used to set up "forwarding rules" for
+% situations where an actor wants to move their data from one server to
+% another without breaking all their object's \texttt{url}s.
+% This enables \emph{data portability}.
+
+% While our use of objects is similar to ActivityPub, one subtle difference is
+%     that the objects are ``ducktyped'' unlike ActivityPub's use of \texttt{type} properties.
+%     This allows for slightly more flexibility and interoperability.
+% },
+
+% \subsubsection{Notes}
 
 
-Locations are continuous and so to be represented as channels,
-space must be broken into discrete regions which could be done with
-human-generated divisions like zip codes or automatic division like
-what3words. Fine-grained location channels could be used for
-augmented reality applications, like Pokemon Go,
-while more coarse grained ones should be used for applications like Tinder
-to prevent a user's exact location from being revealed.
-Applications similar Craigslist may post to channels at multiple levels in
-a resolution pyramid to increase a post's visibility.
+% \subsubsection{Near Misses}
 
-Channels can also be concatenated to produce new, more specific channels.
-For example, users may prefer to use a Tinder-like application that posts
-profiles to channels of the form \texttt{dating+zip:12345} rather than
-\texttt{zip:12345} so that they can be sure their profile won't
-\emph{accidentally} be seen by neighbors casually browsing a Nextdoor-like application.
-Concatenation may also happen in natural language.
-For example, on Reddit when one wants to post programming-related memes they post to \texttt{r/programmerhumor} rather than \texttt{r/programming+\allowbreak{}r/funny}.
+% Compared to near misses, the channel concept allows data recipients to only make queries on the \emph{union} of attributes --- a query can be for posts by Alice \emph{or} in reply to the target post but not for posts by Alice \emph{and} in reply to the target post. The recipient is left to do further filtering and in our implementation section we discuss the consequences this has on performance and client-side only design.
+
+% It is possible to \emph{intersect} channels by concatenating them.
+% For example, if we only want a message to be seen by people interested in dating at a particular
+% location the channel would be
+% The order of the concatentation is ambiguous and there is the potential.
+
+% These union queries also limit the options that a poster has to specify where they want data to appear. However, we believe that in most cases where a user wants content to only be available in the intersection of two channels, it is appropriate to create a new channel through either automated or natural language concatenation.
+
+% One possible generalization of `Channels' is near misses.
+% The concept is hard to develop and the scope in which such logical interections
+% might be useful is limited. However for completness we thought it is worth mentioning.
+
+% BCCs don't work with near misses.
+
+% One way to operationalize public contexts is similar to how people set boundaries in natural language.
+% When asked a general question, like ``How are you?'', many people respond with a general answer, ``Good, and you?''
+% When asked a more specific question, like ``What did you think of the game last night?'', many people respond with a more specific answer.
+
+% Asking a more specific question can be a shibolleth
+% signals the querier's interests
+% which can give the responder confidence they are not oversharing. A more specific question may also signal whether the querier is part of some in-group, allowing the responder to disclose information that may technically be public but not readily shared (``Are you a friend of Dorothy's?'').
+
+% This natural language analogy is a far cry from how database queries work.
+% For example, in the Nostr infrastructure that allows users to make general queries on each others social data, a simple query for a users ID returns everything they've ever posted. This is the equivalent of asking someone ``How are you?'' and then sitting through their entire life history.
+
+% What we are suggesting is that somehow when a user posts data, they should also be able to outline \emph{how specific} a query must be in order to retrieve that data.
+% This way, while the data is still public, it won't be found by users not asking the ``right question.''
+% Again, this is not about absolute privacy, which can be handled via standard access control, but about giving a content creator situational privacy about the audience that will consume their data.
+
+% A first attempt would be for users to mask out fields they don't want queried.
+% For example, suppose a user \texttt{alice@example.com} wants to reply to a post that can be identified with the URL \texttt{example.com/posts/12345}.
+% Using the Activity Vocabulary, we can represent Alice's reply as follows:
+
+% \begin{verbatim}
+% {
+%    type: 'Note',
+%    content: "Thank you for a great post!",
+%    inReplyTo: example.com/posts/12345,
+%    actor: alice@example.com
+% }
+% \end{verbatim}
+
+% Alice masks out all fields except for \texttt{inReplyTo} and gives the redacted post to an indexer.
+% When someone queries for \texttt{\{ actor: alice@example.com \}} they won't be able to find the data, but when they query for \texttt{\{ inReplyTo: example.com/posts/12345 \}} they will.
+% Unfortunately, if a friend of Alice's is only interested in her replies and queries for the appropriate actor \emph{and} reply fields, they won't see Alice's reply.
+
+% One way to solve this generally and consistently by borrowing the concept of \emph{near misses} from classical artificial intelligence.
+% When training a classifier, a near miss is something that is very close to being an example of a class of the concept without \emph{actually} being an example of that class.
+% We can apply this to queries: to retrieve a piece of data a query must match the data, but must \emph{not} match the near misses.
+
+% In our example, Alice's near miss should be examply the same as her post data, only
+% the \texttt{inReplyTo} field should be changed to a random URL.
+% A query for Alice's actor will match both will match both the reply \emph{and} its near miss, and so the reply \emph{will not} be returned.
+% A query for posts \texttt{inReplyTo} the target post will match the reply but \emph{not} its near miss and so the reply \emph{will} be returned.
+% Importantly, queries for posts that are both by Alice \emph{and} replies to the target post will also match the reply, but not its near miss and so will be returned.
+
+% This system is quite general and with multiple near misses it can be used to qualify ``how specific'' a query is with arbitrary logical intersections.
+% However, we found in initial prototypes that its contrapositive formulation is extremely confusing.
+% Moreover, aside from some contrived examples, all use cases could be described by a simpler concept: \emph{channels}.
+
+
+% Websites make it possible for everyone to annotate the web.
+% In fact, Graffiti's namesake comes from an article
+% describing an early web annotation system, Third Voice,
+% as Graffiti on the web.
+% The authors meant it as a slur, but we believe graffiti
+% can be a beautiful art form and a powerful tool for social change.
+
+
+% One particular benefit of the channel concept over near misses, is that channels more naturally allow for BCCing.
+% While many of the channels a user posts to are presumably related to properties of the data itself, it is also possible to post data to multiple channels without revealing those channels to each other.
+% For example, a user may be part of several different contexts invite them to a party with a universal thread, but doesn't want to inundate one with another by including them directly.
+
+

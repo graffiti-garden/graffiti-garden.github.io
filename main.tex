@@ -1,11 +1,9 @@
 \documentclass[sigconf,review,anonymous]{acmart}
 
+% Code styling
 \usepackage{minted}
 \usepackage{xcolor}
-
-% Styling minted output
-\usemintedstyle{borland} % try other styles: borland, colorful, perldoc, etc.
-
+\usemintedstyle{borland}
 \setminted{
   fontsize=\small,       % Smaller font size
   linenos,               % Show line numbers
@@ -22,16 +20,8 @@
 % For multirow
 \usepackage{multirow}
 
-% Encoding and language settings
-\usepackage[utf8]{inputenc} % Allow UTF-8 input
-% \usepackage[T1]{fontenc}    % Use 8-bit T1 fonts
-% \usepackage{microtype}      % Improves spacing
-
 \usepackage{graphicx} % Required for inserting images
 \graphicspath{{paper/}}
-
-% multiline texttt
-% \usepackage[htt]{hyphenat}
 
 \usepackage{fontspec}
 \newfontfamily\emoji{Noto Emoji}
@@ -44,7 +34,6 @@
 \bibliographystyle{ACM-Reference-Format}
 
 \title{Graffiti: Enabling an Ecosystem of Personalized and Interoperable Social Applications}
-% \date{March 2024}
 
 \begin{document}
 \begin{abstract}
@@ -56,9 +45,13 @@
 \input{paper/concepts}
 \input{paper/api}
 \input{paper/above-and-below}
-\input{paper/related-work}
 \input{paper/case-studies}
+\input{paper/related-work}
 \input{paper/conclusion}
 
 \bibliography{paper/bibliography}
+
+\clearpage
+\appendix
+\input{paper/appendix}
 \end{document}

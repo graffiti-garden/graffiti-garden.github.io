@@ -12,7 +12,9 @@ are not meant for everyone,
 but are \emph{everything} to the people
 who collectively curate their aesthetic and social norms?
 
-Their absence is partly because truly personalized social applications are extremely difficult to build,
+Their absence is partly because truly personalized social applications 
+%DK given the framing you are using here, I wonder if "social web sites" is better than "social applications" (or if you need to use both and explain why).   Your examples---the nightclib, the friend's living room (and also Gloof) feel like sites not apps.   Per my email, it may be useful or necessary to talk somewhere in the paper about the difference between sites (you go there to interact with a certain kind of contet pertinent to the site?) ad apps (you pull in content from all over to interact with?) and how with gradfiti there is't really a differece
+are extremely difficult to build,
 and partly because the great power of social media---its
 ability to connect massive numbers of people---also
 creates social pressure for everyone to use the same few applications.
@@ -197,10 +199,13 @@ creates social pressure for everyone to use the same few applications.
 % people to gather where their friends already are.
 
 We present a system called \emph{Graffiti} that makes
-building \emph{personalized} social applications more accessible,
+building \emph{personalized} social applications
+%and social sites with distinctive personalizities
+more accessible,
 while maintaining the interconnectedness that is special to social media.
 We lay the foundation for developers to create a diverse ecosystem
 of social applications
+%and sites
 with only client-side code and minimal friction
 to introducing new features,
 % with relative ease, using only client-side code
@@ -208,21 +213,60 @@ to introducing new features,
 while also ensuring that these applications \emph{interoperate},
 allowing people to freely migrate between them without
 losing their friends or data.
-The types of social applications that can be built on the same set
-of Graffiti primitives span from Twitter, to Messenger, to Wikipedia,
-with plenty of room for new creations in between.
+The types of social applications that can be built on the same set of Graffiti primitives range from analogues of Twitter to Facebook to Messenger to Slack to Goodreads to Pinterest to Wikipedia,
+with plenty of room for entirely new creations.
+%including social ``sites'' with distinctive personalities.
 
-The main challenge of Graffiti's design is to resolve
-this tension between personalization and interoperability.
-Allowing every person to set their own color scheme is
+%DK intro should discuss "the wall"
+
+Our goal of preventing lock-in leads almost immediately to the conclusion that a users' social data---their posts, likes, friend lists, etc.---\emph{cannot} be stored in any particular social application, because it becomes too easy for that application to make the data inaccessible to other applications.   Instead, we design the Graffiti ecosystem around a metaphorical \emph{wall} that contains every user's content and is \emph{accessible} by \emph{all} applications (modulo access control) but \emph{controlled} by \emph{none} of them.  In this work we describe the design of our wall and the API that is used by clients to interact with it.   Access to the API is provided through a client-side Javascript library that makes it possible to build a diversity of client apps that need no server support beyond what is provided by the wall. 
+
+% To illustrate the ecosystem this enables,
+% suppose a group of friends start out by using an Instagram-like application,
+% but some get bored of the interface and so by using the copy-and-paste
+% programming that used to be popular on MySpace~\cite{copypasteliteracy}
+% they make a ``fork'' of the application.
+% Not everyone switches, which is fine because posts show up in either,
+% but those who do get sparkly animations, the ability to
+% add a colored halo around posts (to reflect their aura that day),
+% and the ability to mark pictures of friends that look extra cute---the pictured
+% friend can add the photo to their Tinder-like profile with a click. 
+
+% a group of users start using a Discord like server
+% but then, largely from copy-and-pasting bits of
+% code from other sites, like MySpace, they make it personal
+% with features like X and Y.
+% Unfortunately, an argument splits the group up,
+% rather than one group getting custody of the app,
+% they can continue on with two seperate ``views''.
+% One application becomes popular and the other stays
+% between a small group of friends, continually adding
+% new features.
+%DK maybe a simpler story, where an artist posts a new video on her "youtube channel", and a fan who is following her sees that post in his "twitter feed" and forwards it over "whatsapp" to his friends who talk about it there for a while with the result that eventually one of the friends uses "whatsapp" to "reply to" the original video post and that "reply" shows up as a comment on the artist's video on "youtibe".   Focus on the dyamics of the content without too much backstory about the participants.
+
+% To achieve our goals of maximum personalization and interoperability, the "communication core" of Graffiti is kept as minimal and generic as possible, responsible only for delivering content from users' applications that post to to users' applications that want to access it; it can almost be thought of as a social analogue of TCP/IP.   All \emph{interpretation} of the transported content is left to the pure-client applications that create and consume it.  The communication core is so minimal that it only delivers \emph{notifications} about user posts, while the actual content of the users' posts can be kept in whatever personal storage those users' wish to use, such as their dropbox directories.  This again maximizes user control.
+
+
+A key challenge of Graffiti's design is to resolve
+the \emph{tension} between personalization and interoperability.
+Allowing applications to have different styling is
 not a problem, but can an application with top-down
 moderation interoperate with a democratically moderated one?
-Or what happens when a user posts from an application with strict privacy settings,
-while they are viewed from an application with loose ones?
-We resolve these questions respectively with the
-new concepts \emph{total reification},
-where all social interactions are first-class objects that
-can be interpreted or ignored by different applications,
+Is it possible for a small community forum to exist and
+not get flooded by the rest of the ecosystem's traffic?
+% a use
+% applications have incompatible
+% notions of reach or quiet posting
+% a user posts from an application with 
+% ``quiet'' posting
+% strict privacy settings,
+% while they are viewed from an application with loose ones?
+We resolve these questions respectively with two concepts: \emph{total reification},
+where all social interactions
+%---including upvotes, replies, shares, quotes, moderator deletions, blocks, and edits---
+are first-class objects that
+%are published as separate \emph{annotations} on underlying objects and
+can be interpreted or ignored by different applications;
 and \emph{channels}, which organize data contextually,
 preventing a phenomenon called ``context collapse''~\cite{contextcollapse}.
 
@@ -238,12 +282,12 @@ Our design decisions are guided by a set of \emph{requirements}, outlined
 in Section~\ref{requirements}, that focus on the experience
 of social application developers and the users of their applications,
 both users of Graffiti as a whole.
-We assume, for the first half of this paper, that the system implementing these requirements
+We assume for the first half of this paper, that the system implementing these requirements
 will not misbehave, for example revealing data that is supposed to be private to third parties.
 Using language from cryptography literature,
 our requirements shape the
 ``\emph{ideal functionality}''~\cite{universallycomposable}
-of the system or, using language from computer security literature,
+of the system, while using language from computer security literature,
 we assume that the system implementing these requirements is a ``\emph{trusted computing base}''~\cite{tcb}.
 
 Of course, trust will not come for free.
@@ -256,10 +300,12 @@ remain a free and reliable service.
 However, we aim to prove that designing mechanisms to establish trust can and should be
 \emph{separated} from designing for the user experience and moreover that
 the design of the user experience should come \emph{first}.
+%DK I disagree with the terms primary and secondary here for the same reason as I did in the content sectoin.
 The primary artifact we have designed to suit user needs is
 an \emph{application programming interface} (API) while
 secondary artifacts we've built beneath the API
 to establish trust are \emph{protocols}.
+%DK I don't think this is a fair definition of protocols because what these protocols mainly do is *implement the api*.  And yes they implement it in ways that provide trust but we can't forget the first bit
 
 Many of the existing infrastructures that allow for interoperation,
 described in Section~\ref{related-work:protocols},
@@ -267,7 +313,8 @@ described in Section~\ref{related-work:protocols},
 % used by BlueSky,
 % like ActivityPub, Matrix and the AtProtocol, appear to
 seem to have been designed in reverse with their protocols first and their APIs second.
-While their protocols include effective trust mechanisms like federation and end-to-end-encryption,
+While their protocols include effective 
+trust mechanisms like federation and end-to-end-encryption,
 the APIs they provide often cannot be used to fulfill basic user needs, like private messaging~\cite{bluesky}.
 Or, aspects of their trust mechanisms,
 like ``instances'' or ``key management,''
@@ -301,14 +348,14 @@ Section~\ref{above-and-below} describes
 the decentralized protocols we've built \emph{below} the API,
 as well the tooling we've developed \emph{above} the API
 to build Graffiti applications with declarative and reactive programming.
-We wait until Section~\ref{related-work}
-to introduce related work, by then with a more concrete
-understanding of what we're relating to.
-Finally, in Section~\ref{case-studies},
+In Section~\ref{case-studies},
 we evaluate Graffiti through a series of case studies, demonstrating
-how it is possible to build applications like Twitter, Signal, and
+how it is possible to build applications like Twitter, Messenger, and
 Wikipedia, as well as novel applications on Graffiti, and how unusual
 variants of all of these interoperate.
+Finally in we wait until Section~\ref{related-work}
+to introduce related work, by then with a more concrete
+understanding of what we're relating to.
 
 % Unforuntately, some of the social implications of our
 % system, are left to another paper but we conclude

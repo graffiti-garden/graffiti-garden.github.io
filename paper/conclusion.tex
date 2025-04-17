@@ -1,20 +1,89 @@
 \section{Conclusion}
 
-Graffiti demonstrates
-that it is possible to build a wide variety
-of social applications on top of a set of primitives,
+Graffiti seeks to enable a ``world where many worlds fit''~\cite{escobarpluriverse}.
+So far we have focused on the positive examples of what
+worlds are possible, of which there are many,
+but what of the harms?
+The gravity of the subject requires a full treatment,
+which can be found in our companion manuscript~\cite{companion}.
+Briefly, we argue that despite Graffiti's personalization, the fuzzy boundaries between Graffiti applications can work to \emph{reduce} filter bubbles, and despite Graffiti's lack of a central authority, the evolving networks of care and accountability that can be built on it will be \emph{more effective} than paternalistic policing in combating harms like CSAM.
+% For example, a decentralized system must consider how to handle CSAM material, and we explore that issue there.
+%DK also mention that graffiti's issues with CSAM are no worse than whatsapp's
 
-\begin{enumerate}
-    \item
-    Recommendation engines and Taylor Swift
-    \item
-    Large media / streaming: 
-A major limitation of the API as it currently stands
-is its support for large media and streaming.
-Currently, in applications like The Gloof, images
-are stored externally and linked in. In other applications
-we did not write about images are encoded with Base64.
-\item 
-Social questions: norms? harms? a world without hierarchical moderation / paternalism? filter bubbles? polarization? CSAM?
-\end{enumerate}
+
+Another important question is whether our implementation is \emph{efficient} enough to support real-world use cases.  While we have not yet undertaken careful performance evaluations, we assert that Graffiti can clearly support a wide range of applications for \emph{sufficiently small} communities, and conversely is unlikely to support certain \emph{massive} applications without connecting to special-purpose servers.  The exact location of the threshold depends on the specifics of the applications.
+
+To justify the lower limit, note that for sufficiently small communities even brute-force broadcast of all posts to all members is quite tractable, so the more efficient distribution provided by our protocols certainly is.   
+At the upper end, as discussed with Requirement~\ref{requirements:serverless}, Graffiti will certainly need help to do tasks that involve analyzing massive
+portions of the network, like TikTok's For You feed.
+%Additionally, total reification also makes tasks
+%such as tallying up the millions of likes on
+%one of Taylor Swift's posts or compiling all the edits on
+%Taylor's Wikipedia page a rather arduous challenge.
+%For all of these situations, there must be standards for applications
+%to offload massive and repetitive computation to third party services,
+%although there must also be ways to freely switch between these
+%services so they do not begin to lock the network into a particular design.
+
+
+Finally, what will the social application
+landscape look like when it design is driven by user needs
+rather than the profits motives of a few corporate platforms or
+the constraints of existing protocols?
+Will a new feature as canonical as the like button or the feed emerge?
+Or will the ecosystem be marked by its lack of canon?
+What would a \emph{tangible} social application feel like?
+
+
+
+% as making them becomes more accessible
+% and they don't need unanimous support to be
+
+% when not purely directed by broad appeal
+% and lock-in potential.
+% What social applications are really everything 
+
+% adoption.
+
+
+% and fostering community self-determination
+% can help to create accountability and aid networks that work better
+% than paternalistic policing to combat harms like CSAM or 
+
+% In terms of Graffiti's scope, applications like Tik
+
+% The Graffiti API is curre
+
+
+% Graffiti demonstrates
+% % that it is possible to build a wide variety
+% % of social interoperating applications on top of a set of primitives.
+% % While this paper has described a system that technically works to satisfy our requirements, we have left out some of the social questions: What new potential does this have for harm? Or Good?
+
+% Additionally, while the API is capable of handling many types of applications, how is performance effected aggregating all the likes on one of Taylor Swift's posts, compiling the edits of a popular wikipedia page, or computing TikTok's For You feed. For these, some third party service is necessary, but ideally the user would be able to opt-in or out of these services as freely as with other applications.
+
+
+% There are questions about its harm. For content like
+% CSAM, Graffiti does not make it any more possible
+% to host than hosting it on other decentralized systems like the website, or a Mastodon instance,
+% or end-to-end encrypted system.
+% However, just as how addiction is better handled with
+% community care than policing, the healthier communities that Graffiti has the potential to create may provide a pathway
+% to get rid of such content without force.
+% 
+% So much of our lives are online
+
+% \begin{enumerate}
+%     \item
+%     Recommendation engines and Taylor Swift
+%     \item
+%     Large media / streaming: 
+% A major limitation of the API as it currently stands
+% is its support for large media and streaming.
+% Currently, in applications like The Gloof, images
+% are stored externally and linked in. In other applications
+% we did not write about images are encoded with Base64.
+% \item 
+% Social questions: norms? harms? a world without hierarchical moderation / paternalism? filter bubbles? polarization? CSAM?
+% \end{enumerate}
 

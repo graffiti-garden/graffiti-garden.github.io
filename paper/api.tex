@@ -1,11 +1,11 @@
 \section{API}
 \label{api}
 
-We now describe the API that fulfills the requirements
+We now describe our API that fulfills the requirements
 outlined in Section~\ref{requirements} and builds upon the concepts
 just discussed in Section~\ref{concepts}.
 The API features simple methods for \texttt{login} and \texttt{logout}
-and a series of CRUD methods for manipulating objects,
+and a series of CRUD methods for manipulating objects:
 \texttt{put}, \texttt{get}, \texttt{patch}, and \texttt{delete},
 The novel \texttt{discover} method allows users to query for objects
 from a set a of channels.
@@ -19,8 +19,8 @@ The API is written as an abstract TypeScript class, allowing
 developers building on top of the API to swap out different implementations
 with a single line of code.
 The API's complete documentation, specification, and test suite is available online\footnote{
-    \url{https://api.graffiti.garden/classes/Graffiti.html}
-} and so here we focus on the important design decisions.
+    See \url{https://api.graffiti.garden/classes/Graffiti.html} and supplementary materials.
+}, and so here we focus on the important design decisions.
 
 TypeScript is a type annotation layer around standard JavaScript
 and provides enourmous benefit to developers working on large projects.
@@ -63,18 +63,19 @@ to evolving security standards, the API provides a simple \texttt{login} method 
 \begin{enumerate}
 \item
 A user performs an action, like clicking a ``log in'' button, that triggers
-the application to call \texttt{login()}.
+the application to call the \texttt{login()} method.
 \item
 In response, the implementation of the API may do any manner of things,
 including opening up a pop up or redirecting the user to a new page.
 In that implementation-specific interface, which the application developer
 does not need to build, the user might be asked to provide credentials like a username
 and password or a public key pair.
+See Figure~\ref{above-and-below:figure:login} for our implementation.
 \item
 Once the user is authenticated they are redirected back to the application, if applicable,
 and a JavaScript \emph{event} fires that includes
 a \texttt{session} object. The \texttt{session} object includes the authenticated \texttt{actor}
-URI and other information that the implentation needs to verify authentication, like
+URI and other information that the implementation needs to verify authentication, like
 a token or a signing function, however those details are entirely opaque to the application developer.
 \item
 When the application wants to perform an action that requires authentication,
@@ -85,11 +86,11 @@ Finally, to log out, a user simply needs to call \texttt{logout} on the appropri
 \texttt{session} object: \texttt{logout(session)}.
 \end{enumerate}
 
-We chose to keep the \texttt{session} object external from the \texttt{graffiti} class
+We chose to keep the \texttt{session} object external from the \texttt{Graffiti} class
 to prevent developer mode errors, where an application attempts to perform an action
 that requires authentication without asking the user to log in first.
 These mode errors are detected by static type checking.
-A seperate \texttt{session} object also allows an application to be logged in to
+Separating the \texttt{session} object also allows an application to be logged in to
 multiple actors at once, which can be useful for managing pseudonyms for anonymous interactions.
 
 % To provide
@@ -144,7 +145,7 @@ Objects, as overviewed in Section~\ref{concepts:objects}, include
 the following meta properties:
 \begin{enumerate}
 \item
-\texttt{value} (object): The actual data, which can be any JSON object.
+\texttt{value} (object): The actual data, which can be any JSON object~\cite{json}.
 \item
 \texttt{url} (string): A string to uniquely identify and locate the object.
 \item
@@ -166,28 +167,26 @@ context collapse.
 So \texttt{channels} and \texttt{allowed} are both \emph{masked} to any
 actor other than the object's owner so that they only show information an actor implicitly knows,
 like the channel their application queried to discover the object.
-However an application developer can always
-add metadata to the object's \texttt{value}
+However an application can always
+add metadata, including channels or allowed lists, to the object's \texttt{value}
 to reveal additional information.
 
 Objects can be interacted with through familiar CRUD methods:
 \texttt{put}, \texttt{patch}, and \texttt{delete} for modifying objects,
 and \texttt{get} for retrieving objects.
 The modification methods each require a \texttt{session} whereas
-for \texttt{get} the \texttt{session} is optional.
-An application cannot tell the difference between an object that does not exist,
-an object that has been deleted, and an object that exists but that the retrieving actor
-is not allowed to see.
+for \texttt{get} the \texttt{session} is optional.   The API responds identically for an object that does not exist, one that has been deleted, or one for which the retrievinl actor has no permissions, so that no information is leaked and no application can distinguish between these cases.
 
 The \texttt{url} and \texttt{actor} are assigned to an object when it is first \texttt{put}
 and are immutable.
 As mentioned in our discussion of ``total reification,'' Section~\ref{concepts:total-reification},
-only the actor that created an object can mutate that object.
+only the actor that created an object can mutate the object at that \texttt{url}.
 An object's owner can arbitrarily mutate the object's
 \texttt{value}, \texttt{channels}, and \texttt{allowed} list.
 The \texttt{lastModified} field is updated by the underlying implementation on each modification.
 
-\texttt{get} requires the application developer to provide
+We expect that the ecosystem will contain many posts that a particular application cannot understand and will wish to ignore.  To simplify this process,
+\texttt{get} requires the application developer to specify
 a JSON schema, a widely used and flexible standard for describing
 the structure of JSON objects~\cite{jsonschema}.
 Any object that does not match the provided schema is rejected.
@@ -196,6 +195,7 @@ with objects as if they were strongly typed, even though they can take on arbitr
 % This ensures that developers can have a consistent.
 % This can also be harnassed by the underlying implementation for
 % performance benefits, which is more necessary to \texttt{discover}.
+
 
 \begin{minted}{javascript}
 const object = await graffiti.get(url, {
@@ -213,7 +213,8 @@ const content = object.value.content; // string
 By default, JSON schemas also match objects that contain additional,
 unspecified properties, allowing developers to freely
 add new object properties without breaking
-interoperability with existing applications.
+interoperability with existing applications,
+encouraging the folksonomy.
 % This is related to the concept of
 
 
@@ -248,17 +249,17 @@ Objects are returned from \texttt{discover} as an \emph{asynchronous generator}.
 This allows the application to process objects as they come in
 using a \texttt{for await} loop, rather than having to wait for all objects
 to be fetched. The generator also hides the potential complexity of
-pagination below the API.
+query pagination below the API.
 
 Like \texttt{get}, \texttt{discover} can be given an optional \texttt{session}
 to access private objects, and it requires a JSON schema.
 The schema,
-in addition to providing type safety, is critical in \texttt{discover}
-as a query mechanism, limiting the objects returned to only those the developer is interested in.
+in addition to providing type safety, makes \texttt{discover} far more efficient
+as a query mechanism, limiting the objects returned to only those that interest the particular application.
 For example, the channel represented by an actor's URI has many overloaded uses,
 including being the site for the actor to broadcast Twitter-like posts,
 and the site where they receive direct messages.
-To receive only direct messages from a particular actor
+To receive only direct messages from Alice,
 sent over the past day, a developer may do the following:
 
 \begin{minted}{javascript}
@@ -273,10 +274,10 @@ const iterator = graffiti.discover(
           type: "number",
           minimum: Date.now() - 24 * 60 * 60 * 1000
         }
-        to: { enum: [session.actor] }
+        to: { const: session.actor }
       }
     },
-    actor: { enum: ["alice"] },
+    actor: { const: "https://alice.example.com" },
   },
   session
 )
@@ -291,6 +292,7 @@ complex \texttt{discover} schemas.
 For example, the schema may exclude objects by
 actors who have been ``blocked'' by a sufficient
 number of other actors.
+%DK really?  this seems like for more than a schema language, turning into a general graph-database query language?
 % However, some features like TikTok's ``For You'' page
 % requires processing beyond the
 
@@ -308,8 +310,7 @@ the \texttt{discover} call.\footnote{
 }
 
 \texttt{continue()} returns new objects, changed objects, \emph{and}
-tombstones for objects that have been deleted, \emph{and} tombstones
-for objects that have been modified so that they no longer match the
+tombstones for objects that have been deleted or modified so that they no longer match the
 specified channels, schema, or actor.
 In total, these allow an application to keep an up to date state
 without having to re-fetch all objects.
@@ -319,6 +320,7 @@ causing \texttt{continue()} to throw an error
 that signals to the application to poll \texttt{discover} from scratch.
 \texttt{continue()} can be recursively called for applications,
 like direct messaging, that require real-time updates.
+Below the API, an implementation might perform complex rate limiting on these recursive calls or adaptively switch to a more efficient transport, like a WebSocket, but this is hidden from developers working above.
 % However we intentionally chose this pattern over having the updates
 % happen
 
@@ -355,7 +357,8 @@ that are not contained in \emph{any} channel and \texttt{channelStats}
 returns a list of all the channels that an actor has posted in.
 Both methods output streams similar to \texttt{discover}
 and require a \texttt{session}.
+%DK ATP, how about instead allowing a null argument to discover which means that you are not looking in any channel but are instead looking through all your own posts (possibly filtering by a schema specification, which could for example indiciate that you only want posts not in any channel)
 
-These methods are not intented to be used in most applications but are
+These methods are not intended to be used in most applications but are
 necessary for creating something like Facebook's ``activity log,''
 enabling a user to audit their system-wide usage.

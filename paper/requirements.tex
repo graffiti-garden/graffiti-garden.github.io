@@ -5,7 +5,7 @@
 
 Graffiti's design is primarily driven by our
 first two requirements:
-(\ref{requirements:easy})
+(\ref{requirements:personalization})
 the need for communities to personalize
 their social applications,
 and (\ref{requirements:adversarial-interop})
@@ -19,7 +19,7 @@ without a lengthy standards process, and possible to build
 applications without writing server code.
 Requirements \ref{requirements:context-differentiation}
 and \ref{requirements:forgiving}
-presurface possible antisocial consequences of
+address possible antisocial consequences of
 interoperation that we need to avoid,
 namely by protecting users from ``context collapse,''
 and ensuring their ``right to be forgotten.''
@@ -97,7 +97,7 @@ and ensuring their ``right to be forgotten.''
 % that are included in the diversity of applications that can be built
 
 \begin{requirement}[Personalization]
-\label{requirements:easy}
+\label{requirements:personalization}
    It should be feasible for communities to build
    their own social media applications.
 \end{requirement}
@@ -147,9 +147,9 @@ build their own applications, giving them autonomy over their digital spaces.
 
 Of course, that is a lofty goal. While the system
 we later describe lowers the barrier to participation,
-it unfortunately is not accessible to everyone, although
+it still requires creating or modifying front-end code, although
 we outline steps in Section~\ref{above-and-below:above:future-work}
-to work towards it.
+to lower this barrier further.
 This requirement and the ones to follow exist on a spectrum.
 We attempt to design for all of them, but are limited by
 the scope of this work and the tension that the requirements put
@@ -201,7 +201,7 @@ on each other.
 Any application \emph{A} can be built to interoperate with an application \emph{B} without any compliance from application \emph{B}.
 \end{requirement}
 
-Communities are not monoliths, they are composed of individuals
+Communities are not monoliths; they are composed of individuals
 with different and evolving preferences.
 With interoperability, it becomes possible for individual users and groups of users to explore new application designs
 without breaking from their existing communities.
@@ -222,7 +222,7 @@ to either conform to a particular design or abandon community altogether.
 We use the term ``adversarial interoperability''~\cite{adversarialinterop} because it may not be in the
 interest of a large existing application to interoperate with a new application that may co-opt some of its market share.
 For example, Facebook, Twitter/X, and Reddit all have a history of intentionally breaking
-the interoperability of third-party applications by either changing or limiting access to their APIs.
+the interoperability of third-party applications by changing or access-restricting to their APIs.
 Even in small group chats, where the power dynamics are less extreme,
 an adminstrator-administee hierarchy
 can embody an ``implicit feudalism'' that some claim can even
@@ -339,29 +339,30 @@ distributed amongst its subgroups and individual members.
     An application should be able to freely introduce new social features without requiring compliance from existing applications or the system as a whole.
 \end{requirement}
 
+%DK it isn't entirely clear how this requirement differs from the "adversarial interop" one or how "expanding to reactions" differs from "limiting to 5 posts per day".
 In classic internet forums, users might reply to a post with ``+1'' to signal their support.
 In 2009, Facebook created the like button and in 2016 expanded it to a set of five reactions.
 Messaging clients like Signal now allow users to react to a message with any single emoji and
 Slack allows for users to react with multiple emojis including ones with custom animated icons.
 
-Social applications will inevitably evolve in unpredictable ways,
-therefore to avoid becoming instantly obselete, Graffiti must be highly extensible,
-allowing for new features (\emph{e.g.} being able to react to reactions)
+Social applications evolve in unpredictable ways,
+so to avoid instant obselescence, Graffiti must be highly extensible,
+allowing for new features
 to be developed with relative ease.
-Importantly, it should be possible for a single application to introduce a new feature
-without requiring compliance from other interoperating applications, as this has the potential to
+Importantly, it should be possible for one application to introduce a new feature
+without requiring compliance from other interoperating applications, to avoid
 lock applications into a particular set of features,
 just as an ecosystem without interoperability can lock users into a
 particular set of applications.
 
 For example, if a developer wants to introduce the feature
-``reactable reactions,'' they should not need to draft an RFC,
-convince an elite group of server admins to implement the feature\footnote{
+``reactions to reactions,'' they should not need to draft an RFC,
+convince a group of server admins to implement the feature\footnote{
     See Section~\ref{related-work:activitypub}
 },
-and rewrite the reaction ontology that they've broken~\cite{ecosystemmoving, herdingdnscamel, semanticwebtwodecades}.
+and rewrite the reaction ontology~\cite{ecosystemmoving, herdingdnscamel, semanticwebtwodecades}.
 They should be able to build the feature into their application
-entirely \emph{on their own}, and then other applications can adopt the
+entirely \emph{on their own}, with other applications able to adopt the
 feature as they see fit.
 
 % It is to important remember here that these applications are
@@ -398,7 +399,7 @@ feature as they see fit.
 Arguably the most difficult part about writing a novel
 social application is writing, deploying,
 and maintaining server code.
-As Signal's cofounder wrote
+Signal's cofounder wrote
 ``people don’t want to run their own servers, and never will''~\cite{moxieweb3}.
 
 Of course, Graffiti must involve servers \emph{somewhere} to store data
@@ -409,11 +410,19 @@ no new server needs to be built specifically for it to function.
 The reader simply polls existing RSS servers, each of which outputs data in a generic format.
 In Graffiti, both reading \emph{and writing} content must be done serverlessly.
 
-The extent to which this requirement can be applied is potentially limited
-by the compute and storage capacities of modern devices.
+%DK suggested change: 
+Certain applications have compute or storage demands that make this requirement impossible to meet.
 For example, constructing something like TikTok's For You feed requires
-analyzing billions of posts, well beyond the capability of any user's personal device.
-However, it is certainly possible for even mobile devices to handle many thousands of posts.
+analyzing billions of posts, functionality that is not built in to our infrastructure and cannot be implemented by client-side applications.
+This work focuses on the broad range of applications
+that do not require massive machine learning algorithms,
+but we conclude with some ways to extend Graffiti to enable them, too.
+% However, we will argue that a broad range of applications similar to twitter, facebook, whatsapp, Reddit, and others \emph{can} be implemented in our infrastrucrure while meeting this goal.
+% The extent to which this requirement can be applied is potentially limited
+% by the compute and storage capacities of modern devices.
+% For example, constructing something like TikTok's For You feed requires
+% analyzing billions of posts, well beyond the capability of any user's personal device.
+% However, it is certainly possible for even mobile devices to handle many thousands of posts.
 
 % Relying on generic servers also rules out the possibility that
 % the ecosystem inadvertently relies on server ``side effects,''
@@ -429,24 +438,28 @@ Context collapse is a phenomenon that describes the negative consequences of fla
 a person's multiple audiences into a single context.
 Context collapse is a well known problem of existing social applications.
 For example, if a person's family holds different political beliefs than their friends
-but both groups follow them on Facebook, that person may choose to self-supress their political
+but both groups follow them on Facebook, that person may choose to self-suppress their political
 speech to avoid angering either side of their collapsed audience.
-Either self-supressing to appeal to the ``lowest-common denominator'' or ignoring the collapse
+Either self-suppressing to appeal to the ``lowest-common denominator'' or ignoring the collapse
 and simply posting to an ``imagined audience'' can lead to harm for both
 the users involved and society at large~\cite{contextcollapse, contextcollapseimpact, contextcollapsequeer, spiralofsilencesocialmedia}.
 
+
+Users currently leverage the ``siloing'' of existing applications to manage contexts---using
+one application to stay in contact with colleagues and another to connect with friends.
 Interoperability between applications introduces the possibility
-of \emph{much more} context collapse.
+of collapsing all of these silos.
+% of \emph{much more} context collapse.
 For example, both Tinder, a dating app, and Linkedin, a professional networking app, involve the authoring
 and browsing of user profiles.
 These user profiles have many semantic similarities (name, biography, employment status) and so
 it would not be unreasonable to imagine that in a system of interoperable applications,
 the profile a user created in one application
 naturally shows up in the other.
-Of course, this could be confusing, highly embarrassing, and might get someone fired.
+Of course, this could be confusing or highly embarrassing, and might even get someone fired.
 
-Therefore, Graffiti must give application developers affordances to mitigate traditional sources
-of context collapse (\emph{e.g.} the ability to post to Subreddit-like scopes)
+Graffiti must give application developers affordances to mitigate traditional sources
+of context collapse (\emph{e.g.} the ability to limit posting to suitable Subreddit-like scopes)
 as well as affordances to mitigate new sources of inter-application context collapse.
 
 
@@ -463,7 +476,7 @@ Out of over four million respondents, 73.6\% voted ``yse'' [sic] and 26.4\% ``no
 } These results are not surprising as many users of Twitter and Facebook regret
 their posts for a variety of reasons
 including misjudging social norms, posting while extremely emotional or inebriated,
-or posting to an unintended audience~\cite{regret, regrettwitter}.
+or posting to an unintended audience (cf. context collapse)~\cite{regret, regrettwitter}.
 
 The ability to delete one's data was inshrined into law in the European Union's
 General Data Protection Regulation as

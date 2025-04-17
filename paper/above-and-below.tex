@@ -87,7 +87,7 @@ without any code at all.
 
 \subsubsection{Vue Plugin}
 
-Vue is a popular frontend framework that enables ``reactive'' programming where
+Vue is a popular front-end framework that enables ``reactive'' programming where
 changes to the underlying state are automatically reflected in the UI.
 We built a plugin for Vue\footnote{
   \url{https://vue.graffiti.garden/variables/GraffitiPlugin.html}
@@ -95,7 +95,7 @@ We built a plugin for Vue\footnote{
 that provides a variant of
 \texttt{discover} which returns a reactive array of objects rather than
 an asynchronous stream.
-Any CRUD operation that the user triggers locally instantly update
+Any CRUD operation that the user triggers locally instantly updates
 the relevant array, while remote changes can be polled manually
 with \texttt{poll()} or automatically
 with an \texttt{autopoll} setting.
@@ -139,17 +139,15 @@ with an \texttt{autopoll} setting.
 This reactivity is available in a traditional programming
 environment as well as in a declarative HTML-like template.
 The plugin maintains complete TypeScript support and
-is a relatively light wrapper over a Graffiti-specific reactivity library we've developed\footnote{
+is a relatively light wrapper over a Graffiti-specific reactivity library we have developed\footnote{
    \url{https://sync.graffiti.garden/classes/GraffitiSynchronize.html}
 }
 and so support for other front-end frameworks, like React, will be
 fairly easy to add in the future.
 
 Below is the complete template for a micro social application,
-built with the plugin,
-that allows users to post to a realtime
-group chat:
-\begin{minted}{vue}
+built with the plugin, that shows a (continuously updating) list of all messages posted to a realtime group chat and enables the user to post their own message:
+\begin{minted}{html}
 <form v-if="$graffitiSession.value"
   @submit.prevent="$graffiti.put({
     value: { content },
@@ -163,7 +161,7 @@ group chat:
   Log In to Post!
 </button>
 <GraffitiDiscover autopoll
-  v-slot="{ objects: messages, isInitialPolling }"
+  v-slot="{ objects: messages }"
   :channels="[ 'my-group' ]"
   :schema="{
     properties: {
@@ -176,7 +174,6 @@ group chat:
     }
   }"
 >
-  <p v-if="isInitialPolling">Loading...</p>
   <ul>
     <li v-for="message in messages">
       {{ message.value.content }}
@@ -221,6 +218,7 @@ it simply works.
 % CITE
 % https://www.geoffreylitt.com/2023/03/25/llm-end-user-programming
 
+%DK this paragraph is somewhat hard to understand and could safely be sacrified for space I think
 Finally, users may gravitate towards using ``meta'' applications.
 Users of these applications could easily change their functionality
 by swapping out different plugins,
@@ -244,6 +242,7 @@ One solution is to store all objects on a massive database
 and then discovery is trivially a query on that database.
 Unfortunately, this centralizes all control of the network
 on that single server.
+%DK I wouldn't discard this so quickly, especially since this is basically what you get if you implement the remote: protocol but only have one server (which I suspect is the situatinon we are currently in).   So instead of appearing to discard this, I would talk about *extending* it to allow multiple servers so there is no single point of control.
 
 Instead, we explore \emph{decentralized protocols} for the API.
 In one protocol, objects are served by a ``federation'' of databases,
@@ -253,12 +252,13 @@ with existing providers similar to Dropbox handling storage
 and a new entity called a ``tracker'' handling discovery.
 
 The former protocol is more efficient while the latter is more robust.
+%DK I am not sure what "robust" means in this context and would prefer a more direct explanation of the tradeoffs.  Also by some measures it is the second protocol that is more efficient since it outsources the storage work.
 % There are tradeoffs between these in terms of efficiency, scalability,
 Fortunately, multiple \emph{protocols} can be understood within one \emph{implementation},
 allowing new protocols
 with different tradeoffs to be organically adopted without requiring
 everyone to collectively switch all at once.
-This is possible because, as we've mentioned, an object's URL starts with a scheme that indicates
+This is possible because, as we have mentioned, an object's URL starts with a scheme that indicates
 how the various CRUD methods should resolve and interact with the object.
 If a user tries to \texttt{delete} an object whose URL starts with the schema
 \texttt{graffiti:remote:}, their implementation will use the \emph{remote}
@@ -266,6 +266,7 @@ protocol, while if the URL starts with the schema \texttt{graffiti:csp:},
 their implementation will use the \emph{commodity storage} protocol.
 For \texttt{discover}, multiple protocol-specific \texttt{discover}
 calls can simply be aggregated together into one stream.
+%DK I don't understand what this last means, since a discover call does not specify a protoco.   so what is a protocol-specific discover call?   In fact, this paragraph is retrospecively a bit confusing because it talks about URLs (getting single objects) but doesn't talk about channels (central too discover)
 
 There are two additional questions we need to resolve to
 make coexisting protocols work.
@@ -275,14 +276,13 @@ And what \emph{identity} system will work across multiple
 protocols?
 
 For the question of first \texttt{put}s, we simply give the user the choice.
-The first time a user attempts to \texttt{put} an object
+The first time a user attempts to \texttt{put} an object,
 a popup opens,
-as shown in Figure~\ref{above-and-below:choose-protocol},
+as shown in Figure~\ref{above-and-below:figure:choose-protocol},
 asking them which protocol they would like to use
-as well as protocol-specific information, like what server
+as well as protocol-specific information, such as what server
 they want to store their data on.
-While our current interface isn't perfect,
-we have tried to make the experience relatively frictionless, with
+We have tried to make the experience relatively frictionless, with
 reasonable defaults for
 users who do not know or care about the underlying infrastructure.
 Importantly, this interface is built into the \emph{implementation}
@@ -294,21 +294,12 @@ applications on top of the API.
 
 % Some choice is give to users - which they can ignore - but none of
 % this needs to be build by developed implementing on top of the API,
-% it all exists in the implementation \emph{below} the API.
-
-\begin{figure}
-    \label{above-and-below:choose-protocol}
-    TODO: this will be a figure!!
-    \begin{itemize}
-    \item
-    Panel 1: Where would you like to store your data? You can always change this later.
-    "Choose for Me", "On a Graffiti Server", "On a Solid Pod".
-    \item
-    Panel 2 (Graffiti): Which Graffiti server would you like to use?
-    \item
-    Panel 3 (Solid): Which Solid pod would you like to use?
-    \end{itemize}
+% it all exists in the implementation \emph{below} the API.k
+\begin{figure}[h]
+    \Description[Screen shot showing options for storing content.]{Screen shot showing that user has option to store content on Graffitti servers or on Solid Pods.}
+    \includegraphics[width=\columnwidth]{paper/figures/choose-protocol.png}
     \caption{The modal that pops up when the user triggers a \texttt{put()} for the first time.}
+    \label{above-and-below:figure:choose-protocol}
 \end{figure}
 
 As for identity, we currently use a decentralized protocol called Solid OIDC~\cite{solidoidc}.
@@ -321,13 +312,27 @@ which we use in our commodity storage protocol as a ``decentralized Dropbox.''
 Unfortunately, Solid OIDC is incompatible with many familiar
 identity solutions, like ``Log in with Google,''
 and many novel identity solutions, like ``Sign in with Ethereum.''
-The Decentralized Identifier (DID) specification attemps to unify
+The Decentralized Identifier (DID) specification attempts to unify
 these various identity methods, but currently DIDs require that
 users log in with \emph{each} service they want to authenticate with~\cite{dids}.
 This is like requiring a user to log in again every time
 they receive an email from a new email server, which would
 be tedious and confusing.
 We hope that DIDs or new specifications evolve past this restriction.
+
+% Importantly, our protocols
+% are directly \emph{client-to-server}, since
+% the API is designed to be used by client-side applications
+% to make development ``serverless'' per requirement~\ref{requirements:serverless}.
+
+After discussing our two main protocols, we discuss
+a bonus ``utility'' protocol that demonstrates
+additional power of our separation
+between the API and the protocol.
+% We also discuss how
+% how objects are verified to come from a particular
+% actor without repudiation per
+% requirement~\ref{requirements:forgiving}.
 
 
 % more than one implementation can
@@ -439,22 +444,25 @@ protocols are differentiated by \emph{scheme}.
 
 For discovery, we currently provide a registry of servers
 and clients call \texttt{discover} on all servers in the registry.
-As more servers are deployed, discovering from every one
-will be infeasible and so instead we can use an ``anounce''
-protocol, built on top of the remote protocols,
+If many servers are deployed, discovering from every one
+will be infeasible and so instead we can use an ``announce''
+protocol, detailed in the Appendix, that builds on top of the remote protocol and
 that allows the client to only call discover on the servers
-of interest plus a small constant number of well-known
-``rendez-vous'' servers.
+of interest
+%DK what does "of interest" mean?  I'd like to contact only servers that have content in a target channel, but servers cannot announce what channels they have without publicizing channel names
+plus a small constant number of well-known
+``\emph{rendez-vous}'' servers.
 
 % However, unlike email federation happens at the
 % \emph{client}. Individual servers do not pass messages to
 % each other, the client implementation just polls multiple servers, similar
 % to the way that it can pull data from multiple protocols.
 Our reference implementation of the remote protocol
-consists of a a NestJS server with a CouchDB database,
+consists of a NestJS server with a CouchDB database,
 bundled as a Docker image for easy cross-platform
 deployment\footnote{
-\url{https://github.com/graffiti-garden/implementation-remote}
+See supplementary materials.
+% \url{https://github.com/graffiti-garden/implementation-remote}
 }.
 
 % The remote protocol exposes the Graffiti API as a.
@@ -607,17 +615,17 @@ similar to Dropbox.
 % A user does not need to worry about an experimental new service going down.
 % However they post performance issues:
 % At a high level, the protocol works as follows.
-Similar to the remote protocol, users get to choose which storage
+Like the remote protocol, users get to choose which storage
 service they would like to store their objects on, including
 from one they host themselves.
-The client-side implementation of the API (for brevity, ``the client'')
+The client-side implementation of the API---for brevity, ``the client''---%
 manages channel-specific files on the storage provider,
 each containing all the objects the actor has published to that channel.
 The client shares links to those channel files with a \emph{tracker}.
 The tracker is similar to a BitTorrent tracker~\cite{bittorrent} but
 rather than mapping torrent IDs to IP addresses
 it maps channel strings to channel file URLs.
-To run \texttt{discover}, a client queries the tracker
+To run \texttt{discover}, the client queries the tracker
 about each channel of interest and then fetches each of the resulting URLs for objects.
 
 % More specifically, to \texttt{put} a new object, a client
@@ -668,7 +676,7 @@ then \texttt{discover} on the remote protocol can take as
 few as \emph{one} request while requests made by
 the commodity storage protocol scale with the number of actors.
 Additionally, the schema provided to \texttt{discover} cannot be used for any
-server-side filtering --- a client must download \emph{all} objects in a channel
+server-side filtering---a client must download \emph{all} objects in a channel
 and discard ones that do not match the schema.
 
 Still, for users who tend to participate in small networks, these issues
@@ -680,16 +688,15 @@ worry about developing the infrastructure.
 % protocol, its bootstrapping off of existing
 % storage solutions makes it more familiar and robust.
 
-At the time of writing, we have built the tracker
-\footnote{
-  \url{https://github.com/graffiti-garden/link-service},
-  \url{https://github.com/graffiti-garden/link-service-client}.
-  WebTorrent was considered instead of a custom tracker,
-  but unfortunately it does not persist announcements more than a few hours.
-}, but the reference \emph{implementation} of the protocol as a whole,
-using Solid as the storage providers,
-is not yet complete.
-
+At the time of writing, we have built the tracker server and client\footnote{
+  See supplementary materials.
+  % \url{https://github.com/graffiti-garden/link-service},
+  % \url{https://github.com/graffiti-garden/link-service-client}.
+  % WebTorrent was considered instead of a custom tracker,
+  % but unfortunately it does not persist announcements more than a few hours.
+}, and the reference \emph{implementation} of the protocol as a whole,
+using Solid ``pods'' as the storage providers,
+will soon be complete.
 
 % and the Solid protocol.
 % For our purposes, Solid is essentially a federated form of Dropbox.
@@ -700,12 +707,12 @@ is not yet complete.
 
 \subsubsection{Local Protocol}
 
-One final ``protocol'' demonstrates additional power of the protocol-agnostic
-API by creating ``utility'' protocols.
+% One final ``protocol'' demonstrates additional power of the protocol-agnostic
+% API by creating a ``utility'' protocol.
 This protocol runs locally
 and handles objects with the URL scheme \texttt{graffiti:local:}.
-Any data created on the local protocol is only visible on the device
-it was created on.
+Any data created on the local protocol is only visible on the device on which
+it was created.
 While such a restriction may seem like a non-starter for an implemetation
 of our \emph{social} API, it is invaluable for development.
 It provides a similar functionality to running a \texttt{localhost} development server,
@@ -718,42 +725,25 @@ without polluting their own online presence or existing Graffiti applications.
 Finally, the protocol is accessible in deployed applications
 and lets regular users try a Graffiti application out without
 having to create or log in to an account, as shown in
-Figure~\ref{above-and-below:login}.
+Figure~\ref{above-and-below:figure:login}.
 
-\begin{figure}
-    \includegraphics[width=\columnwidth]{figures/login.png}
-    \caption{The modal that pops up when the user triggers a \texttt{login()}. TODO: Update the figure to show the whole flow.}
-    \label{above-and-below:login}
-\end{figure}
+\begin{figure*}[h]
+    \Description[Four screen shots showing login options.]{Four screen shots showing that user has option of a "trial" or local login, or logging in using the Solid identity system.}
+    \includegraphics[width=\textwidth]{figures/login.png}
+    \caption{The flow that pops up when the user triggers a \texttt{login()}.}
+    \label{above-and-below:figure:login}
+\end{figure*}
 
-We implemented the local protocol\footnote{
-    \url{https://github.com/graffiti-garden/implementation-local}
-} using PouchDB, a Javascript library that allows for persistent
-storage in both the browser and in node.js.
-Because of its relative simplicity, the local implementation also serves
+% We implemented the local protocol\footnote{
+% } using PouchDB, a Javascript library that allows for persistent
+% storage in both the browser and in node.js.
+Because of its relative simplicity, our implementation of the local protocol\footnote{
+    See supplementary materials.
+    % \url{https://github.com/graffiti-garden/implementation-local}
+} also serves
 as a reference implementation of the Graffiti API and pieces of its code are also used
 throughout other implementations.
 
-\subsubsection{Delegation and Portability}
-\label{above-and-below:delegation}
-
-When a remote server returns an object that it claims
-was created by a particular actor, how can the client verify that claim?
-Many decentralized systems use public key cryptography to sign messages,
-however this has the potential to disable \emph{repudiation},
-violating requirement~\ref{requirements:forgiving}.
-
-Instead, we use delegation. When a user first \texttt{put}s an object
-to a new remote server, they mark that server as ``delegated'' in their
-webId \emph{document}. This document is public and so others can verify
-that the user has delegated permission to the server.
-Once an actor deletes an object from a server there is no
-``paper trail'' still connecting them to the object.
-
-The webId document can also be used to set up "forwarding rules" for
-situations where an actor wants to move their data from one server to
-another without breaking all their object's \texttt{url}s.
-This enables \emph{data portability}.
 
 
 % Solid OIDC has some shortcomings
@@ -834,6 +824,7 @@ This enables \emph{data portability}.
 % without being locked into a Solid account.
 
 \subsubsection{Future Work}
+\label{above-and-below:below:future-work}
 
 The remote protocol offloads work to complex storage servers,
 while the commodity storage protocol shifts work to clients, keeping the servers simple.

@@ -10,18 +10,21 @@ concepts.
 At a high level, the Graffiti API works as follows.
 \emph{Actors} (basically users) create \emph{objects} which can represent
 social artifacts like posts or \emph{activities} like ``likes.''
-Objects are associated with a set of \emph{channels} and other users can
+Objects are posted to a set of \emph{channels} and other users can
 discover an object by querying one of its channels. Channels a are flexible representation
 of different \emph{contexts} which may include identities, topics, locations,
 and more.
-Actors can not modify other actors' objects and so for actors to interact with each others' content
-those interactions must be \emph{reified} into individual activities,
-allowing for different interpretations of the interactions.
+Actors cannot modify other actors' objects and so for actors to interact with each others' content
+those interactions must be \emph{reified} into individual 
+activities, %DK actions?
+allowing for different interpretations of them.
 
 % Our objects and actors inherit from the
 % ActivityStreams standard~\ref{activitystreams}
 % at a high level our concepts \emph{total reification}
 % and \emph{channels} are our own.
+
+%DK somewhere in this paper, we should assert grafitti is suitable even for real time communicatoin, ad explain why.
 
 \subsection{Objects}
 \label{concepts:objects}
@@ -31,7 +34,7 @@ of the social data in Graffiti, including
 both social artifacts (such as posts and profiles) and social ``activities'' (such as likes and follows).
 Each Graffiti object includes some structured metadata,
 such as the actor who created the object,
-but an object's ``value'' can be \emph{any} valid JSON object.
+but an object's ``value'' can be \emph{any} valid JSON object~\cite{json}.
 For example, a blog post object may have the value:
 
 \begin{minted}{javascript}
@@ -84,18 +87,22 @@ Graffiti objects also have URLs that
 start with a \emph{scheme}, just like URLs on the web,
 enabling objects to be served by different \emph{coexisting} protocols.
 For example, a post might have the URL
-\texttt{graffiti\allowbreak:remote\allowbreak:pod\allowbreak.graffiti\allowbreak.garden\allowbreak/123},
-where the scheme \texttt{graffiti:remote:} refers to a protocol we describe
+\texttt{graffiti:\allowbreak{}remote:\allowbreak{}pod.\allowbreak{}graffiti.\allowbreak{}garden/\allowbreak{}123},
+where the scheme \texttt{graffiti:\allowbreak{}remote:} refers to a protocol we describe
 in Section~\ref{above-and-below:remote-protocol}
 instead of \texttt{https:} as seen on the web.
-URLs allow the object to be directly fetched\footnote{
-  In Section~\ref{above-and-below} we describe how fixed URLs
-  are still compatible with ``data portability,'' allowing
-  a user to move their data to a new place or protocol without
-  changing the URL.
-}, but also pointed to, as in the
+URLs allow the object to be directly fetched%
+% \footnote{
+%   In Section~\ref{above-and-below} we describe how fixed URLs
+%   are still compatible with ``data portability,'' allowing
+%   a user to move their data to a new place or protocol without
+%   changing the URL.
+% }
+, but also pointed to, as in the
 ``like'' activity below.
 % enabling other users to ``like'' that post by creating a new object with the value:
+
+%DK ATP: there's a trick I think medium uses that we might want to steal.   they create urls from the title of a post, but *also* include in the url a weired number that I assume is a nonce.   If you change the title of your post, it changes the title part of the url but not the nonce.   Which means that you can look up the post using either the old or the new url and both will work because the medium server is smart enough to look only at the nonce to decide what content is wanted.   Could we do something similar, so that if the user later decided to change the delivery protocol it would possible to interpret old urls (possibly with some help from the user's profile) in a way that would usually still let you fetch the contents?   For example, it would be nice of the user's profile could store a "redirect rule" explaining how to generate the current url from the old
 
 \begin{minted}{javascript}
 {
@@ -105,9 +112,8 @@ URLs allow the object to be directly fetched\footnote{
 \end{minted}
 
 This like activity is an example of \emph{reification},
-a technique frequently used in the semantic web community~\cite{rdfprimer},
-which permits actions on data to be represented as data themselves.
-Rather than a post object being an object that has a ``like'' method,
+a technique frequently used in the semantic web community~\cite{rdfprimer}.   We use reification to represent actions on data as data itself.
+Rather than a post object having a ``like'' method that mutates metadata about the post,
 the ``like'' here is a separate object that points to the post object.
 Reification allows for new interaction mechanisms to be introduced as easily as new properties,
 without changing the underlying system.
@@ -150,7 +156,7 @@ Mutable: Objects can be changed or deleted.
 \label{concepts:actors}
 
 An actor is an account that a user can ``log in'' as
-to identify themselves, publish objects, and receive ``private'' objects.
+to identify themselves, publish objects, and access ``private'' objects.
 The actor is represented by a globally unique string or \emph{URI},
 just as an email account is represented by an email address.
 The term \emph{actor} is again inherited from ActivityStreams
@@ -162,6 +168,8 @@ All Graffiti objects are associated an actor, the actor
 that created the object, but anonymous
 or meronymous~\cite{meronymous} interactions are possible by
 creating ``throw away'' actors.
+%DK not sure about this last.  for example "my first post" in the figure doesn't seem to be associated with any particular actor.  What are the implications of this "association" anyway?  Is this a philosophical statement---that when I talk about a post I am implicitly assuming an actor to make a post?   Or is it an implementation statement, something having to do with the schema or API?   Are you saying there has to be an actor field in every post?  or that only people logged in as actors can post?   I'm not sure either of these is true.   Or why it needs to be.  
+% TH "My First Post" is just the "value". The actor is seperate metadata, which we mention before the concept of "value". An actor being "part" of an object is necessary for total reification, so this is a bit out of order and here its not clear why its needed... will think about it... 
 
 % We also use the actor almost synonymously with a user,
 % In most cases an actor can be considered synonymous with a user,
@@ -180,12 +188,14 @@ creating ``throw away'' actors.
 % a Graffiti actor is not tied to any particular application so that users can freely move between
 % different applications.
 
-Unlike an ActivityStreams actor, a Graffiti actor does not embody any identifiable information other than its
+Unlike an ActivityStreams actor, a Graffiti actor does not embody 
+%DK there is no information that must be associated with an actor other than...
+any identifiable information other than its
 URI.
 Properties like a display name or pronouns are instead
 defined in separate objects.
-For example, with Alice's actor URI in the \texttt{describes}
-property, a profile object for her is:
+For example, if Alice's actor URI is
+\texttt{https://\allowbreak{}alice.\allowbreak{}example.\allowbreak{}com}, a profile object for her is:
 \begin{minted}{javascript}
 {
   name: "Alice",
@@ -193,6 +203,7 @@ property, a profile object for her is:
   describes: "https://alice.example.com",
 }
 \end{minted}
+%DK how do you prove Alice owns the actorId; prevent someone else from pretending to?  Does the actorid come with a key alice can use to sign her profile object?
 
 This separation allows for new profile
 properties to freely evolve
@@ -212,6 +223,8 @@ Forms of privacy that do not revolve around identity
 like ``unlisted'' groups are handled
 with the \emph{channels} concept we discuss in
 Section~\ref{concepts:channels}.
+%DK there's some inaccurate implication here: while channels can provide unlisted groups (soft access control) there is no mechanism for specifying that access is only *permitted* (hard access control) by actors that are defined to be members of a particular group.  
+%ATP Or maybe I should call it an asymmetry?   If we really committed to capability based access control, we wouldn't use hard access control by actor id.   instead we would allow an actor to craft a "key" an specify that certain objects are unlocked by that "key" and anyone with the key has access to those objects including to mutate them?   
 
 % For example, an actor does not includ a
 % name, profile picture, or biography associated with it.
@@ -229,13 +242,15 @@ Section~\ref{concepts:channels}.
 \label{concepts:total-reification}
 
 Within Graffiti, not some but \emph{all} interactions between actors
-are reified.
+are \emph{reified}.
+% Reification means that instead of modifying the state of an object, an actor adds an annotation \emph{describing} the desired modification as an additional object \emph{annotating} (pointing at the original.  An application determines the "current state" of an object by applying all and only the reified actions it wishes to apply. 
 This \emph{total reification} allows different applications to have
 different ``rules'' regarding what users are ``allowed'' to do while
 still interoperating.
 % This allows developers to freely introduce new interactions
 % per our requirement for autonomous extensibility (\ref{requirements:autonomous-extensibility}),
 % without breaking interoperability.
+%DK this is going to come with some performance implications, as determining the state of an object will now require fetching and "applying" all past reified actions on the object.   Might be worth thinking about cases where this can be prohibitive (e.g. a wikipedia article with millions of edits)
 
 % We define interaction relativity to mean that ``interaction between two individuals only
 % exists relative to an application'' or equivalently that not some but \emph{all} interactions
@@ -268,18 +283,18 @@ For example, suppose a developer would like to create an application
 that interoperates with an existing application,
 but that allows certain actors (moderators) to delete other actors' posts.
 If the moderators' deletions are reified into \texttt{"delete"} activities,
-then the original application can simply ignore the activities
-while the new application removes ``deleted'' posts from the display.
+then the original application can simply ignore the activitils
+while the new application can attend to the new signal and remove ``deleted'' posts from the display.
 
-These rules can evolve as developers
+These moderation rules can evolve as developers
 % Moderation can evolve even further under total reification
-introduce new objects and properties
+introduce new objects and properties,
 or new procedures to interpret those objects.
 For example,
 perhaps the set of moderators is elected by actors who vote with reified \texttt{"vote"} activities.
-Or, perhaps an application removes posts that exceed a certain threshold of delete activities,
+Or, perhaps an application hides posts that exceed a certain threshold of \texttt{"delete"} activities,
 regardless of whether the deleting actors are considered moderators.
-Applications may also consider authors of posts to be the defacto moderators of the replies to their
+Applications may also consider authors of posts to be the \emph{de facto} moderators of the replies to their
 own posts or allow them to disable replies altogether by adding a \texttt{disableReplies}
 property to their post objects.
 A fully democratic system that allows actors to introduce and ratify new moderation proposals,
@@ -319,16 +334,13 @@ the application they use.
 % Say a user would like to edit another user's post.
 % a document but another would like to keep it the same. CRDTs.
 
-Having the flexible object values that we described in Section~\ref{concepts:objects}
-makes reifiecation \emph{possible} but to be ``totally reified,''
-reification must be \emph{necessary} for interactions between
-actors to occur.
-For example, it should not be possible for an actor to \emph{actually}
-delete another actor's post because that makes it impossible to build
+The flexible object values that we described in Section~\ref{concepts:objects} make arbitrary reified interactions \emph{possible}, but we use the term \emph{total} reification because in Graffiti this is the \emph{only} way to represent interactions.
+We impose this rule to achieve the \emph{adversarial} part of our adversarial interoperability requirement (\ref{requirements:adversarial-interop}).
+If an application could modify the \emph{actual} state of an object then it could force all other applications to accept its decisions about the object. 
+For example, if an actor could \emph{actually}
+delete another actor's post then it would become impossible to build
 an application that does \emph{not} recognize the deleting actor as a moderator.
-That situation would violate the ``adversarial'' part of ``adversarial interoperability,''
-from requirement~\ref{requirements:adversarial-interop}.
-As such, we ensure that:
+Thus, we ensure that:
 \begin{enumerate}
 \item
 Objects are \emph{proprietary}: Only the creator of an object can modify or delete it.
@@ -340,8 +352,7 @@ Objects are \emph{proprietary}: Only the creator of an object can modify or dele
 % as this limits the extensibility of the system.
 % hinder the creation of new reified activities.
 % introduction of new interactions.
-Conversely, to give users ``permission'' to perform an action,
-they must be able to publish
+Conversely, adversarial interoperability means that no applications should be able to ``block'' another from applying an interaction, which means that it must be possible for an actor to publish
 their reified action object somewhere that is visible
 to relevant applications.
 Graffiti objects are published in channels, described in the next
@@ -349,7 +360,7 @@ section, and therefore:
 \begin{enumerate}
 \setcounter{enumi}{1}
 \item
-Channels are \emph{permissionless}: actors can freely read from and write to channels.
+Channels are \emph{permissionless}: actors can freely read from and write to channels that they know of.
 \end{enumerate}
 % All permission structures are built on top of permissionless base
 % through reified actions and application interpretation.
@@ -357,9 +368,9 @@ Channels are \emph{permissionless}: actors can freely read from and write to cha
 Our case studies in Section~\ref{case-studies} demonstrate
 some of the new and interesting interactions within and between applications
 that are possible with total reification.
-We also are concurrently writing about its social
+In a companion manuscript~\cite{companion} we take a deeper dive into its social
 ramifications: its annihilation of any ``paternalistic''
-rule systems and also its great potential for empowerment.
+rule systems and its great potential for empowerment.
 
 % The fact that the API does not allow content to \emph{actually} be deleted
 % has consequences for illegal content, like CSAM.
@@ -397,11 +408,13 @@ Therefore, we can consider a channel both a ``place''
 an object can be and a property of the object itself.
 
 The channel namespace is also \emph{global} with every string (up to a certain length)
-corresponding to exactly one channel.
-Like object properties, these channels strings have no inherent meaning
-other than the meaning ascribed to them by applications.
-In practice, the meaning of a channel is a particular \emph{context} and the channel
-string is some sort of \emph{shared information} implicit to that context.
+naming exactly one channel.
+Like object properties, these channels names have no inherent meaning
+other than the meaning ascribed to them by application developers.
+In practice, the meaning of a channel is a particular social \emph{context} and the channel
+name is some sort of \emph{shared information} implicit to that context.
+For example, the channel named by an object's URL is a natural place to post content ``\emph{talking about}'' the object, like replies, and we expect that most applications will follow that norm.  
+
 We will first illustrate the power of channels
 to model different types of \emph{replies},
 preventing context collapse per requirement~\ref{requirements:context-differentiation}
@@ -465,7 +478,7 @@ However, prior to 2019, Instagram had a Following tab where a user could see
 the replies that the people they follow had posted across the application.
 The Following tab led to a priest outing himself as gay among numerous other
 examples of context collapse~\cite{instagramfollowingtab}.
-On Twitter/X, it is still possible to see all of a user's replies by going
+On X, it is still possible to see all of a user's replies by going
 to their Replies tab.
 
 With channels, it is possible for \emph{both} designs to \emph{co}exist.
@@ -475,14 +488,14 @@ With channels, it is possible for \emph{both} designs to \emph{co}exist.
 % is up to the \emph{replier} rather than viewers of those replies.
 To make an Instagram-style reply,
 an application should post that actor's reply to the channel
-represented by the original post's URL---for brevity, the ``post's channel.''
+named by the original post's URL---for brevity, the ``post's channel.''
 Applications displaying the original post implicitly know that post's
 URL and therefore,
 by convention, they know to query the post's channel for replies to that post.
 % for replies but it won't be exposed to the rest of the user's followers.
-To make a Twitter/X-style reply, an application should post the
+To make an X-style reply, an application should post the
 actor's reply to \emph{both} the post's channel
-and the channel represented by the replier's actor URI---for brevity, the ``replier's channel.''
+and the channel named by the replier's actor URI---for brevity, the ``replier's channel.''
 An actor's followers all implicitly know the actor's URI and so
 again, by convention, their applications know to query the replier's channel
 for content related to the actor.
@@ -499,16 +512,16 @@ A summary of these different designs is shown in Table~\ref{concepts:channel-rep
 
 \begin{table}[htbp]
 \centering
-\caption{The reply's channels include the...}
+\caption{The reply is posted to the...}
 \label{concepts:channel-replies}
 \begin{tabular}{cc|c|c}
 & \multicolumn{1}{c}{} & \multicolumn{2}{c}{\textbf{...post's channel?}} \\
 & & ︎{\emoji✔️} & {\emoji❌} \\
 \cline{2-4}
 \multirow{2}{*}{\shortstack{\textbf{...replier's} \\ \textbf{channel?}}}
-& ︎{\emoji✔️} & Twitter Reply & Quote Tweet \\
+& ︎{\emoji✔️} & X Reply & Quote Tweet \\
 \cline{2-4}
-& {\emoji❌} & Instagram Comment & N/A
+& {\emoji❌} & Instagram Reply & N/A
 \end{tabular}
 \end{table}
 
@@ -520,8 +533,8 @@ will not see the replying actor's reply in their Replies tab because it simply w
 posted to a channel that the application knows to query.
 
 Channels can be considered as a limit on application personalization,
-counter to our overarching requirement.
-It is \emph{not} possible for an
+counter to our overarching requirement~\ref{requirements:personalization}.
+It is \emph{not} possible to create an
 application to find all a user's replies if they have not been posted to channels that
 the application knows to query.
 We establish this limit because, unlike with total reification where it is
@@ -605,20 +618,20 @@ corresponding to exactly one channel.
 Crosspostable: An object can be associated with more than one channel (or no channel at all).
 \item
 Obscure: It is not possible to read from or write to a channel without knowing
-its string.
+its name.
 \item
 Permissionless: Actors can freely read from and write to any channel \emph{that they know about}.
 \end{enumerate}
 
-We have clarified the last property, which we introduced in our discussion of
-total reification, because of the additional ``Obscure'' property
+Our emphasis on the last property, which we introduced in our discussion of
+total reification, is due to the additional ``obscure'' property
 which allows channels to provide a form of \emph{security by obscurity} like an ``unlisted'' link.
-Security by obscurity doesn not allow for \emph{revocation}\footnote{
+Security by obscurity does not allow for \emph{revocation}\footnote{
     See Section~\ref{related-work:ocaps} for a discussion of how channels relate to ``object capability security''
     which is similar to security by obscurity but allows for revocation.
 }
 of access,
-hence why objects are also access-controlled as mentioned in Section~\ref{concepts:actors}
+which is why objects are also access-controlled as mentioned in Section~\ref{concepts:actors}.
 To send someone a direct message that message should be placed in
 the receiving actor's channel, where by convention they know to look for it,
 and access control on it should be limited to only the recipient.
@@ -630,7 +643,7 @@ While this is a possibility and another reason why access control is necessary f
 For example, it is entirely possible for a person in the real world
 to attend various support groups, like alcoholics anonymous,
 just to spread people's secrets, but doing so would be shameful.
-On the web, \texttt{robots.txt} is functional socially-enforced standard
+On the web, \texttt{robots.txt} is a functional socially-enforced standard
 to prevent web scraping.
 
 % There is also a social component here, where for preventing
@@ -711,14 +724,15 @@ Documents & Wikipedia, Google Docs \\ \hline
 \end{table}
 
 In some cases, an existing standard can be used as a channel
-string, like the URL of a website (Hypothes.is),
+name, like the URL of a website (Hypothes.is),
 or the ISBN of a book (GoodReads).
-In other cases, the channel string may be user generated,
+In other cases, the channel name may be user generated,
 as with public contexts like SubReddits or a Wikipedia pages,
+%DK as discussed, it is problematic to use human-readable names for subreddits, since it means you can never change them.   and while i can see some limited benefit to human-readable wikipedia names, i don't think it extends to subreddits.   Much better to have a directory page of subreddits and their corresponding channels.
 or randomly generated for ``unlisted'' contexts like
 Discord channels, Pinterest boards, or Google documents.
-We discuss how continuous contexts, like locations, can be
-mapped onto specific channel strings in our Appendix.
+We discuss how continuous contexts, like geographic locations, can be
+mapped onto specific channel names in our Appendix.
 
 % These concatenations may themselves take on new meaning.
 

@@ -42,7 +42,7 @@
             </li>
             <li>
                 <a href="https://vue.graffiti.garden/examples/">
-                    Minimal examples of common patterns </a
+                    Minimal examples of common patterns</a
                 >, including "Likes", profiles, friends, threading, and
                 messaging.
             </li>

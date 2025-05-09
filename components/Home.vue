@@ -9,7 +9,9 @@
             full-fledged applications similar to
             <a href="https://glitter.graffiti.garden">Twitter</a>,
             <a href="https://parallax.graffiti.garden">Messenger</a>, and
-            <a href="https://wiki.graffiti.garden">Wikipedia</a>.
+            <a href="https://wiki.graffiti.garden">Wikipedia</a>
+            with plenty of room for
+            <a href="https://gluefactory.live">new designs</a>.
         </p>
 
         <Playground path="introduction" :hide-source="true" />
@@ -21,7 +23,34 @@
             application that someone else has already built — all without losing
             your friends! You can change pretty much anything including the
             moderation system, privacy settings, feed sorting algorithm, site
-            layout, and color scheme.
+            layout, color scheme, and so on.
+        </p>
+
+        <p>If you are interested in building, check out the:</p>
+        <ul>
+            <li>
+                <a href="https://api.graffiti.garden/classes/Graffiti.html">
+                    API Documentation
+                </a>
+            </li>
+            <li>
+                <a
+                    href="https://vue.graffiti.garden/variables/GraffitiPlugin.html"
+                >
+                    Vue Plugin Documentation
+                </a>
+            </li>
+            <li>
+                <a href="https://vue.graffiti.garden/examples/">
+                    Minimal examples of common patterns </a
+                >, including "Likes", profiles, friends, threading, and
+                messaging.
+            </li>
+        </ul>
+
+        <p>
+            If you want a theoretical grounding of Graffiti, please contact the
+            authors for a preprint of the paper, currently under review.
         </p>
 
         <!-- <p>

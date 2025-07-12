@@ -1,3 +1,13 @@
+% Most social applications today offer limited personalization options
+% and the workaround of creating a new social application is
+% not only technically challenging but also results in an application
+% that is siloed away from existing communities.
+% We present \emph{Graffiti}, which can be used to build a
+% wide variety of personalized social applications
+% with relative ease that also interoperate with each
+% other. People can freely move between a plurality of
+% designs---each with its own aesthetic, feature set, and moderation---all
+% without losing their friends or data.
 
 % the closed APIs, network effects of modern social applications
 % have forced most people onto a small number of applications
@@ -13,13 +23,17 @@
 % There are already problems
 
 % The difficulty of making social applications and the social pressure to ``lock-in'' to a particular application makes converge makes most social applications highly impersonal one-size-fits-all designs.
-People today have little autonomy over the social applications
-they inhabit.
+{\sethlcolor{pink}\hl{%
+Most social applications, from Twitter to Wikipedia,
+have rigid and impersonal designs, but building new social applications
+is both technically challenging and results in
+applications that are siloed away from existing communities.
+}}%
 We present \emph{Graffiti}, which can be used
 to build a wide variety of personalized social applications
-with relative ease and pure client-side development. These applications all \emph{interoperate}, allowing people to freely move between
+with relative ease that also interoperate with each other. People can freely move between
 a plurality of designs---each with its own aesthetic, feature set,
-and moderation---all without ``losing their friends'' or their data.
+and moderation---all without losing their friends or data.
 
 Our concept of \emph{total reification} makes it possible
 for seemingly contradictory designs, including conflicting
@@ -29,9 +43,12 @@ prevents interoperation from occurring by accident, avoiding context collapse.
 
 % The Graffiti API il not tied to any specific communication protocol. We present two viable decentralized protocols for it, but others could be developed and used alongside them, much like how HTTP and HTTPS coexist on the web. Above the API, we built a Vue.js plugin, which we used to develop applications similar to Twitter, Signal, and Wikipedia. Our case studies explore how these and other novel applications interoperate, as well as the ecosystems Graffiti enables.
 
-Graffiti applications interact through an \emph{API} that can be implemented over a variety of different \emph{protocols} (we present two) that can all be coexist, much as HTTP and HTTPS coexist on the web.
-% We present two decentralized protocols which we have implemented, including one that uses only commodity storage platforms such as dropbox to store and distribute content.
-Above the API, we built a Vue.js plugin, which we used
-to develop applications similar to Twitter, Messenger, and Wikipedia.
+{\sethlcolor{pink}\hl{%
+Graffiti applications interact through a minimal \emph{client-side API}
+which we show admits at least two \emph{decentralized} implementations.
+}}%
+Above the API, we built a Vue.js plugin, which we use to
+develop applications similar to Twitter, Messenger, and Wikipedia
+using only client-side code.
 Our case studies explore how these and other novel applications interoperate,
-as well as the ecosystems that Graffiti enables.
+as well as the broader ecosystem that Graffiti enables.

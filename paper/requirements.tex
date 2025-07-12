@@ -10,7 +10,7 @@ the need for communities to personalize
 their social applications,
 and (\ref{requirements:adversarial-interop})
 the need for those applications to interoperate.
-Our other requirements work to clarify these two.
+Most other requirements work to clarify these two.
 
 Requirements \ref{requirements:autonomous-extensibility}
 and \ref{requirements:serverless} expand on how accessible
@@ -23,6 +23,12 @@ address possible antisocial consequences of
 interoperation that we need to avoid,
 namely by protecting users from ``context collapse,''
 and ensuring their ``right to be forgotten.''
+
+\hl{%
+Requirement~{\ref{requirements:parallel-implementations}} stands apart to addresses
+how Graffiti might be implemented to uphold these requirements over time, despite
+the natural tendency for social technologies to ``enshittify''~{\cite{enshittification}}.
+}%
 
 % are measured on a spectrum.
 
@@ -138,7 +144,7 @@ communities have benefits for civic society more broadly~\cite{threeleggedstool,
 The issue is that such applications are difficult to build and maintain,
 requiring either significant technical expertise or the money to outsource the work.
 Unprivileged communities must resort to other means like creating group chats,
-Subreddits, or Facebook groups. %, or Mastodon instances.
+\hl{subreddits}, or Facebook groups. %, or Mastodon instances.
 While these services host many thriving communities,
 those communities are often faced with rigid and inadequate feature sets,
 limited customization options, and shifting platform designs and policies.
@@ -205,7 +211,7 @@ Communities are not monoliths; they are composed of individuals
 with different and evolving preferences.
 With interoperability, it becomes possible for individual users and groups of users to explore new application designs
 without breaking from their existing communities.
-This is especially important when online a ``small''
+This is especially important when, online, a ``small''
 community may consist of tens of thousands of people.
 
 For example, it should be possible for a group of users to
@@ -221,7 +227,7 @@ to either conform to a particular design or abandon community altogether.
 
 We use the term ``adversarial interoperability''~\cite{adversarialinterop} because it may not be in the
 interest of a large existing application to interoperate with a new application that may co-opt some of its market share.
-For example, Facebook, Twitter/X, and Reddit all have a history of intentionally breaking
+For example, Facebook, X, and Reddit all have a history of intentionally breaking
 the interoperability of third-party applications by changing or access-restricting to their APIs.
 Even in small group chats, where the power dynamics are less extreme,
 an adminstrator-administee hierarchy
@@ -410,7 +416,7 @@ no new server needs to be built specifically for it to function.
 The reader simply polls existing RSS servers, each of which outputs data in a generic format.
 In Graffiti, both reading \emph{and writing} content must be done serverlessly.
 
-%DK suggested change: 
+%DK suggested change:
 Certain applications have compute or storage demands that make this requirement impossible to meet.
 For example, constructing something like TikTok's For You feed requires
 analyzing billions of posts, functionality that is not built in to our infrastructure and cannot be implemented by client-side applications.
@@ -446,7 +452,7 @@ the users involved and society at large~\cite{contextcollapse, contextcollapseim
 
 
 Users currently leverage the ``siloing'' of existing applications to manage contexts---using
-one application to stay in contact with colleagues and another to connect with friends.
+one application to stay in contact with family and another to connect with friends~\cite{whatsappforfamily}.
 Interoperability between applications introduces the possibility
 of collapsing all of these silos.
 % of \emph{much more} context collapse.
@@ -459,7 +465,7 @@ naturally shows up in the other.
 Of course, this could be confusing or highly embarrassing, and might even get someone fired.
 
 Graffiti must give application developers affordances to mitigate traditional sources
-of context collapse (\emph{e.g.} the ability to limit posting to suitable Subreddit-like scopes)
+of context collapse (\emph{e.g.} the ability to limit posting to suitable \hl{subreddit}-like scopes)
 as well as affordances to mitigate new sources of inter-application context collapse.
 
 
@@ -508,3 +514,65 @@ as some people do with their emails, to make them non-repudiable.
 Some users, like politicians, may face social pressure to use applications
 that employ some of these technologies as a form of accountability.
 However, to leave the most room for personalization, forgiveness should be the default.
+
+\begin{requirement}[Parallel Implementations]
+\label{requirements:parallel-implementations}
+\hl{%
+    Application should be able to send and receive data
+    from multiple independent implementations of Graffiti.
+}%
+\end{requirement}
+
+\hl{%
+If a single organization were in charge of hosting Graffiti,
+history has shown that, even if it started out by making promises of
+personalization and interoperability,
+over time it would ``enshittify''~{\cite{enshittification}}
+and its promises would erode in favor of profit.
+This enshittifaction could also extend to other harms,
+such as surveillance.
+Therefore, we want to ensure that Graffiti can be implemented using
+technologies like decentralization and end-to-end encryption
+to protect users and their data.
+}%
+
+\hl{%
+However, just as we do not want to lock users into a particular application (Requirement~{\ref{requirements:adversarial-interop}}),
+or developers into a particular set of features (Requirement~{\ref{requirements:autonomous-extensibility}}),
+we do not want to lock the system itself into a particular implementation.
+The ``ecosystem is moving''~{\cite{ecosystemmoving}}, with both rapidly evolving
+technologies and threats, and
+leaning too heavily into any one solution would set Graffiti up for failure.
+}%
+
+\hl{%
+Instead, we require that Graffiti supports multiple implementations
+\emph{in parallel}.
+This is similar to the World Wide Web, which was designed according to the
+``principle of minimal constraint'' to allow for competing implementations,
+such as FTP, to coexist with HTTP~{\cite{weavingtheweb}}.
+This is made possible by the fact that URLs begin with a \emph{scheme},
+such as \texttt{http:}, indicating which implementation should be
+used to retrieve the resource.
+This allows new implementations, such as HTTPS, to be
+incrementally adopted without invalidating existing ones.
+}%
+
+\hl{%
+As mentioned in our introduction,
+this requirement has the side effect of reducing complexity.
+It is not possible for implementation-level details like
+``instances'' or ``key management'' to leak through to users
+if those details are not present in the first place.
+% This has the side effect of helping to support our requirement for serverlessness,
+% and it reduces the complexity of the API because concerns like ``instances''
+% cannot be leaked through as they do not exist.
+% Additionally, by by seperating out the concerns of protocols,
+% this helps to ensure that the \emph{API} that we are building does not
+% loeak aspects of the protocol through, like ``instances'' or ``key management''
+% ---specific mechanisms designed to make the protocol robust, but
+% not important to the users building aplications on top of it.
+Using language from cryptography literature,
+we are designing for the ``\emph{ideal functionality}''~{\cite{universallycomposable}}
+of the system, rather than its specific instantiation.
+}%

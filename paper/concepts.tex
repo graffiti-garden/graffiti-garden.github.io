@@ -478,7 +478,7 @@ an object can be and a property of the object itself.
 The channel namespace is also \emph{global} with every string (up to a certain length)
 naming exactly one channel.
 Like object properties, these channels names have no inherent meaning
-other than the meaning ascribed to them by application developers.
+other than the meaning ascribed to them by {\sethlcolor{pink}\hl{developers or users}}.
 In practice, the meaning of a channel is a particular social \emph{context} and the channel
 name is some sort of \emph{shared information} implicit to that context.
 For example, the channel named by an object's URL is a natural place to post content ``\emph{talking about}'' the object, like replies, and we expect that most applications will follow that norm.
@@ -824,3 +824,37 @@ mapped onto specific channel names in our Appendix.
 % Moreover it will not happen by accident --- the spidering
 % user ``knew what they were getting into'' and so if they come across information
 % the poster
+
+\subsection{Allowed Lists}
+\label{concepts:allowed-lists}
+
+\hl{%
+Allowed lists are an access control mechanism
+that an actor can optionally apply to an object
+to limit its visiblility to a specific list of actors.
+Allowed lists enable direct messaging and private groups,
+as well as ``visibility control''}~\cite{visibilitycontrol, toogayforfacebook}
+\hl{affordances in networked settings such as
+``Friends''-only posts on Facebook.
+}%
+
+\hl{%
+We use this simple whitelist mechanism of access control rather than,
+say, Unix file types, because the additional affordances that
+such a system would provide can be built more flexibly with total reification.
+For example, in Section~{\ref{case-studies:parallax}} we show how mutable group
+membership in a messaging application can be constructed.
+}%
+
+\hl{%
+Allowed lists do not replace channels when they are used
+but rather complement them,
+with allowed lists providing guaranteed privacy
+and channels specificying the context in which the content should appear.
+For example, a friend group may be communicate via a group chat,
+plan a trip via a private spreadsheet, and post ``Close Friend'' stories
+for each other to see.
+Objects representing interactions in these different scenarios
+would have identical allowed lists,
+but objects would be placed in different channels based on their context.
+}%

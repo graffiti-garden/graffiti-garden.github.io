@@ -52,7 +52,7 @@ venue to share event flyers.
 The flyers are displayed in a grid, similar to Instagram,
 but there is just one feed, collectively curated by
 the application's fixed set of venue organizers.
-Flyers can be replied to but the organizers can delete replies they disapprove of.
+Flyers can be replied to but the organizers can remove replies they disapprove of.
 
 Importantly, The Glue Factory gives the ability for
 top-level repliers to ``crosspost'' their replies
@@ -60,7 +60,7 @@ to Glitter, effectively sharing the flyer like a quote tweet.
 Glitter does not support images and so only the
 event description appears.
 Replies to the crosspost made on Glitter also appear on The Glue Factory
-and vice versa, \emph{unless} the The Glue Factory's organizers ``delete'' the reply,
+and vice versa, \emph{unless} the The Glue Factory's organizers ``remove'' the reply,
 in which case it only appears on Glitter, regardless of where it originated.
 Additionally, replies to the crosspost made on Glitter appear in the replier's followers' feeds while replies made on The Glue Factory only appear in the reply thread, as expected of each.
 Some of this interoperation is shown in Figure~\ref{case-studies:fig:gloof-and-glitter}\footnote{
@@ -73,7 +73,7 @@ Flyers are blurred for anonymization during review.
     \includegraphics[width=\textwidth]{paper/figures/gloof-and-glitter.png}
     \caption{A reply to a Glue Factory event appears like a quote Tweet on Glitter, with
     interoperating replies.}
-    
+
     \label{case-studies:fig:gloof-and-glitter}
 \end{figure*}
 % on Namebook but replies
@@ -160,6 +160,7 @@ used by the co-operative that owns the venue space.
 % This is not possible on Namebook.
 
 \subsection{Parallax and Provenance}
+\label{case-studies:parallax}
 
 %DK perhaps before getting into the crazy bits, talk about how easy it is to implement a basic group chat application ("Grack").   Each group is defined by a channel, and you invite someone to the group by notifyig them about the channel.  There is no admin---anyone in the group can invite others---and no way to remove people without their consent (but you can always create a new group excluding them).  Maybe also describe how you would design a facebook clone ("Gracebook") differently: a user can post content for friends by putting it in their own actorID channel but with an allowlist consisting of their friends.  alternatively they can create a different channel for sharing posts to their friends and invite all friends to subscribe to it.
 
@@ -184,7 +185,7 @@ as shown in Figure~\ref{case-studies:fig:parallax}.
     \centering
     \includegraphics[width=\textwidth]{paper/figures/parallax.png}
     \caption{An interaction on Parallax. On the left is Bob's view of an exchange. On the right are Alice and Bob's \emph{different} membership lists.}
-    
+
     \label{case-studies:fig:parallax}
 \end{figure*}
 
@@ -195,7 +196,7 @@ Changes to a group's name are similar to name changes on Glitter, only they
 Changes to the group's membership are \texttt{"Add"}
 and \texttt{"Remove"} activities that \texttt{target} the relevant actor.
 Messages are like posts on Glitter, only they have \texttt{allowed} lists, which are determined
-by aggregating the user's own \texttt{"Add"} and \texttt{"Delete"} activities.
+by aggregating the user's own \texttt{"Add"} and \texttt{"Remove"} activities.
 
 Of course, complete independence is not always desirable:
 work usually done by just one group administrator must, in Parallax,
@@ -259,7 +260,7 @@ as shown in Figure~\ref{case-studies:fig:wikiffiti}.  Of course, the user can on
     \includegraphics[width=\textwidth]{paper/figures/wikiffiti.png}
     \caption{(a) [REDACTED] 1 makes some edits to a Wikifitti page. (b) [REDACTED] 2 ``vandalizes'' the page (c) [REDACTED] 3 manually deletes some of [REDACTED] 2's edits and adds new content. (c) All of [REDACTED] 2's edits are retroactively removed.
     }
-    
+
     \label{case-studies:fig:wikiffiti}
 \end{figure*}
 % total reification provides every user with affordance

@@ -179,7 +179,9 @@ Objects can be interacted with through familiar CRUD methods:
 \texttt{put}, \texttt{patch}, and \texttt{delete} for modifying objects,
 and \texttt{get} for retrieving objects.
 The modification methods each require a \texttt{session} whereas
-for \texttt{get} the \texttt{session} is optional.   The API responds identically for an object that does not exist, one that has been deleted, or one for which the retrievinl actor has no permissions, so that no information is leaked and no application can distinguish between these cases.
+for \texttt{get} the \texttt{session} is optional.   The API responds identically for an object that does not exist,
+one that has been deleted, or one that the actor is not allowed to see,
+so that no information about an object's status is leaked.
 
 The \texttt{url} and \texttt{actor} are assigned to an object when it is first \texttt{put}
 and are immutable.
@@ -322,6 +324,7 @@ A tombstone only includes an object's URL and the time of deletion.
 Tombstones must inevitably expire to preserve a user's the right to be forgotten,
 causing \texttt{continue()} to throw an error
 that signals to the application to poll \texttt{discover} from scratch.
+
 \texttt{continue()} can be recursively called for applications,
 like direct messaging, that require real-time updates.
 Below the API, an implementation might perform complex rate limiting on these recursive calls or adaptively switch to a more efficient transport, like a WebSocket, but this is hidden from developers working above.

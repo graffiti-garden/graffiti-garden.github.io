@@ -5,7 +5,7 @@ Graffiti seeks to enable a ``world where many worlds fit''~{\cite{escobarplurive
 comprised of diverse social spaces that are each simultaneously \emph{personal}
 and \emph{interoperable} with each other.
 We introduce the concepts \emph{total reification} and \emph{channels}
-to resolve the tension between these competeing goals
+to resolve the tension between these competing goals
 of minimal constraint and interconnectedness.
 }}%
 
@@ -13,7 +13,7 @@ of minimal constraint and interconnectedness.
 In such an unconstrained environment,
 we hypothesize that the social pressures that currently work
 to consolidate people on a handful of massive platforms
-will similarly nudge users of Graffiti towards interopability.
+will similarly nudge users of Graffiti towards interoperability.
 We predict that natural \emph{folksonomies}~{\cite{folksonomy}} will
 develop around usage of channels and objects schemas, much like the do around usage of hashtags.
 It leaves to be seen whether this hypothesis will hold in wide deployment
@@ -24,7 +24,7 @@ that require additional layers of standardization.
 
 {\sethlcolor{pink}\hl{%
 Our work illustrates that by placing an \emph{API}
-at the right level of the stack, we can seperate out the distinct concerns
+at the right level of the stack, we can separate out the distinct concerns
 of building a usable application development environment
 from concerns of building a secure, scalable, and decentralized infrastructure.
 We demonstrate this by developing a Vue.js plugin and a series
@@ -42,7 +42,7 @@ Channels and allowed lists respectively capture the two major
 forms of context management found on social application:
 communication towards both abstract and targeted imagined audiences~{\cite{imaginedaudience}},
 and communication towards a specific audience through ``visibility control''~{\cite{visibilitycontrol}} affordances.
-Graffiti interactions can be ephemeral or persistant, realtime or asynchronous,
+Graffiti interactions can be ephemeral or persistent, real-time or asynchronous,
 and moderated with practically any rule set.
 }}%
 
@@ -53,21 +53,21 @@ there are certain cases where our client-side
 approach makes processing that data infeasible.
 For example, it is impossible for any single consumer device to
 do the processing required to create TikTok's ``For You'' feed.
-For these cases, a parallel API should be developed to allow for thid-party
-services to take on these high computational loads, however care should be taken
-in the design of that API to prevent users from getting locked into a
-particular third-party services.
+For these cases, a parallel API should be developed for offloading such
+computation to third-party services.
+However, care should be taken
+in the design of that API to prevent lock-in.
 }}%
 
 {\sethlcolor{pink}\hl{%
 Lastly, Graffiti is motivated by a set of \emph{individual} and \emph{community}-centric requirements,
 namely their desire to personalize their social spaces while being connected to others.
-Our work does not explicitly cover \emph{society}-level concerns
+Our work does not explicitly cover \emph{society}-level concerns,
 such as disinformation and polarization.
 We hypothesize that the democratization that Graffiti enables
-makes it a sufficiently more \emph{neutral} interaction environment that
+makes it a sufficiently more \emph{neutral} interaction environment than
 profit-driven platforms.
-Our (perhaps optimistic) hope is that in such a truly democratic environment, goood ideas will prevail.
+Our (perhaps optimistic) hope is that in such a truly democratic environment, good ideas will prevail.
 However, to realize this, there is work to be done in building even more
 accessible higher-level tools on top of Graffiti for community care and accountability.
 }}%

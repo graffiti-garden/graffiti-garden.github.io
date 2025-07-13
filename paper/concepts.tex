@@ -539,15 +539,10 @@ Then, we describe the formal properties of channels and their other uses.
 
 Most social applications allow users to reply to posts, but there are surprisingly subtle
 contextual differences between different reply designs.
-For example, currently on Instagram
-if you reply to a post, that reply can only be seen by other
-people also viewing that particular post.
-However, prior to 2019, Instagram had a Following tab where a user could see
-the replies that the people they follow had posted across the application.
-The Following tab led to a priest outing himself as gay among numerous other
-examples of context collapse~\cite{instagramfollowingtab}.
-On X, it is still possible to see all of a user's replies by going
-to their Replies tab.
+For example, on Instagram, replies to a post are only ever displayed to people viewing that particular post\footnote{
+Prior to 2019, Instagram had a Following tab where a userhcould see the replies that people they follow had posted across the application. The Following tab led to a priest outing himself as gay among numerous other examples of context collapse~\cite{instagramfollowingtab}.
+}, whereas on X, a user's replies made across the application can all be found in their Replies tab.
+The difference in these designs reflects these platform's differing design goals of intimacy versus reach.
 
 With channels, it is possible for \emph{both} designs to \emph{co}exist.
 % preventing context collapse to those
@@ -555,25 +550,24 @@ With channels, it is possible for \emph{both} designs to \emph{co}exist.
 % the choice
 % is up to the \emph{replier} rather than viewers of those replies.
 To make an Instagram-style reply,
-an application should post that actor's reply to the channel
+an application should post the replier's reply to the channel
 named by the original post's URL---for brevity, the ``post's channel.''
 Applications displaying the original post implicitly know that post's
 URL and therefore,
 by convention, they know to query the post's channel for replies to that post.
 % for replies but it won't be exposed to the rest of the user's followers.
 To make an X-style reply, an application should post the
-actor's reply to \emph{both} the post's channel
+replier's reply to \emph{both} the post's channel
 and the channel named by the replier's actor URI---for brevity, the ``replier's channel.''
-An actor's followers all implicitly know the actor's URI and so
+The replier's followers all implicitly know the replier's actor URI and so
 again, by convention, their applications know to query the replier's channel
-for content related to the actor.
+for content related to them.
 
 Finally, what happens if the reply is \emph{only} posted to the
 replier's channel?
-Then the reply becomes like a quote tweet
-(prior to 2020\footnote{
-    \url{https://x.com/Support/status/1300555325750292480}
-})
+Then the reply becomes like a Quote Tweet\footnote{
+prior to 2020 \url{https://x.com/Support/status/1300555325750292480}
+}
 where the reply is only visible to the replier's followers but
 not the audience of the original post.
 A summary of these different designs is shown in Table~\ref{concepts:channel-replies}.
@@ -593,24 +587,21 @@ A summary of these different designs is shown in Table~\ref{concepts:channel-rep
 \end{tabular}
 \end{table}
 
-Importantly, these reply designs interoperate in a way that provides content producers with
-a consistent \emph{audience} regardless of the applications those audience members choose to use.
-For example, if an actor posts an Instagram-like reply, that reply will \emph{only} show up
-in the context of the original post. An actor using a Twitter-like application
-will not see the replying actor's reply in their Replies tab because it simply was not
-posted to a channel that the application knows to query.
+Importantly, these reply designs interoperate in a way that allows content producers to target a particular audience
+regardless of the applications that other people choose to use.
 
 Channels can be considered as a limit on application personalization,
 counter to our overarching Requirement~\ref{requirements:personalization}.
 It is \emph{not} possible to create an
-application to find all a user's replies if they have not been posted to channels that
+application that displays all of a user's replies if those replies have not been posted to channels that
 the application knows to query.
+Instagram-like replies will never be displayed in X-like Replies tabs.
 We establish this limit because, unlike with total reification where it is
 possible for application to provide different interpretations of the underlying
-content simultaneously---a post is ``deleted'' in one application but not in another---%
+content simultaneously---a post is ``removed'' in one application but not in another---%
 it is not possible for an actor's reply to be simultaneously ``seen'' and ``not seen''
 by a potential audience member.
-We opt to give posters the ability to express their intended audience
+We opt to give posters the ability to express their ``targeted imagined audiences''~\cite{imaginedaudience}
 to mitigate context collapse, at the cost of a small loss of autonomy for viewers.
 % We opt to protect users from context collapse.
 
@@ -784,7 +775,7 @@ those meanings can enable is shown in Table~\ref{concepts:channels-and-applicati
 
 \begin{table}[h]
 \small
-\caption{Channels Meanings and their Applications}
+\caption{Channels Meanings and the Applications they Enable}
 \label{concepts:channels-and-applications}
 \centering
 \begin{tabular}{|l|l|}
@@ -804,10 +795,10 @@ Documents & Wikipedia, Google Docs \\ \hline
 \end{table}
 
 In some cases, an existing standard can be used as a channel
-name, like the URL of a website (Hypothes.is),
-or the ISBN of a book (GoodReads).
+name, like the URL of a website, for Hypothes.is analogs,
+or the ISBN of a book, for GoodReads analogs.
 In other cases, the channel name may be user generated,
-as with public contexts like SubReddits or a Wikipedia pages,
+as with public contexts like subreddits or a Wikipedia pages,
 %DK as discussed, it is problematic to use human-readable names for subreddits, since it means you can never change them.   and while i can see some limited benefit to human-readable wikipedia names, i don't think it extends to subreddits.   Much better to have a directory page of subreddits and their corresponding channels.
 or randomly generated for ``unlisted'' contexts like
 Discord channels, Pinterest boards, or Google documents.
@@ -830,11 +821,11 @@ mapped onto specific channel names in Appendix~\ref{appendix:more-channel-names}
 \hl{%
 Allowed lists are an access control mechanism
 that an actor can optionally apply to an object
-to limit its visiblility to a specific list of actors.
+to limit its visibility to a specific list of actors.
 Allowed lists enable direct messaging and private groups,
 as well as ``visibility control''}~\cite{visibilitycontrol, toogayforfacebook}
 \hl{affordances in networked settings such as
-``Friends''-only posts on Facebook.
+Facebook-like ``Friends''-only posts.
 }%
 
 \hl{%

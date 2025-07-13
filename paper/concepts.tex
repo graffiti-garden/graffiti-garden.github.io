@@ -11,13 +11,19 @@ At a high level, the Graffiti API works as follows.
 \emph{Actors} (basically users) create \emph{objects} which can represent
 social artifacts like posts or \emph{activities} like ``likes.''
 Objects are posted to a set of \emph{channels} and other users can
-discover an object by querying one of its channels. Channels a are flexible representation
+discover an object by querying one of its channels. Channels are a flexible representation
 of different \emph{contexts} which may include identities, topics, locations,
 and more.
 Actors cannot modify other actors' objects and so for actors to interact with each others' content
-those interactions must be \emph{reified} into individual 
+those interactions must be \emph{reified} into individual
 activities, %DK actions?
 allowing for different interpretations of them.
+\hl{%
+Objects can be configured to be either public
+(to anyone observing its channels),
+or private to a set of users on its \emph{allowed list},
+an additional affordance for context management.
+}%
 
 % Our objects and actors inherit from the
 % ActivityStreams standard~\ref{activitystreams}
@@ -77,7 +83,7 @@ and does not require a precise ontological agreement,
 which some argue contributed to the failure of the semantic
 web~\cite{semanticwebtwodecades}.
 The folksonomy approach encourages autonomous extensibility
-as per requirement \ref{requirements:autonomous-extensibility}.
+as per Requirement~\ref{requirements:autonomous-extensibility}.
 
 % This folksonomy is an effective mean of ensuring that objects are autonomously extensible.
 % We also provide tooling that allows users to filter data and provide human-readable
@@ -85,10 +91,13 @@ as per requirement \ref{requirements:autonomous-extensibility}.
 
 Graffiti objects also have URLs that
 start with a \emph{scheme}, just like URLs on the web,
-enabling objects to be served by different \emph{coexisting} protocols.
+enabling objects to be served by different \emph{coexisting} implementations,
+\hl{%
+per Requirement~{\ref{requirements:parallel-implementations}}.
+}%
 For example, a post might have the URL
 \texttt{graffiti:\allowbreak{}remote:\allowbreak{}pod.\allowbreak{}graffiti.\allowbreak{}garden/\allowbreak{}123},
-where the scheme \texttt{graffiti:\allowbreak{}remote:} refers to a protocol we describe
+where the scheme \texttt{graffiti:\allowbreak{}remote:} refers to an implementation that we describe
 in Section~\ref{above-and-below:remote-protocol}
 instead of \texttt{https:} as seen on the web.
 URLs allow the object to be directly fetched%
@@ -124,7 +133,7 @@ which we discuss in
 Section~\ref{concepts:total-reification}.
 
 Finally, objects are mutable, meaning they can be changed or deleted,
-Mutability is necessary for the system to be forgiving per requirement~\ref{requirements:forgiving}.
+Mutability is necessary for the system to be forgiving per Requirement~\ref{requirements:forgiving}.
 The question of \emph{who} can mutate the objects
 will be answered once we discuss identity next and then total reification.
 
@@ -156,7 +165,11 @@ Mutable: Objects can be changed or deleted.
 \label{concepts:actors}
 
 An actor is an account that a user can ``log in'' as
-to identify themselves, publish objects, and access ``private'' objects.
+to identify themselves, publish objects, and access private objects,
+\hl{%
+so long as they are on that private object's ``allowed'' list
+(to be discussed in Section~{\ref{concepts:allowed-lists}}).
+}%
 The actor is represented by a globally unique string or \emph{URI},
 just as an email account is represented by an email address.
 The term \emph{actor} is again inherited from ActivityStreams
@@ -168,8 +181,8 @@ All Graffiti objects are associated an actor, the actor
 that created the object, but anonymous
 or meronymous~\cite{meronymous} interactions are possible by
 creating ``throw away'' actors.
-%DK not sure about this last.  for example "my first post" in the figure doesn't seem to be associated with any particular actor.  What are the implications of this "association" anyway?  Is this a philosophical statement---that when I talk about a post I am implicitly assuming an actor to make a post?   Or is it an implementation statement, something having to do with the schema or API?   Are you saying there has to be an actor field in every post?  or that only people logged in as actors can post?   I'm not sure either of these is true.   Or why it needs to be.  
-% TH "My First Post" is just the "value". The actor is seperate metadata, which we mention before the concept of "value". An actor being "part" of an object is necessary for total reification, so this is a bit out of order and here its not clear why its needed... will think about it... 
+%DK not sure about this last.  for example "my first post" in the figure doesn't seem to be associated with any particular actor.  What are the implications of this "association" anyway?  Is this a philosophical statement---that when I talk about a post I am implicitly assuming an actor to make a post?   Or is it an implementation statement, something having to do with the schema or API?   Are you saying there has to be an actor field in every post?  or that only people logged in as actors can post?   I'm not sure either of these is true.   Or why it needs to be.
+% TH "My First Post" is just the "value". The actor is seperate metadata, which we mention before the concept of "value". An actor being "part" of an object is necessary for total reification, so this is a bit out of order and here its not clear why its needed... will think about it...
 
 % We also use the actor almost synonymously with a user,
 % In most cases an actor can be considered synonymous with a user,
@@ -188,7 +201,7 @@ creating ``throw away'' actors.
 % a Graffiti actor is not tied to any particular application so that users can freely move between
 % different applications.
 
-Unlike an ActivityStreams actor, a Graffiti actor does not embody 
+Unlike an ActivityStreams actor, a Graffiti actor does not embody
 %DK there is no information that must be associated with an actor other than...
 any identifiable information other than its
 URI.
@@ -211,20 +224,22 @@ and it also allows people to have different profiles for different contexts.
 For example, a trans person who is not publicly ``out'' may want to
 change their name within their queer community without
 changing their name to the broader public.
-Alternatively, users could create nicknames
+Alternatively, the separation allows users to create nicknames
 or ``petnames'' for each other~\cite{petnames}.
 % Pet names
 
-Actors are also used for privacy.
-Objects can be \emph{access-controlled} and only
-made visible to a limited set of actors, enabling
-direct messaging.
-Forms of privacy that do not revolve around identity
-like ``unlisted'' groups are handled
-with the \emph{channels} concept we discuss in
-Section~\ref{concepts:channels}.
-%DK there's some inaccurate implication here: while channels can provide unlisted groups (soft access control) there is no mechanism for specifying that access is only *permitted* (hard access control) by actors that are defined to be members of a particular group.  
-%ATP Or maybe I should call it an asymmetry?   If we really committed to capability based access control, we wouldn't use hard access control by actor id.   instead we would allow an actor to craft a "key" an specify that certain objects are unlocked by that "key" and anyone with the key has access to those objects including to mutate them?   
+\hl{CONTENT REMOVED HERE}
+
+% Actors are also used for privacy.
+% Objects can be \emph{access-controlled} and only
+% made visible to a limited set of actors, enabling
+% direct messaging.
+% Forms of privacy that do not revolve around identity
+% like ``unlisted'' groups are handled
+% with the \emph{channels} concept we discuss in
+% Section~\ref{concepts:channels}.
+%DK there's some inaccurate implication here: while channels can provide unlisted groups (soft access control) there is no mechanism for specifying that access is only *permitted* (hard access control) by actors that are defined to be members of a particular group.
+%ATP Or maybe I should call it an asymmetry?   If we really committed to capability based access control, we wouldn't use hard access control by actor id.   instead we would allow an actor to craft a "key" an specify that certain objects are unlocked by that "key" and anyone with the key has access to those objects including to mutate them?
 
 % For example, an actor does not includ a
 % name, profile picture, or biography associated with it.
@@ -243,9 +258,9 @@ Section~\ref{concepts:channels}.
 
 Within Graffiti, not some but \emph{all} interactions between actors
 are \emph{reified}.
-% Reification means that instead of modifying the state of an object, an actor adds an annotation \emph{describing} the desired modification as an additional object \emph{annotating} (pointing at the original.  An application determines the "current state" of an object by applying all and only the reified actions it wishes to apply. 
+% Reification means that instead of modifying the state of an object, an actor adds an annotation \emph{describing} the desired modification as an additional object \emph{annotating} (pointing at the original.  An application determines the "current state" of an object by applying all and only the reified actions it wishes to apply.
 This \emph{total reification} allows different applications to have
-different ``rules'' regarding what users are ``allowed'' to do while
+different ``rules'' regarding what users are ``permitted'' to do while
 still interoperating.
 % This allows developers to freely introduce new interactions
 % per our requirement for autonomous extensibility (\ref{requirements:autonomous-extensibility}),
@@ -281,10 +296,15 @@ still interoperating.
 % Total reification is powerful when applied to moderation.
 For example, suppose a developer would like to create an application
 that interoperates with an existing application,
-but that allows certain actors (moderators) to delete other actors' posts.
-If the moderators' deletions are reified into \texttt{"delete"} activities,
-then the original application can simply ignore the activitils
-while the new application can attend to the new signal and remove ``deleted'' posts from the display.
+but that allows certain actors (moderators) to \hl{remove} other actors' posts.
+If the moderators' \hl{removals} are reified into \hl{\texttt{"remove"}} activities,
+then the original application can simply ignore the activities
+while the new application can attend to the new signal and hide \hl{``removed''} posts from the display.
+\hl{%
+To be clear: an offending object is not removed from Graffiti as a whole,
+it is just removed from any application that understands \emph{and respects}
+the moderators' \texttt{"remove"} activities.
+}%
 
 These moderation rules can evolve as developers
 % Moderation can evolve even further under total reification
@@ -292,8 +312,8 @@ introduce new objects and properties,
 or new procedures to interpret those objects.
 For example,
 perhaps the set of moderators is elected by actors who vote with reified \texttt{"vote"} activities.
-Or, perhaps an application hides posts that exceed a certain threshold of \texttt{"delete"} activities,
-regardless of whether the deleting actors are considered moderators.
+Or, perhaps an application hides posts that exceed a certain threshold of \hl{\texttt{"remove"}} activities,
+regardless of whether the \hl{removing} actors are considered moderators.
 Applications may also consider authors of posts to be the \emph{de facto} moderators of the replies to their
 own posts or allow them to disable replies altogether by adding a \texttt{disableReplies}
 property to their post objects.
@@ -336,9 +356,10 @@ the application they use.
 
 The flexible object values that we described in Section~\ref{concepts:objects} make arbitrary reified interactions \emph{possible}, but we use the term \emph{total} reification because in Graffiti this is the \emph{only} way to represent interactions.
 We impose this rule to achieve the \emph{adversarial} part of our adversarial interoperability requirement (\ref{requirements:adversarial-interop}).
-If an application could modify the \emph{actual} state of an object then it could force all other applications to accept its decisions about the object. 
-For example, if an actor could \emph{actually}
-delete another actor's post then it would become impossible to build
+If an application could modify the \emph{actual} state of an object then it could force all other applications to accept its decisions about the object.
+For example, if an actor could actually \emph{delete} another actor's post
+from Graffiti \emph{as a whole}
+then it would become impossible to build
 an application that does \emph{not} recognize the deleting actor as a moderator.
 Thus, we ensure that:
 \begin{enumerate}
@@ -368,9 +389,56 @@ Channels are \emph{permissionless}: actors can freely read from and write to cha
 Our case studies in Section~\ref{case-studies} demonstrate
 some of the new and interesting interactions within and between applications
 that are possible with total reification.
-In a companion manuscript~\cite{companion} we take a deeper dive into its social
-ramifications: its annihilation of any ``paternalistic''
-rule systems and its great potential for empowerment.
+
+\subsubsection{Antipaternalism}
+
+\hl{%
+Total reification grants people the ability keep content off of ``their'' applications
+but it prevents anyone from keeping content off of Graffiti as a whole.
+While this antipaternal stance may seem extreme,
+it is no different than the open web: people can always find
+\emph{somewhere} that is willing to host their content.
+}%
+
+\hl{%
+However, our design is more than a reluctant acceptance of the way things are.
+There are also benefits to keeping harmful content---which will inevitably
+exist---within Graffiti, according to harm reduction practices~\expandafter{\expandafter\cite{harmreduction}}.
+For example, when extremist content is not siloed away in disconnected, fringe spaces,
+such as 8kun or Gab}~\cite{8kun,gab}\hl{, then it is possible to set up off-ramps for
+people to leave those communities without going ``cold turkey.''
+Of course, these is more work to be done to explore the efficacy of
+such a strategy and its possible harms.
+}%
+
+\hl{%
+Section~{\ref{related-work:activitypub}} also discusses how total reification
+may reduce moderator labor in comparison to federated moderation on ActivityPub.
+}%
+
+\subsubsection{Accountability}
+
+\hl{%
+Total reification works to enfore ``adversarial interoperability''
+per Requirement~{\ref{requirements:adversarial-interop}}
+and thus to protect users from leaders---even of small communities---that abuse their role as
+``benevolent dictator for life''~{\cite{governablespaces}}.
+Our solution matches the suggestion given by Melder et al.
+in their study of Fediverse communities with imperfect leadership
+to introduce ``user-level selective ability to bypass [moderator] filters''~{\cite{blocklistboundary}}.
+However, it worth considering whether total reification makes it so easy
+to opt out of a community's norms that users are not held accountable for their actions.
+}%
+
+\hl{%
+While there is work to be done studying this in the context of Graffiti specifically,
+work by Hessel et al.
+suggests the opposite effect~{\cite{highlyrelatedcommunities}}.
+They find that users who explore parallel community spaces
+with different norms not only still meaningfully participate in their original community space,
+but also become more engaged in it.
+}%
+
 
 % The fact that the API does not allow content to \emph{actually} be deleted
 % has consequences for illegal content, like CSAM.
@@ -413,11 +481,11 @@ Like object properties, these channels names have no inherent meaning
 other than the meaning ascribed to them by application developers.
 In practice, the meaning of a channel is a particular social \emph{context} and the channel
 name is some sort of \emph{shared information} implicit to that context.
-For example, the channel named by an object's URL is a natural place to post content ``\emph{talking about}'' the object, like replies, and we expect that most applications will follow that norm.  
+For example, the channel named by an object's URL is a natural place to post content ``\emph{talking about}'' the object, like replies, and we expect that most applications will follow that norm.
 
 We will first illustrate the power of channels
 to model different types of \emph{replies},
-preventing context collapse per requirement~\ref{requirements:context-differentiation}
+preventing context collapse per Requirement~\ref{requirements:context-differentiation}
 while maintaining interoperability.
 Then, we describe the formal properties of channels and their other uses.
 
@@ -533,7 +601,7 @@ will not see the replying actor's reply in their Replies tab because it simply w
 posted to a channel that the application knows to query.
 
 Channels can be considered as a limit on application personalization,
-counter to our overarching requirement~\ref{requirements:personalization}.
+counter to our overarching Requirement~\ref{requirements:personalization}.
 It is \emph{not} possible to create an
 application to find all a user's replies if they have not been posted to channels that
 the application knows to query.
@@ -624,22 +692,34 @@ Permissionless: Actors can freely read from and write to any channel \emph{that 
 \end{enumerate}
 
 Our emphasis on the last property, which we introduced in our discussion of
-total reification, is due to the additional ``obscure'' property
-which allows channels to provide a form of \emph{security by obscurity} like an ``unlisted'' link.
-Security by obscurity does not allow for \emph{revocation}\footnote{
+total reification, is due to the additional ``Obscure'' property
+which allows channels to provide a form of \emph{security by obscurity}, like an ``unlisted'' link.
+However, security by obscurity does not allow for \emph{revocation}\footnote{
     See Section~\ref{related-work:ocaps} for a discussion of how channels relate to ``object capability security''
     which is similar to security by obscurity but allows for revocation.
 }
 of access,
-which is why objects are also access-controlled as mentioned in Section~\ref{concepts:actors}.
-To send someone a direct message that message should be placed in
-the receiving actor's channel, where by convention they know to look for it,
-and access control on it should be limited to only the recipient.
+which is why objects may also be access-controlled,
+\hl{%
+as we will discuss in Section~{\ref{concepts:allowed-lists}}.
+}%
 
-Many channels, like the ``post's channel'' in our replies example,
-can be found by spidering Graffiti like a search engine and so a determined
+\hl{%
+Despite the face that the ``Obscure'' property implies that
+that there is no global directory of channels,
+}%
+many channels may be found by spidering Graffiti like a search engine.
+Therefore, a determined
 developer could make an application that intentionally collapses contexts.
-While this is a possibility and another reason why access control is necessary for privacy-critical situations, we hope to cultivate social norms that dissuade this behavior, similar to informal notions of privacy in the real world.
+\hl{%
+This is an unforunate possibility with any public content.
+For example, snoopreport.com sells a context-collapsing service for Instagram.
+
+Given this, users with privacy critical needs should, again, use the
+access control affordances described in Section~{\ref{concepts:allowed-lists}}.
+For less critical needs,
+}%
+we hope to cultivate social norms that dissuade scraping, similar to informal notions of privacy in the real world.
 For example, it is entirely possible for a person in the real world
 to attend various support groups, like alcoholics anonymous,
 just to spread people's secrets, but doing so would be shameful.

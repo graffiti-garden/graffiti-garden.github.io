@@ -147,7 +147,7 @@ fairly easy to add in the future.
 
 Below is the complete template for a micro social application,
 built with the plugin, that shows a (continuously updating) list of all messages posted to a realtime group chat and enables the user to post their own message:
-\begin{minted}{html}
+\begin{minted}{vue}
 <form v-if="$graffitiSession.value"
   @submit.prevent="$graffiti.put({
     value: { content },
@@ -844,6 +844,23 @@ subpoenas, putting groups like activists at risk.
 It would be valuable to build end-to-end encrypted versions of the remote servers,
 tracker, and commodity storage servers, perhaps building on
 searchable encryption~\cite{searchableencryption}.
+
+\hl{%
+One vulnerability of any system with portable login,
+including systems like Solid and the AT Protocol~{\cite{bluesky}},
+is the potential of logging into
+a malicious application that could steal your data or
+post on your behalf without consent.
+This risk may make users hesitant to try new applications,
+restricting the ecosystem.
+Future work should introduce login scopes, such as
+ability to grant an application permission only to read objects
+that match a particular schema and reside in a particular set of channels.
+Since the commodidy storage protocol bootstraps off of
+existing storage services that lack such scoping,
+it may be necessary to implement scoping client-side
+via an iframe to a trusted intermediary domain.
+}%
 
 % Finally, non-federated architectures like a peer-to-peer
 % implementaiton may also be possible.

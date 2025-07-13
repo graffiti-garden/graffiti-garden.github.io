@@ -5,8 +5,8 @@ We now describe our API that fulfills the requirements
 outlined in Section~\ref{requirements} and builds upon the concepts
 just discussed in Section~\ref{concepts}.
 The API features simple methods for \texttt{login} and \texttt{logout}
-and a series of CRUD methods for manipulating objects:
-\texttt{put}, \texttt{get}, \texttt{patch}, and \texttt{delete},
+and a series of CRUD\footnote{Create, Read, Update, Delete} methods for manipulating objects:
+\texttt{put}, \texttt{get}, \texttt{patch}, and \texttt{delete}.
 The novel \texttt{discover} method allows users to query for objects
 from a set a of channels.
 Finally, there are two specialized ``recovery'' methods included for completeness:
@@ -153,9 +153,13 @@ the following meta properties:
 \item
 \texttt{channels} (array of strings): A list of channels that the object is contained in.
 \item
-\texttt{allowed} (array of strings): A list of actors URIs that are allowed to access the object.
+\texttt{allowed} (array of strings \hl{or undefined}): An \hl{optional} list of actor URIs that are allowed to access the object.
+\hl{When undefined, any actor can access the object given that the know either its \texttt{url} or one of its \texttt{channels}.}
 \item
-\texttt{lastModified} (number): A time to compare object versions.
+{\sethlcolor{pink}\hl{%
+\texttt{revision} (number): A unix timestamp, lamport timestamp~{\cite{lamport}}, or other counter that
+increases with each modification of the object.
+}}%
 \end{enumerate}
 
 Subtly, \texttt{channels} and \texttt{allowed} do not necessarily
@@ -183,7 +187,7 @@ As mentioned in our discussion of ``total reification,'' Section~\ref{concepts:t
 only the actor that created an object can mutate the object at that \texttt{url}.
 An object's owner can arbitrarily mutate the object's
 \texttt{value}, \texttt{channels}, and \texttt{allowed} list.
-The \texttt{lastModified} field is updated by the underlying implementation on each modification.
+The {\sethlcolor{pink}\hl{\texttt{revision}}} field is {\sethlcolor{pink}\hl{increased}} by the underlying implementation on each modification.
 
 We expect that the ecosystem will contain many posts that a particular application cannot understand and will wish to ignore.  To simplify this process,
 \texttt{get} requires the application developer to specify
@@ -360,5 +364,6 @@ and require a \texttt{session}.
 %DK ATP, how about instead allowing a null argument to discover which means that you are not looking in any channel but are instead looking through all your own posts (possibly filtering by a schema specification, which could for example indiciate that you only want posts not in any channel)
 
 These methods are not intended to be used in most applications but are
-necessary for creating something like Facebook's ``activity log,''
-enabling a user to audit their system-wide usage.
+necessary for creating tools like Facebook's ``activity log,''
+\hl{or other novel digital hygiene tools},
+that allow users to audit their system-wide usage.

@@ -1,21 +1,94 @@
-\section{Conclusion}
+\section{Conclusion and Future Work}
 
-Graffiti seeks to enable a ``world where many worlds fit''~\cite{escobarpluriverse}.
-So far we have focused on the positive examples of what
-worlds are possible, of which there are many,
-but what of the harms?
-The gravity of the subject requires a full treatment,
-which can be found in our companion manuscript~\cite{companion}.
-Briefly, we argue that despite Graffiti's personalization, the fuzzy boundaries between Graffiti applications can work to \emph{reduce} filter bubbles, and despite Graffiti's lack of a central authority, the evolving networks of care and accountability that can be built on it will be \emph{more effective} than paternalistic policing in combating harms like CSAM.
+{\sethlcolor{pink}\hl{%
+Graffiti seeks to enable a ``world where many worlds fit''~{\cite{escobarpluriverse}}
+comprised of diverse social spaces that are each simultaneously \emph{personal}
+and \emph{interoperable} with each other.
+We introduce the concepts \emph{total reification} and \emph{channels}
+to resolve the tension between these competeing goals
+of minimal constraint and interconnectedness.
+}}%
+
+{\sethlcolor{pink}\hl{%
+In such an unconstrained environment,
+we hypothesize that the social pressures that currently work
+to consolidate people on a handful of massive platforms
+will similarly nudge users of Graffiti towards interopability.
+We predict that natural \emph{folksonomies}~{\cite{folksonomy}} will
+develop around usage of channels and objects schemas, much like the do around usage of hashtags.
+It leaves to be seen whether this hypothesis will hold in wide deployment
+or whether there will be instances where too much freedom leads to
+``expression breakdowns''~{\cite{expressionbreakdowns}}
+that require additional layers of standardization.
+}}%
+
+{\sethlcolor{pink}\hl{%
+Our work illustrates that by placing an \emph{API}
+at the right level of the stack, we can seperate out the distinct concerns
+of building a usable application development environment
+from concerns of building a secure, scalable, and decentralized infrastructure.
+We demonstrate this by developing a Vue.js plugin and a series
+of applications \emph{above} the API independently from the
+two decentralized implementations we present \emph{below} the API.
+However, this hourglass design assumes the API in the middle is static
+which begs the question: is our API sufficient?
+}}%
+
+{\sethlcolor{pink}\hl{%
+Our case studies fulfill the Form-Form taxonomy of social media~{\cite{formfrom}}
+by demonstrating commons (Wikiffiti), spaces (Parallax, The Glue Factory), and networks (Glitter),
+as well as both threaded (Glitter) and unthreaded (Parallax) interactions.
+Channels and allowed lists respectively capture the two major
+forms of context management found on social application:
+communication towards both abstract and targeted imagined audiences~{\cite{imaginedaudience}},
+and communication towards a specific audience through ``visibility control''~{\cite{visibilitycontrol}} affordances.
+Graffiti interactions can be ephemeral or persistant, realtime or asynchronous,
+and moderated with practically any rule set.
+}}%
+
+{\sethlcolor{pink}\hl{%
+However, while the Graffiti API theoretically provides the necessary
+affordances for retrieving social data of interest,
+there are certain cases where our client-side
+approach makes processing that data infeasible.
+For example, it is impossible for any single consumer device to
+do the processing required to create TikTok's ``For You'' feed.
+For these cases, a parallel API should be developed to allow for thid-party
+services to take on these high computational loads, however care should be taken
+in the design of that API to prevent users from getting locked into a
+particular third-party services.
+}}%
+
+{\sethlcolor{pink}\hl{%
+Lastly, Graffiti is motivated by a set of \emph{individual} and \emph{community}-centric requirements,
+namely their desire to personalize their social spaces while being connected to others.
+Our work does not explicitly cover \emph{society}-level concerns
+such as disinformation and polarization.
+We hypothesize that the democratization that Graffiti enables
+makes it a sufficiently more \emph{neutral} interaction environment that
+profit-driven platforms.
+Our (perhaps optimistic) hope is that in such a truly democratic environment, goood ideas will prevail.
+However, to realize this, there is work to be done in building even more
+accessible higher-level tools on top of Graffiti for community care and accountability.
+}}%
+
+
+
+
+
+% We have attempted to make the API minimal while covering lots of use cases,
+% however there are areas where it is likely lacking, namely in areas that require
+% analyzing \emph{massive} portions of the networks.
+% Future work should attempt to create third-party aggregation services,
+% while also working to make sure that users do not get locked into these services.
+
+% Another important question is whether our implementation is \emph{efficient}
+% enough to support real-world use cases.
 % For example, a decentralized system must consider how to handle CSAM material, and we explore that issue there.
 %DK also mention that graffiti's issues with CSAM are no worse than whatsapp's
 
 
-Another important question is whether our implementation is \emph{efficient} enough to support real-world use cases.  While we have not yet undertaken careful performance evaluations, we assert that Graffiti can clearly support a wide range of applications for \emph{sufficiently small} communities, and conversely is unlikely to support certain \emph{massive} applications without connecting to special-purpose servers.  The exact location of the threshold depends on the specifics of the applications.
 
-To justify the lower limit, note that for sufficiently small communities even brute-force broadcast of all posts to all members is quite tractable, so the more efficient distribution provided by our protocols certainly is.   
-At the upper end, as discussed with Requirement~\ref{requirements:serverless}, Graffiti will certainly need help to do tasks that involve analyzing massive
-portions of the network, like TikTok's For You feed.
 %Additionally, total reification also makes tasks
 %such as tallying up the millions of likes on
 %one of Taylor Swift's posts or compiling all the edits on
@@ -26,13 +99,13 @@ portions of the network, like TikTok's For You feed.
 %services so they do not begin to lock the network into a particular design.
 
 
-Finally, what will the social application
-landscape look like when it design is driven by user needs
-rather than the profits motives of a few corporate platforms or
-the constraints of existing protocols?
-Will a new feature as canonical as the like button or the feed emerge?
-Or will the ecosystem be marked by its lack of canon?
-What would a \emph{tangible} social application feel like?
+% Finally, what will the social application
+% landscape look like when it design is driven by user needs
+% rather than the profits motives of a few corporate platforms or
+% the constraints of existing protocols?
+% Will a new feature as canonical as the like button or the feed emerge?
+% Or will the ecosystem be marked by its lack of canon?
+% What would a \emph{tangible} social application feel like?
 
 
 
@@ -41,14 +114,14 @@ What would a \emph{tangible} social application feel like?
 
 % when not purely directed by broad appeal
 % and lock-in potential.
-% What social applications are really everything 
+% What social applications are really everything
 
 % adoption.
 
 
 % and fostering community self-determination
 % can help to create accountability and aid networks that work better
-% than paternalistic policing to combat harms like CSAM or 
+% than paternalistic policing to combat harms like CSAM or
 
 % In terms of Graffiti's scope, applications like Tik
 
@@ -70,20 +143,31 @@ What would a \emph{tangible} social application feel like?
 % However, just as how addiction is better handled with
 % community care than policing, the healthier communities that Graffiti has the potential to create may provide a pathway
 % to get rid of such content without force.
-% 
+%
 % So much of our lives are online
 
 % \begin{enumerate}
 %     \item
 %     Recommendation engines and Taylor Swift
 %     \item
-%     Large media / streaming: 
+%     Large media / streaming:
 % A major limitation of the API as it currently stands
 % is its support for large media and streaming.
 % Currently, in applications like The Gloof, images
 % are stored externally and linked in. In other applications
 % we did not write about images are encoded with Base64.
-% \item 
+% \item
 % Social questions: norms? harms? a world without hierarchical moderation / paternalism? filter bubbles? polarization? CSAM?
 % \end{enumerate}
 
+
+% We balance the tensions between creating a malleable environment
+% and an interconnected environment with concepts like
+% total reification and channels.
+% Our hope is that this
+% minimally constrained environment
+% for building social media much as the
+% the web did for publishing static media~\cite{weavingtheweb}.
+% Will everyone use their own app will there be patterns
+% connected digital spaces like MySpace or will people tend
+% to use aggregators like RSS reads that avoid the need to

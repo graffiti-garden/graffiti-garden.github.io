@@ -1,7 +1,7 @@
 \section{Conclusion and Future Work}
 
 {\sethlcolor{pink}\hl{%
-Graffiti seeks to enable a ``world where many worlds fit''~{\cite{escobarpluriverse}}
+Graffiti seeks to enable a ``world where many worlds fit''~{\cite{escobarpluriverse}},
 comprised of diverse social spaces that are each simultaneously \emph{personal}
 and \emph{interoperable} with each other.
 We introduce the concepts \emph{total reification} and \emph{channels}
@@ -13,10 +13,10 @@ of minimal constraint and interconnectedness.
 In such an unconstrained environment,
 we hypothesize that the social pressures that currently work
 to consolidate people on a handful of massive platforms
-will similarly nudge users of Graffiti towards interoperability.
-We predict that natural \emph{folksonomies}~{\cite{folksonomy}} will
-develop around usage of channels and objects schemas, much like the do around usage of hashtags.
-It leaves to be seen whether this hypothesis will hold in wide deployment
+will similarly nudge users of Graffiti toward interoperability.
+Specifically, we predict that natural \emph{folksonomies}~{\cite{folksonomy}} will
+develop around the usage of channels and object schemas, much as they have with hashtags.
+It remains to be seen whether this hypothesis will hold in wide deployment,
 or whether there will be instances where too much freedom leads to
 ``expression breakdowns''~{\cite{expressionbreakdowns}}
 that require additional layers of standardization.
@@ -28,20 +28,20 @@ at the right level of the stack, we can separate out the distinct concerns
 of building a usable application development environment
 from concerns of building a secure, scalable, and decentralized infrastructure.
 We demonstrate this by developing a Vue.js plugin and a series
-of applications \emph{above} the API independently from the
-two decentralized implementations we present \emph{below} the API.
-However, this hourglass design assumes the API in the middle is static
+of applications \emph{above} the API, independently from the
+two decentralized implementations we present \emph{below}.
+However, this hourglass design assumes the API in the middle is static,
 which begs the question: is our API sufficient?
 }}%
 
 {\sethlcolor{pink}\hl{%
-Our case studies fulfill the Form-Form taxonomy of social media~{\cite{formfrom}}
+Our case studies span the Form-From taxonomy of social media~{\cite{formfrom}},
 by demonstrating commons (Wikiffiti), spaces (Parallax, The Glue Factory), and networks (Glitter),
 as well as both threaded (Glitter) and unthreaded (Parallax) interactions.
 Channels and allowed lists respectively capture the two major
-forms of context management found on social application:
-communication towards both abstract and targeted imagined audiences~{\cite{imaginedaudience}},
-and communication towards a specific audience through ``visibility control''~{\cite{visibilitycontrol}} affordances.
+forms of context management available in social applications:
+communication toward both abstract and targeted imagined audiences~{\cite{imaginedaudience}},
+and communication toward a specific audience through ``visibility control''~{\cite{visibilitycontrol}} affordances.
 Graffiti interactions can be ephemeral or persistent, real-time or asynchronous,
 and moderated with practically any rule set.
 }}%
@@ -49,28 +49,58 @@ and moderated with practically any rule set.
 {\sethlcolor{pink}\hl{%
 However, while the Graffiti API theoretically provides the necessary
 affordances for retrieving social data of interest,
-there are certain cases where our client-side
+there are cases where our client-side
 approach makes processing that data infeasible.
 For example, it is impossible for any single consumer device to
-do the processing required to create TikTok's ``For You'' feed.
-For these cases, a parallel API should be developed for offloading such
+perform the processing required to create TikTok's For You feed.
+For these cases, future work should develop
+a parallel API for offloading such
 computation to third-party services.
-However, care should be taken
+Similar care should be taken
 in the design of that API to prevent lock-in.
 }}%
 
 {\sethlcolor{pink}\hl{%
-Lastly, Graffiti is motivated by a set of \emph{individual} and \emph{community}-centric requirements,
-namely their desire to personalize their social spaces while being connected to others.
-Our work does not explicitly cover \emph{society}-level concerns,
+Lastly, we framed the motivation behind Graffiti in terms of
+\emph{individual} and \emph{community}-centric concerns,
+specifically, the desire to personalize social spaces while remaining connected to others.
+Our work does not directly address \emph{society}-level concerns,
 such as disinformation and polarization.
-We hypothesize that the democratization that Graffiti enables
-makes it a sufficiently more \emph{neutral} interaction environment than
-profit-driven platforms.
-Our (perhaps optimistic) hope is that in such a truly democratic environment, good ideas will prevail.
-However, to realize this, there is work to be done in building even more
-accessible higher-level tools on top of Graffiti for community care and accountability.
+Our hope, in line with predictions made by~{\cite{threeleggedstool}}, is that by democratizing
+the design of communication environments---as Graffiti works to do---we
+will see the bottom-up emergence of healthier social interactions within those environments,
+at both community and society scales.
+We look forward to continuing to work toward that vision.
 }}%
+
+
+% Our optimistic hope is that by democratizing the design of
+% communication infrastrucutre, including moderation, there are downstream effects of creating
+% a healthier ecosystem more broadly.
+
+% Call to action.
+% More accessible
+
+% We call to action work on making this more accessible
+
+% communication infrastructure,
+% this has downstream effects for creating a healthier communication ecosystem more broadly.
+% Future work should
+
+% democratization of the design of spaces,
+% leads naturally to a healthier communication ecosystem
+
+
+% We hypothesize that the democratization that Graffiti enables
+% makes it a sufficiently more \emph{neutral} interaction environment than
+% profit-driven platforms.
+% Our optimistic hope such a truly democratic environment,
+% will foster not only the creation of good apps but also of good ideas
+% good ideas will prevail.
+% However, to realize this vision, there is more work to be done making
+% the capabilities that Graffiti provides even more accessible.
+% However, to realize this, there is work to be done in building even more
+% accessible higher-level tools on top of Graffiti for community care and accountability.
 
 
 

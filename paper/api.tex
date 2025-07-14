@@ -19,7 +19,7 @@ The API is written as an abstract TypeScript class, allowing
 developers building on top of the API to swap out different implementations
 with a single line of code.
 The API's complete documentation, specification, and test suite is available online\footnote{
-    See \url{https://api.graffiti.garden/classes/Graffiti.html} and supplementary materials.
+    \url{https://api.graffiti.garden/classes/Graffiti.html}
 }, and so here we focus on the important design decisions.
 
 TypeScript is a type annotation layer around standard JavaScript
@@ -179,7 +179,9 @@ Objects can be interacted with through familiar CRUD methods:
 \texttt{put}, \texttt{patch}, and \texttt{delete} for modifying objects,
 and \texttt{get} for retrieving objects.
 The modification methods each require a \texttt{session} whereas
-for \texttt{get} the \texttt{session} is optional.   The API responds identically for an object that does not exist,
+for \texttt{get} the \texttt{session} is optional,
+enabling a user to view content without being logged in.
+The API responds identically for an object that does not exist,
 one that has been deleted, or one that the actor is not allowed to see,
 so that no information about an object's status is leaked.
 
@@ -253,7 +255,7 @@ encouraging the folksonomy.
 from a particular set of channels.
 Objects are returned from \texttt{discover} as an \emph{asynchronous generator}.
 This allows the application to process objects as they come in
-using a \texttt{for await} loop, rather than having to wait for all objects
+using a \texttt{for\ldots{await}} loop, rather than waiting for all objects
 to be fetched. The generator also hides the potential complexity of
 query pagination below the API.
 
@@ -262,7 +264,7 @@ to access private objects, and it requires a JSON schema.
 The schema,
 in addition to providing type safety, makes \texttt{discover} far more efficient
 as a query mechanism, limiting the objects returned to only those that interest the particular application.
-For example, the channel represented by an actor's URI has many overloaded uses,
+For example, the channel named by an actor's URI has many overloaded uses,
 including being the site for the actor to broadcast Twitter-like posts,
 and the site where they receive direct messages.
 To receive only direct messages from Alice,
@@ -321,7 +323,7 @@ specified channels, schema, or actor.
 In total, these allow an application to keep an up to date state
 without having to re-fetch all objects.
 A tombstone only includes an object's URL and the time of deletion.
-Tombstones must inevitably expire to preserve a user's the right to be forgotten,
+Tombstones must inevitably expire to preserve a user's right to be forgotten,
 causing \texttt{continue()} to throw an error
 that signals to the application to poll \texttt{discover} from scratch.
 

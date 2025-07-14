@@ -25,7 +25,7 @@ namely by protecting users from ``context collapse,''
 and ensuring their ``right to be forgotten.''
 
 \hl{%
-Requirement~{\ref{requirements:parallel-implementations}} stands apart to addresses
+Requirement~{\ref{requirements:parallel-implementations}} stands apart to address
 how Graffiti might be implemented to uphold these requirements over time, despite
 the natural tendency for social technologies to ``enshittify''~{\cite{enshittification}}.
 }%
@@ -219,7 +219,7 @@ modify an application so that it only shows 5 posts per day (to combat screen ad
 without imposing this feature on all other users of the original application.
 The original application may eventually include this feature in a configuration panel,
 or the applications may drift further apart as their users' needs diverge. However, this
-evolution can be driven entirely by users rather than by external pressures
+evolution should be driven entirely by users rather than by external pressures
 to either conform to a particular design or abandon community altogether.
 
 % - the scope of such features will be discussed in
@@ -228,11 +228,11 @@ to either conform to a particular design or abandon community altogether.
 We use the term ``adversarial interoperability''~\cite{adversarialinterop} because it may not be in the
 interest of a large existing application to interoperate with a new application that may co-opt some of its market share.
 For example, Facebook, X, and Reddit all have a history of intentionally breaking
-the interoperability of third-party applications by changing or access-restricting to their APIs.
+the interoperability of third-party applications by changing or restricting access to their APIs.
 Even in small group chats, where the power dynamics are less extreme,
 an adminstrator-administee hierarchy
 can embody an ``implicit feudalism'' that some claim can even
-normalizes monarchical power structures in society at large~\cite{governablespaces}.
+normalize monarchical power structures in society at large~\cite{governablespaces}.
 It should never be possible for one entity to hold users
 and their data hostage to a particular experience.
 Empowerment should not be limited to a community ``as a whole'' but
@@ -348,8 +348,8 @@ distributed amongst its subgroups and individual members.
 %DK it isn't entirely clear how this requirement differs from the "adversarial interop" one or how "expanding to reactions" differs from "limiting to 5 posts per day".
 In classic internet forums, users might reply to a post with ``+1'' to signal their support.
 In 2009, Facebook created the like button and in 2016 expanded it to a set of five reactions.
-Messaging clients like Signal now allow users to react to a message with any single emoji and
-Slack allows for users to react with multiple emojis including ones with custom animated icons.
+Messaging clients, like Signal, now allow users to react to a message with any single emoji and
+Slack allows for users to react with multiple emojis, including ones with custom animated icons.
 
 Social applications evolve in unpredictable ways,
 so to avoid instant obselescence, Graffiti must be highly extensible,
@@ -413,7 +413,7 @@ and pass it around, but we require that all such servers are \emph{generic}
 and not tied to any one particular application.
 For example, an RSS reader is a ``serverless'' application since
 no new server needs to be built specifically for it to function.
-The reader simply polls existing RSS servers, each of which outputs data in a generic format.
+The client-side reader simply polls existing RSS servers, each of which outputs data in a generic format.
 In Graffiti, both reading \emph{and writing} content must be done serverlessly.
 
 %DK suggested change:
@@ -422,7 +422,7 @@ For example, constructing something like TikTok's For You feed requires
 analyzing billions of posts, functionality that is not built in to our infrastructure and cannot be implemented by client-side applications.
 This work focuses on the broad range of applications
 that do not require massive machine learning algorithms,
-but we conclude with some ways to extend Graffiti to enable them, too.
+but we conclude with a brief discussion of extending Graffiti to enable them, too.
 % However, we will argue that a broad range of applications similar to twitter, facebook, whatsapp, Reddit, and others \emph{can} be implemented in our infrastrucrure while meeting this goal.
 % The extent to which this requirement can be applied is potentially limited
 % by the compute and storage capacities of modern devices.

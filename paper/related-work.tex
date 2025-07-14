@@ -2,7 +2,7 @@
 \label{related-work}
 
 Graffiti, so far as we know, is the only system that makes it
-relatively easy to build a wide variety of interoperating applications.
+relatively easy to build such a wide variety of interoperating social applications.
 Below, we discuss \emph{frameworks} that make it easy to build
 \emph{non-\allowbreak{}interoperating} social applications
 and \emph{protocols} that support interoperation but
@@ -35,7 +35,7 @@ We also discuss other systems with related designs to Graffiti.
 % but are limited in their ability to fork into different
 % designs without breaking their existing community apart.
 
-Subreddits, Facebook groups, and
+Facebook groups, subreddits, and
 Slack workspaces are \emph{no-code} frameworks for creating social
 applications.
 Of course, these sub-applications have limitations,
@@ -43,7 +43,7 @@ like a strict user-moderator hierarchy
 and predefined feature sets.
 However, Reddit and Slack allow moderators to deploy
 custom \emph{bots} that enable the
-``delta'' ranking system in the SubReddit \texttt{r/Change\allowbreak{}My\allowbreak{}View}
+``delta'' ranking system in the subreddit \texttt{r/Change\allowbreak{}My\allowbreak{}View}
 ~\cite{changemyview}
 and the PolicyKit moderation system in Slack~\cite{policykit}.
 
@@ -92,7 +92,7 @@ Firebase plugins for the front-end framework Vue and the low-code tool
 Mavo~\cite{mavo} allow these applications to be written declaratively.
 For example, Mavo Chat\footnote{
     \url{https://dmitrysharabin.github.io/mavo-chat/}
-} is a realtime chat application written in 156 lines of HTML
+} is a real-time chat application written in 156 lines of HTML
 with Mavo and Firebase.
 %DK could a graffiti remote server be implemented on firebase?
 
@@ -133,9 +133,9 @@ with Mavo and Firebase.
 \label{related-work:protocols}
 
 Before 2018, social protocols, like Email and IRC,
-and later diaspora* and Secure ScuttleButt,
+and later diaspora*~\cite{diaspora} and Secure ScuttleButt~\cite{scuttlebutt},
 were designed to support \emph{specific} application types:
-messaging for the former and microblogging for the latter~\cite{diaspora,scuttlebutt}
+messaging for the former and microblogging for the latter.
 Since the introduction of ActivityPub~\cite{activitypub},
 a new generation of social protocols have
 been developed that, technically, support a wider variety of applications.
@@ -169,13 +169,16 @@ identity provider, and storage provider into one entity.
 Moderation decisions by instance moderators are not reified activities
 but actually delete or modify the target content.
 This prevents their users from choosing a different moderation
-service without leaving their instance and community,
+service without leaving their instance and community
 behind.
 It \emph{also} means that federated content
 needs to be moderated by \emph{every} receiving instance,
 overwhelming already resource-constrained moderators, causing many
 to resort to coarse moderation techniques like ``defederation''
-\cite{securingfederatedplatforms}.
+\cite{securingfederatedplatforms, blocklistboundary}.
+Note that this redundant labor is not necessary with totally
+reified moderation as moderation actions are their own objects
+that can be shared across applications.
 
 ActivityPub distributes content using an ``actor model,''
 where every actor has an inbox for receiving direct messages, like email,
@@ -190,16 +193,17 @@ In practice, there is a flow diagram of at least 8 edge cases to consider
 to prevent ``ghost replies''~\cite{stateofmastodon}.
 Server side effects are needed to facilitate any interaction not centered around identity,
 including all of those listed in Table~\ref{concepts:channels-and-applications}.
-Additionally, while the activities involved are reified, side effects prevent them
-from being \emph{autonomously} extensible (see requirement~\ref{requirements:autonomous-extensibility}),
-because all involved servers need to implement the side effect before
-the new interaction can be used.
+Additionally, side effects mitigate the autonomous extensibility
+(see Requirement~\ref{requirements:autonomous-extensibility})
+of ActivityPub
+because all involved servers need to implement a side effect before
+its corresponding interaction can be reliably used.
 
 Thus there is no ``generic'' ActivityPub server
 and custom-built servers
 for Mastodon, Lemmy, and PixelFed each consist of hundreds
 of thousands of lines of code.
-Projects like Hometown, Smalltown and Glitch\footnote{
+Projects like Hometown, Smalltown, and Glitch\footnote{
     \url{https://glitch.com/fediverse}
 } attempt to lower the barrier
 to instance creation, but beyond basic configuration panels,
@@ -243,7 +247,7 @@ When a user posts, their application creates a
 public ``thread'' room and replies are copied to both the
 thread room and the replier's timeline room.
 Matrix's client-server API is flexible enough that this prototype
-was written with front end code over a generic Matrix server.
+was written with front-end code over a generic Matrix server.
 
 % similar to an ActivityPub outbox. One user can follow another by subscribing to messages from their timeline room.
 % Whenever someone creates a post, they must also create a public `thread' room for that post, for users to write comments in.
@@ -251,23 +255,22 @@ was written with front end code over a generic Matrix server.
 % Matrix has a standardized API of creating rooms and forwarding messages between participants within in rooms, so Cerulean was implemented with frontend code over a \emph{generic} Matrix server.
 % However, the prototype is fairly limited and does not explain, for example how other features will work, like user discovery.
 
-This is similar to Graffiti's channel-based implementation of microblogging described in Section~\ref{concepts:channel-replies}.
+This is similar to Graffiti's channel-based implementation of microblogging, described
+in Section~\ref{case-studies:fig:gloof-and-glitter}.
 One difference is that the ``thread'' and ``timeline'' rooms
 in Cerulean
 must be explicitly created by the poster.
 This gives them automatic moderator privileges
 under Matrix's rigid ``power level'' moderation
-schema, unlike channels
+scheme, unlike channels
 which are ``permissionless'' but allow arbitrary
 moderation structures to be added on top via
 reification.
-Channel instantiation also does not allow for the technique to be used
-when there is not someone clearly responsible for instantiating the room,
-as might be the case for topics, external media, or locations.
+This method also requires that someone is clearly responsible for instantiating the room,
+which might not be the case for, e.g., topics, external media, or locations.
 
 Still, Cerulean's existence indicates that
-Matrix might be modified to support the Graffiti API without having
-to change much of the underlying infrastructure.
+Matrix might be modified to support the Graffiti API.
 % Additionally, events (the equivalent of objects in Matrix) can't be linked
 % to and so an event needs to be copied.
 % promising that Matrix could be
@@ -434,19 +437,20 @@ to change much of the underlying infrastructure.
 
 The AT Protocol~\cite{bluesky} and Nostr\footnote{
 \url{https://nostr.com}
-} are two similar federated protocols
+} are two similar federated protocols,
 with the AT Protocol being notable for underlying Bluesky.
-Both protocols use a combination of personal data stores and ``relays''
+Both protocols use a combination of ``personal data stores'' and ``relays''
 to construct a queryable stream of \emph{all} data in the system.
-Within the AT Protocol, this global stream is called the ``firehose.''
-In the AT Protocol, client applications connect to intermediate ``app views,''
-while in Nostr, client applications connect directly to the relays, similar
-to the protocols we described for Graffiti in Section~\ref{above-and-below}.
+Within the AT Protocol, this global stream is called the ``firehose''
+and intermediate ``app views'' can consume content from this firehose to
+construct algorithmic feeds, reducing client-side computation compared
+to our own approach, at the cost of standing up custom servers.
 
-The global queryable stream of data makes contextual seperation impossible.
+A globally queryable stream of data makes contextual seperation impossible.
 For example, it is impossible for a user, Alice, to post a reply on either protocol
 without that reply surfacing in a query for ``anything by Alice.''
-This appears to be causing inter-application collapse as well.
+This appears to be causing inter-application collapse, similar to
+what we predict in our discussion of Requirement~\ref{requirements:context-differentiation}.
 An application called Flashes, built on the AT Protocol,
 currently places all images a user has posted to Bluesky within
 an Instagram-like grid. Users who want their Flashes feed to be
@@ -454,9 +458,17 @@ more curated are simply suggested to use a different account\footnote{
     \url{https://www.youtube.com/live/B7OwcXCE5Rg?t=1655s}
 }.
 
-The AT Protocol and Nostr both use ``stackable
-moderation'' where users can layer ``subscriptions'' to various moderator services.
-This affordance is a special case of the more general patterns that are possible from total reification, introduced in Section~\ref{concepts:total-reification}.
+The AT Protocol and Nostr both employ ``stackable
+moderation,'' where users can opt-in to various ``labeling'' services.
+Labeling-as-moderation is an approachable model that reflects existing expectations of a
+top-down moderator-user hierarchy,
+hence why we began our discussion of total reification
+with \texttt{"Remove"} labels in Section~\ref{concepts:total-reification}.
+However, labeling alone does not cover the more general democratic patterns
+of moderation that we go on to describe are possible with total reification,
+including the reified group membership and document authorship
+that we demonstrate in Section~\ref{case-studies}.
+Additionally, labelers on the AT Protocol need to run their own labeling servers.
 %and rooted in continuing
 %an existing top-down moderator-user hierarchy, rather than a democratih approach where the
 
@@ -466,13 +478,13 @@ This affordance is a special case of the more general patterns that are possible
 % can be achieved with total reification, however
 % other forms are possible as well.
 
-Both protocols include extensible objects but these objects are not
-\emph{autonomously} extensible (see requirement~\ref{requirements:autonomous-extensibility})
+Both protocols include extensible objects, but these objects are not
+\emph{autonomously} extensible (see Requirement~\ref{requirements:autonomous-extensibility})
 because the relays will not index objects with properties that are unfamiliar to them.
 Additionally, both protocols sign all objects with their users' public keys, making
-all content \emph{unrepudiable}, violating our requirement~\ref{requirements:forgiving}.
+all content \emph{unrepudiable}, violating our Requirement~\ref{requirements:forgiving}.
 Finally, the AT Protocol does not currently allow for
-any private messaging.
+any private interactions, including private messaging.
 
 % It is technically decentralized although some critics suggest
 % that decentralization scales quadratically and so realistically it
@@ -538,11 +550,11 @@ any private messaging.
 \subsection{Adversarial Interoperability}
 
 Graffiti applications are \emph{adversarially interoperable} with other Graffiti
-applications, as per requirement~\ref{requirements:adversarial-interop}.
+applications, as per Requirement~\ref{requirements:adversarial-interop}.
 However, Graffiti applications do not interoperate with \emph{external}
 applications or protocols.
 One tool that does is Gobo, which unifies feeds from Reddit, Bluesky,
-Mastodon, and, previously, Twitter
+Mastodon, and, previously, Twitter,
 and allows users to customize the algorithms that sort their unified feed~\cite{gobo}.
 Matrix also provides ``bridges'' to itself from messaging platforms like
 Discord, Slack, and Messenger
@@ -579,7 +591,7 @@ Graffiti as a way to encourage adoption.
 \subsection{Channel-Like Models}
 
 Channels, as discussed in Section~\ref{concepts:channels}
-are one of the most novel aspects about the Graffiti API.
+are one of the novel aspects about the Graffiti API.
 % We have, so far, discussed channels in relation to IRC and Slack channels
 % and Matrix rooms, which are user-facing instances of a general
 So far, we have discussed channels in relation to the publish-subscribe
@@ -612,7 +624,7 @@ design of Graffiti's channels.
 
 \subsubsection{Bidirectional Links}
 
-On the World Wide Web, hyperlinks point in one direction from one website to another.
+On the World Wide Web, hyperlinks point in one direction, from one website to another.
 However, hypertext systems like Xanadu~\cite{xanadu}
 and more recently Roam\footnote{\url{https://roamresearch.com}}
 and Notion\footnote{\url{https://www.notion.so}}
@@ -641,16 +653,16 @@ as far as we can tell, it was never implemented~\cite{dexter}.
 %DK "Object capabilities" sounds so much better than "security by obscurity".   Can weintroduce object capabilities  early to describe graffiti's soft access control?
 Object capability security is a security model where rights to perform an action
 can be transferred to another user by giving the user a reference to that action~\cite{capabilitymyths}.
-A channel string can be thought of as a ``read'' capability because knowledge
-of a channel string allows an actor to read all public objects in that channel.
+A channel name can be thought of as a ``read'' capability because knowledge
+of a channel name allows an actor to read all public objects in that channel.
 
 The Spritely Institute aims to encapsulate \emph{all}
 security aspects of a social application with object capabilities~\cite{spritely}.
 Capabilities can indeed be layered to create complex interactions,
 including revocation of access.
 However, many of these interactions require an agent acting on the user's behalf
-to be always \emph{online}, similar to ActivityPub's server side effects.
-Since we don't want developers to have to write server code,
+that is always \emph{online}, similar to ActivityPub's server side effects.
+Since we do not want developers to have to write server code,
 we chose to give objects more familiar \texttt{allowed} lists
 in addition to channels.
 

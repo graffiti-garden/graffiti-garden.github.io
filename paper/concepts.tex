@@ -14,7 +14,7 @@ Objects are posted to a set of \emph{channels} and other users can
 discover an object by querying one of its channels. Channels are a flexible representation
 of different \emph{contexts} which may include identities, topics, locations,
 and more.
-Actors cannot modify other actors' objects and so for actors to interact with each others' content
+Actors cannot modify other actors' objects and so for actors to interact with each others' content,
 those interactions must be \emph{reified} into individual
 activities, %DK actions?
 allowing for different interpretations of them.
@@ -108,14 +108,14 @@ URLs allow the object to be directly fetched%
 %   changing the URL.
 % }
 , but also pointed to, as in the
-``like'' activity below.
+``like'' activity value below.
 % enabling other users to ``like'' that post by creating a new object with the value:
 
 %DK ATP: there's a trick I think medium uses that we might want to steal.   they create urls from the title of a post, but *also* include in the url a weired number that I assume is a nonce.   If you change the title of your post, it changes the title part of the url but not the nonce.   Which means that you can look up the post using either the old or the new url and both will work because the medium server is smart enough to look only at the nonce to decide what content is wanted.   Could we do something similar, so that if the user later decided to change the delivery protocol it would possible to interpret old urls (possibly with some help from the user's profile) in a way that would usually still let you fetch the contents?   For example, it would be nice of the user's profile could store a "redirect rule" explaining how to generate the current url from the old
 
 \begin{minted}{javascript}
 {
-  activity: "like",
+  activity: "Like",
   target: "graffiti:remote:pod.graffiti.garden/123",
 }
 \end{minted}
@@ -132,7 +132,7 @@ all interactions, including moderation actions, are reified,
 which we discuss in
 Section~\ref{concepts:total-reification}.
 
-Finally, objects are mutable, meaning they can be changed or deleted,
+Finally, objects are mutable, meaning they can be changed or deleted.
 Mutability is necessary for the system to be forgiving per Requirement~\ref{requirements:forgiving}.
 The question of \emph{who} can mutate the objects
 will be answered once we discuss identity next and then total reification.
@@ -177,7 +177,7 @@ and is used rather than \emph{user} since a user may own
 multiple actors or
 an actor may be a non-human entity
 like a bot or recommendation service.
-All Graffiti objects are associated an actor, the actor
+All Graffiti objects are associated with an actor, the actor
 that created the object, but anonymous
 or meronymous~\cite{meronymous} interactions are possible by
 creating ``throw away'' actors.
@@ -208,7 +208,7 @@ URI.
 Properties like a display name or pronouns are instead
 defined in separate objects.
 For example, if Alice's actor URI is
-\texttt{https://\allowbreak{}alice.\allowbreak{}example.\allowbreak{}com}, a profile object for her is:
+\texttt{https://\allowbreak{}alice.\allowbreak{}example.\allowbreak{}com}, a profile object value for her is:
 \begin{minted}{javascript}
 {
   name: "Alice",
@@ -227,8 +227,6 @@ changing their name to the broader public.
 Alternatively, the separation allows users to create nicknames
 or ``petnames'' for each other~\cite{petnames}.
 % Pet names
-
-\hl{CONTENT REMOVED HERE}
 
 % Actors are also used for privacy.
 % Objects can be \emph{access-controlled} and only
@@ -260,7 +258,7 @@ Within Graffiti, not some but \emph{all} interactions between actors
 are \emph{reified}.
 % Reification means that instead of modifying the state of an object, an actor adds an annotation \emph{describing} the desired modification as an additional object \emph{annotating} (pointing at the original.  An application determines the "current state" of an object by applying all and only the reified actions it wishes to apply.
 This \emph{total reification} allows different applications to have
-different ``rules'' regarding what users are ``permitted'' to do while
+different ``rules'' regarding what users are ``permitted'' to do, while
 still interoperating.
 % This allows developers to freely introduce new interactions
 % per our requirement for autonomous extensibility (\ref{requirements:autonomous-extensibility}),
@@ -311,15 +309,15 @@ These moderation rules can evolve as developers
 introduce new objects and properties,
 or new procedures to interpret those objects.
 For example,
-perhaps the set of moderators is elected by actors who vote with reified \texttt{"vote"} activities.
-Or, perhaps an application hides posts that exceed a certain threshold of \hl{\texttt{"remove"}} activities,
+perhaps the set of moderators is elected by actors who vote with reified \texttt{"Vote"} activities.
+Or, perhaps an application hides posts that exceed a certain threshold of \hl{\texttt{"Remove"}} activities,
 regardless of whether the \hl{removing} actors are considered moderators.
 Applications may also consider authors of posts to be the \emph{de facto} moderators of the replies to their
 own posts or allow them to disable replies altogether by adding a \texttt{disableReplies}
 property to their post objects.
 A fully democratic system that allows actors to introduce and ratify new moderation proposals,
 as described by the PolicyKit project~\cite{policykit}, could also be reified into
-individual actor activities.
+individual-actor activities.
 Importantly, all of these systems can coexist in different interoperating
 applications and users can freely opt in or out of different systems simply by switching
 the application they use.
@@ -356,7 +354,7 @@ the application they use.
 
 The flexible object values that we described in Section~\ref{concepts:objects} make arbitrary reified interactions \emph{possible}, but we use the term \emph{total} reification because in Graffiti this is the \emph{only} way to represent interactions.
 We impose this rule to achieve the \emph{adversarial} part of our adversarial interoperability requirement (\ref{requirements:adversarial-interop}).
-If an application could modify the \emph{actual} state of an object then it could force all other applications to accept its decisions about the object.
+If an application could modify the \emph{actual} state of an object, then it could force all other applications to accept its decisions about the object.
 For example, if an actor could actually \emph{delete} another actor's post
 from Graffiti \emph{as a whole}
 then it would become impossible to build
@@ -386,47 +384,58 @@ Channels are \emph{permissionless}: actors can freely read from and write to cha
 % All permission structures are built on top of permissionless base
 % through reified actions and application interpretation.
 
-Our case studies in Section~\ref{case-studies} demonstrate
-some of the new and interesting interactions within and between applications
-that are possible with total reification.
-
 \subsubsection{Antipaternalism}
 
 \hl{%
-Total reification grants people the ability keep content off of ``their'' applications
-but it prevents anyone from keeping content off of Graffiti as a whole.
+Total reification grants people the ability to keep content off of ``their'' applications,
+but it prevents anyone from keeping content off of Graffiti as a whole\footnote{%
+It \emph{is} possible for content to be deleted in implementations ``below'' the API,
+allowing hosting providers to delete illegal content,
+like Child Sexual Abuse Material (CSAM).
+However, if the implementation is end-to-end encrypted,
+it may not be possible for the hosting provider to
+detect illegal content,
+a fundamental dilemma of encryption technology.
+}.
 While this antipaternal stance may seem extreme,
-it is no different than the open web: people can always find
-\emph{somewhere} that is willing to host their content accessible by a URL.
+it is no different than the web or other open infrastructures,
+like ActivityPub or the AT Protocol:
+people can always find \emph{some}
+web server, ``instance,''
+or ``personal data store'' to host their content.
 }%
 
 \hl{%
 However, our design is more than a reluctant acceptance of the way things are.
-There are also benefits to keeping harmful content---which will inevitably
-exist---within Graffiti, according to harm reduction practices~\expandafter{\expandafter\cite{harmreduction}}.
-For example, when extremist content is not siloed away in disconnected, fringe spaces,
-such as 8kun or Gab}~\cite{8kun,gab}\hl{, then it is possible to refute that content and set up off-ramps for
-people to leave those communities without going ``cold turkey.''
-Of course, these is more work to be done to explore the efficacy of
+In line with harm reduction practices~\expandafter{\expandafter\cite{harmreduction}},
+there are benefits to keeping harmful content---which will inevitably
+exist---within Graffiti as a whole, while filtered from mainstream spaces.
+For example, when users drawn into extremist ideologies are not
+siloed away on entirely disconnected systems
+like 8kun or Gab}~\cite{8kun,gab}\hl{, it becomes possible to create off-ramps
+to help them disengage gradually without going ``cold turkey.''
+% This can be done while simultaneously refuting the extremist content and keeping it off of mainstream applications.
+Of course, further work is needed to assess the efficacy of
 such a strategy and its possible harms.
 }%
 
-\hl{%
-Section~{\ref{related-work:activitypub}} also discusses how total reification
-may reduce moderator labor in comparison to federated moderation on ActivityPub.
-}%
+% \hl{%
+% Section~{\ref{related-work:activitypub}} also discusses how total reification
+% may reduce redundant moderator labor, thereby improving their effectiveness,
+% in comparison to federated moderation on ActivityPub.
+% }%
 
 \subsubsection{Accountability}
 
 \hl{%
-Total reification works to enfore ``adversarial interoperability''
+Total reification works to enforce ``adversarial interoperability''
 per Requirement~{\ref{requirements:adversarial-interop}}
 and thus to protect users from leaders---even of small communities---that abuse their role as
 ``benevolent dictator for life''~{\cite{governablespaces}}.
 Our solution matches the suggestion given by Melder et al.
 in their study of Fediverse communities with imperfect leadership
 to introduce ``user-level selective ability to bypass [moderator] filters''~{\cite{blocklistboundary}}.
-However, it worth considering whether total reification makes it so easy
+However, it is worth considering whether total reification makes it so easy
 to opt out of a community's norms that users are not held accountable for their actions.
 }%
 
@@ -475,18 +484,19 @@ or the object as a whole is deleted.
 Therefore, we can consider a channel both a ``place''
 an object can be and a property of the object itself.
 
-The channel namespace is also \emph{global} with every string (up to a certain length)
+The channel namespace is \emph{global} with every string (up to a certain length)
 naming exactly one channel.
-Like object properties, these channels names have no inherent meaning
+Like object properties, these channel names have no inherent meaning
 other than the meaning ascribed to them by {\sethlcolor{pink}\hl{developers or users}}.
 In practice, the meaning of a channel is a particular social \emph{context} and the channel
 name is some sort of \emph{shared information} implicit to that context.
-For example, the channel named by an object's URL is a natural place to post content ``\emph{talking about}'' the object, like replies, and we expect that most applications will follow that norm.
+For example, the channel named by an object's URL is a natural place to post content ``\emph{talking about}'' that object, like replies, and we expect that most applications will follow that norm.
+Importantly, content within channels is effectively hidden from applications
+that do not know their names,
+an affordance to prevent context collapse, per Requirement~\ref{requirements:context-differentiation}.
 
 We will first illustrate the power of channels
-to model different types of \emph{replies},
-preventing context collapse per Requirement~\ref{requirements:context-differentiation}
-while maintaining interoperability.
+to model different types of \emph{replies}.
 Then, we describe the formal properties of channels and their other uses.
 
 % as part of
@@ -540,36 +550,36 @@ Then, we describe the formal properties of channels and their other uses.
 Most social applications allow users to reply to posts, but there are surprisingly subtle
 contextual differences between different reply designs.
 For example, on Instagram, replies to a post are only ever displayed to people viewing that particular post\footnote{
-Prior to 2019, Instagram had a Following tab where a userhcould see the replies that people they follow had posted across the application. The Following tab led to a priest outing himself as gay among numerous other examples of context collapse~\cite{instagramfollowingtab}.
-}, whereas on X, a user's replies made across the application can all be found in their Replies tab.
-The difference in these designs reflects these platform's differing design goals of intimacy versus reach.
+Instagram used to have a ``Following'' tab where a user could see the replies that people they follow had posted across the application.
+This led to numerous examples of context collapse and so Instagram discontinued it in 2019~\cite{instagramfollowingtab}.
+}, while on X, a user's replies from across the application can all be found in their Replies tab.
+These differences reflect the platforms’ contrasting design goals of intimacy versus reach.
 
-With channels, it is possible for \emph{both} designs to \emph{co}exist.
-% preventing context collapse to those
-% and
-% the choice
-% is up to the \emph{replier} rather than viewers of those replies.
-To make an Instagram-style reply,
-an application should post the replier's reply to the channel
+With channels, \emph{both} designs can \emph{co}exist:
+\begin{itemize}
+\item
+To create an Instagram-like reply,
+an application should post the reply to the channel
 named by the original post's URL---for brevity, the ``post's channel.''
-Applications displaying the original post implicitly know that post's
-URL and therefore,
-by convention, they know to query the post's channel for replies to that post.
+Applications displaying the original post implicitly know that post's channel name
+and can query the channel to populate the reply thread.
 % for replies but it won't be exposed to the rest of the user's followers.
-To make an X-style reply, an application should post the
-replier's reply to \emph{both} the post's channel
+\item
+To create an X-like
+reply, an application should post the
+reply to \emph{both} the post's channel
 and the channel named by the replier's actor URI---for brevity, the ``replier's channel.''
-The replier's followers all implicitly know the replier's actor URI and so
-again, by convention, their applications know to query the replier's channel
-for content related to them.
+Applications displaying the replier's profile implicitly know that replier's
+channel name and can query the channel to populate the Replies tab.
+\end{itemize}
 
 Finally, what happens if the reply is \emph{only} posted to the
 replier's channel?
-Then the reply becomes like a Quote Tweet\footnote{
-prior to 2020 \url{https://x.com/Support/status/1300555325750292480}
-}
-where the reply is only visible to the replier's followers but
-not the audience of the original post.
+In that case, the reply becomes like a Quote Tweet\footnote{
+Prior to 2020. \url{https://x.com/Support/status/1300555325750292480}
+}: the reply is visible to the replier's followers but
+not the audience of the original post, as they do not have implicit
+access to the replier's channel.
 A summary of these different designs is shown in Table~\ref{concepts:channel-replies}.
 
 \begin{table}[htbp]
@@ -587,22 +597,21 @@ A summary of these different designs is shown in Table~\ref{concepts:channel-rep
 \end{tabular}
 \end{table}
 
-Importantly, these reply designs interoperate in a way that allows content producers to target a particular audience
-regardless of the applications that other people choose to use.
+Importantly, these reply designs interoperate in a way that allows content producers to target a particular audience,
+regardless of the applications others choose to use:
+Instagram-like replies will not be displayed in X-like Replies tabs.
 
-Channels can be considered as a limit on application personalization,
-counter to our overarching Requirement~\ref{requirements:personalization}.
-It is \emph{not} possible to create an
-application that displays all of a user's replies if those replies have not been posted to channels that
-the application knows to query.
-Instagram-like replies will never be displayed in X-like Replies tabs.
-We establish this limit because, unlike with total reification where it is
-possible for application to provide different interpretations of the underlying
-content simultaneously---a post is ``removed'' in one application but not in another---%
-it is not possible for an actor's reply to be simultaneously ``seen'' and ``not seen''
-by a potential audience member.
-We opt to give posters the ability to express their ``targeted imagined audiences''~\cite{imaginedaudience}
-to mitigate context collapse, at the cost of a small loss of autonomy for viewers.
+Therefore, channels can be considered a constraint on application personalization,
+in tension with our overarching Requirement~\ref{requirements:personalization}.
+% It is \emph{not} possible to create an
+% application that displays all of a user's replies if those replies have not been posted to channels that
+% the application knows to query.
+We introduce this constraint because, unlike total reification---where aplications
+can present different interpretations of the underlying
+content simultaneously, e.g. a post is ``removed'' in one application but not in another---a reply
+cannot be simultaneously ``seen'' and ``not seen'' by a potential audience member.
+We prioritize giving posters the ability to express their ``targeted imagined audiences''~\cite{imaginedaudience}
+to mitigate context collapse, at the cost of slightly reducing consumer autonomy.
 % We opt to protect users from context collapse.
 
 
@@ -696,16 +705,18 @@ as we will discuss in Section~{\ref{concepts:allowed-lists}}.
 }%
 
 \hl{%
-Despite the face that the ``Obscure'' property implies that
-that there is no global directory of channels,
+Despite the fact that the ``Obscure'' property implies that
+there is no global directory of channels,
 }%
 many channels may be found by spidering Graffiti like a search engine.
 Therefore, a determined
 developer could make an application that intentionally collapses contexts.
 \hl{%
-This is an unforunate possibility with any public content.
+This is an unfortunate possibility with any public content.
 For example, snoopreport.com sells a context-collapsing service for Instagram.
+}%
 
+\hl{%
 Given this, users with privacy critical needs should, again, use the
 access control affordances described in Section~{\ref{concepts:allowed-lists}}.
 For less critical needs,
@@ -775,12 +786,12 @@ those meanings can enable is shown in Table~\ref{concepts:channels-and-applicati
 
 \begin{table}[h]
 \small
-\caption{Channels Meanings and the Applications they Enable}
+\caption{Channel Meanings and the Application Types they Enable}
 \label{concepts:channels-and-applications}
 \centering
 \begin{tabular}{|l|l|}
 \hline
-\textbf{Channel Meaning} & \textbf{Applications} \\ \hline
+\textbf{Channel Meaning} & \textbf{Application Types} \\ \hline
 External Media & Letterboxd, GoodReads, Genius \\ \hline
 User Media & YouTube, Medium, Github \\ \hline
 Topics & Reddit, Discord, Slack \\ \hline
@@ -798,7 +809,7 @@ In some cases, an existing standard can be used as a channel
 name, like the URL of a website, for Hypothes.is analogs,
 or the ISBN of a book, for GoodReads analogs.
 In other cases, the channel name may be user generated,
-as with public contexts like subreddits or a Wikipedia pages,
+as with public contexts like subreddits or Wikipedia pages,
 %DK as discussed, it is problematic to use human-readable names for subreddits, since it means you can never change them.   and while i can see some limited benefit to human-readable wikipedia names, i don't think it extends to subreddits.   Much better to have a directory page of subreddits and their corresponding channels.
 or randomly generated for ``unlisted'' contexts like
 Discord channels, Pinterest boards, or Google documents.

@@ -1,9 +1,9 @@
 \section{Above and Below}
 \label{above-and-below}
 
-We now describe the tooling we've built \emph{above}
+We now describe the tooling we have built \emph{above}
 the Graffiti API that makes development even easier, and
-the implementations we've built \emph{below} the API
+the implementations we have built \emph{below} the API
 that realize different trade-offs between efficiency and
 robustness.
 
@@ -37,12 +37,12 @@ without upheaving all the tools and applications that have been built on top.
 While the API has hidden a lot of complexity below,
 like the need to write and deploy server code or the need to
 consider the server infrastructure at all,
-writing frontend code is still inaccessible
+writing front-end code is still inaccessible
 to many people.
 We have made some initial steps towards reducing the
 programming complexity by allowing for the \emph{reactive} and
 \emph{declarative} programming of Graffiti applications
-and by providing a growing library of resusable design patterns.
+and by providing a growing library of reusable design patterns.
 We also point to a future where Graffiti applications could be built
 without any code at all.
 
@@ -146,7 +146,7 @@ and so support for other front-end frameworks, like React, will be
 fairly easy to add in the future.
 
 Below is the complete template for a micro social application,
-built with the plugin, that shows a (continuously updating) list of all messages posted to a realtime group chat and enables the user to post their own message:
+built with the plugin, that shows a (continuously updating) list of all messages posted to a real-time group chat and enables the user to post their own message:
 \begin{minted}{vue}
 <form v-if="$graffitiSession.value"
   @submit.prevent="$graffiti.put({
@@ -193,8 +193,8 @@ and are self-contained in \emph{single HTML files}
 which can be downloaded, modified, and copied into other
 applications.
 Perhaps this format can encourage the copy and paste ``pimp my page''
-programming that was once possible on MySpace, but with the ability
-add new \emph{functionality} rather than just styling~\cite{copypasteliteracy}.
+programming that was once possible on MySpace~\cite{copypasteliteracy},
+but with the ability to add new \emph{functionality} rather than just styling.
 
 \subsubsection{Future Work}
 \label{above-and-below:above:future-work}
@@ -219,7 +219,7 @@ it simply works.
 % https://www.geoffreylitt.com/2023/03/25/llm-end-user-programming
 
 %DK this paragraph is somewhat hard to understand and could safely be sacrified for space I think
-Finally, users may gravitate towards using ``meta'' applications.
+Work could also be done to develop ``meta'' applications.
 Users of these applications could easily change their functionality
 by swapping out different plugins,
 which could represent different feed sorting algorithms
@@ -236,11 +236,11 @@ or different features.
 \hl{%
 Alternatively, the malleable, interoperable, and declarative nature of
 Graffiti could allow it to serve as a new basis for \emph{computational media}~{\cite{computationalmedia}}.
-Graffiti's social focus may fill gaps left by
-systems like WebStrates~{\cite{webstrates}} and its successors CodeStrates~{\cite{codestrates}}
-and Mirrorverse~{\cite{mirrorverse}} which provide a malleable interactive environment
+Graffiti's social focus may fill gaps left by existing computational media
+systems like WebStrates~{\cite{webstrates}} and its successors, CodeStrates~{\cite{codestrates}}
+and Mirrorverse~{\cite{mirrorverse}}, which provide malleable interactive environments
 for small trusted teams, but have limited affordances
-for \emph{moderation} or \emph{discovery} of new content.
+for \emph{moderation} or \emph{discovery} of social content.
 A scheme would need to be developed to build Graffiti applications out of
 Graffiti objects themselves, in order to blur the line between developing
 the applications and using them.
@@ -257,48 +257,53 @@ Unfortunately, this centralizes all control of the network
 on that single server.
 %DK I wouldn't discard this so quickly, especially since this is basically what you get if you implement the remote: protocol but only have one server (which I suspect is the situatinon we are currently in).   So instead of appearing to discard this, I would talk about *extending* it to allow multiple servers so there is no single point of control.
 
-Instead, we explore \emph{decentralized protocols} for the API.
-In one protocol, objects are served by a ``federation'' of databases,
-each of which is like a small version of the centralized database.
-In another, the problems of storage and discovery are split up,
-with existing providers similar to Dropbox handling storage
+Instead, we explore \emph{decentralized} implementations of the API.
+In the ``remote'' implementation, objects are served by a ``federation'' of databases,
+each of which is a small version of the would-be centralized database.
+In the ``commodity storage'' implementation, the problems of storage and discovery are split up,
+with existing providers, similar to Dropbox, handling storage,
 and a new entity called a ``tracker'' handling discovery.
 
-The former protocol is more efficient while the latter is more robust.
+These implementations have trade-offs, with
+the former implementation being more efficient,
+and the latter more robust.
 %DK I am not sure what "robust" means in this context and would prefer a more direct explanation of the tradeoffs.  Also by some measures it is the second protocol that is more efficient since it outsources the storage work.
 % There are tradeoffs between these in terms of efficiency, scalability,
-Fortunately, multiple \emph{protocols} can be understood within one \emph{implementation},
-allowing new protocols
-with different tradeoffs to be organically adopted without requiring
-everyone to collectively switch all at once.
-This is possible because, as we have mentioned, an object's URL starts with a scheme that indicates
+Fortunately, multiple implementations can be understood within one \emph{meta}-implementation,
+per Requirement~\ref{requirements:parallel-implementations},
+allowing new implementations,
+with better trade-offs, to be organically adopted without
+invalidating all the data served by older implementations.
+
+These parallel implementations are possible because, as we have mentioned, an object's URL starts with a scheme that indicates
 how the various CRUD methods should resolve and interact with the object.
-If a user tries to \texttt{delete} an object whose URL starts with the schema
-\texttt{graffiti:remote:}, their implementation will use the \emph{remote}
-protocol, while if the URL starts with the schema \texttt{graffiti:csp:},
-their implementation will use the \emph{commodity storage} protocol.
-For \texttt{discover}, multiple protocol-specific \texttt{discover}
-calls can simply be aggregated together into one stream.
+For example, if an actor tries to \texttt{delete} an object whose URL starts with the scheme
+\texttt{graffiti:remote:}, their meta-implementation will employ the remote implementation,
+while if the URL starts with the scheme \texttt{graffiti:cs:},
+their meta-implementation will employ the commodity storage implementation.
+To handle \texttt{discover}, the meta-implementation simply aggregates
+the results of each implementation-specific \texttt{discover}
+operation into one stream.
 %DK I don't understand what this last means, since a discover call does not specify a protoco.   so what is a protocol-specific discover call?   In fact, this paragraph is retrospecively a bit confusing because it talks about URLs (getting single objects) but doesn't talk about channels (central too discover)
 
 There are two additional questions we need to resolve to
-make coexisting protocols work.
-Which protocol should an implementation use
+make coexisting implementations work.
+Which implementation should be used
 when an actor \emph{first} \texttt{put}s an object?
 And what \emph{identity} system will work across multiple
-protocols?
+implementations?
 
 For the question of first \texttt{put}s, we simply give the user the choice.
 The first time a user attempts to \texttt{put} an object,
 a popup opens,
 as shown in Figure~\ref{above-and-below:figure:choose-protocol},
-asking them which protocol they would like to use
-as well as protocol-specific information, such as what server
+asking them which implementation they would like to use,
+as well as implementation-specific information, such as what server
 they want to store their data on.
 We have tried to make the experience relatively frictionless, with
 reasonable defaults for
 users who do not know or care about the underlying infrastructure.
-Importantly, this interface is built into the \emph{implementation}
+Importantly, this interface is built into the \emph{meta-implementation}
 of the API and so it is not the concern of developers building
 applications on top of the API.
 % As mentioned in Section~\ref{above-and-below:delegation},
@@ -317,20 +322,17 @@ applications on top of the API.
 
 As for identity, we currently use a decentralized protocol called Solid OIDC~\cite{solidoidc}.
 It has the useful property that a user only needs to log in once
-with an ``identity provider'' before silently authenticating
+with an ``identity provider'' which then silently authenticates
 them with other services.
 It is also already used by the Solid protocol~\cite{solid},
-which we use in our commodity storage protocol as a ``decentralized Dropbox.''
+which we use in our commodity storage implementation as a ``decentralized Dropbox.''
 
-Unfortunately, Solid OIDC is incompatible with many familiar
-identity solutions, like ``Log in with Google,''
-and many novel identity solutions, like ``Sign in with Ethereum.''
-The Decentralized Identifier (DID) specification attempts to unify
-these various identity methods, but currently DIDs require that
-users log in with \emph{each} service they want to authenticate with~\cite{dids}.
-This is like requiring a user to log in again every time
-they receive an email from a new email server, which would
-be tedious and confusing.
+Unfortunately, Solid OIDC is not a widely deployed and familiar identity solution,
+like ``Log in with Google.''
+We are keeping an eye on the Decentralized Identifier (DID) specification, which attempts to unify
+various identity methods, but, currently, DIDs
+do not capture Solid OIDC's property of silent authentication~\cite{dids}.
+This would produce a tedious and confusing experience analogous to having to log in every time you receive email from a new server.
 We hope that DIDs or new specifications evolve past this restriction.
 
 % Importantly, our protocols
@@ -338,10 +340,11 @@ We hope that DIDs or new specifications evolve past this restriction.
 % the API is designed to be used by client-side applications
 % to make development ``serverless'' per requirement~\ref{requirements:serverless}.
 
-After discussing our two main protocols, we discuss
-a bonus ``utility'' protocol that demonstrates
-additional power of our separation
-between the API and the protocol.
+After discussing our two main implementations, we discuss
+a bonus ``utility'' implementation that demonstrates
+the additional power of an abstract API.
+% of our separation
+% between the API and the protocol.
 % We also discuss how
 % how objects are verified to come from a particular
 % actor without repudiation per
@@ -443,25 +446,25 @@ between the API and the protocol.
 % Additionally, it also makes it possible to have hybrid implementations,
 % that draw from multiple sources.
 
-\subsubsection{Remote Protocol}
+\subsubsection{Remote Implementation}
 \label{above-and-below:remote-protocol}
 
-The remote protocol involves a federation of servers,
+The remote implementation involves a federation of database servers,
 each of which exposes the Graffiti API through an HTTP API.
 Like email, users can choose which server they would
 like to use or run their own.
 Unlike email, the servers do not send objects to each other.
 Instead, the client fetches objects directly from servers,
-differentiating servers by \emph{domain} much like
-protocols are differentiated by \emph{scheme}.
+selecting which server to fetch from based on a \emph{domain}
+in the object's URL, just as different implementations are selected by \emph{scheme}.
 
 For discovery, we currently provide a registry of servers
 and clients call \texttt{discover} on all servers in the registry.
 If many servers are deployed, discovering from every one
 will be infeasible and so instead we can use an ``announce''
-protocol, detailed in the Appendix, that builds on top of the remote protocol and
-that allows the client to only call discover on the servers
-of interest
+protocol, detailed in Appendix~\ref{appendix:announce}, that builds on top of the remote implementation
+but only requires the client to
+call discover on the servers containing relevant data,
 %DK what does "of interest" mean?  I'd like to contact only servers that have content in a target channel, but servers cannot announce what channels they have without publicizing channel names
 plus a small constant number of well-known
 ``\emph{rendez-vous}'' servers.
@@ -470,12 +473,11 @@ plus a small constant number of well-known
 % \emph{client}. Individual servers do not pass messages to
 % each other, the client implementation just polls multiple servers, similar
 % to the way that it can pull data from multiple protocols.
-Our reference implementation of the remote protocol
+Our server-side software for the remote implementation
 consists of a NestJS server with a CouchDB database,
 bundled as a Docker image for easy cross-platform
 deployment\footnote{
-See supplementary materials.
-% \url{https://github.com/graffiti-garden/implementation-remote}
+\url{https://github.com/graffiti-garden/implementation-remote}
 }.
 
 % The remote protocol exposes the Graffiti API as a.
@@ -616,10 +618,10 @@ See supplementary materials.
 % incoming data and to verify delegation in case a server attempts
 % to lie or otherwise misbehave.
 
-\subsubsection{Commodity Storage Protocol}
+\subsubsection{Commodity Storage Implementation}
 \label{above-and-below:commodity-storage-protocol}
 
-An alternative Graffiti protocol builds on top of existing
+An alternative Graffiti implementation builds on top of existing
 \emph{commodity storage} providers,
 similar to Dropbox.
 % Additionally, storage providers have already established
@@ -628,17 +630,17 @@ similar to Dropbox.
 % A user does not need to worry about an experimental new service going down.
 % However they post performance issues:
 % At a high level, the protocol works as follows.
-Like the remote protocol, users get to choose which storage
+Like the remote implementation, users get to choose which storage
 service they would like to store their objects on, including
 from one they host themselves.
-The client-side implementation of the API---for brevity, ``the client''---%
+The client software
 manages channel-specific files on the storage provider,
 each containing all the objects the actor has published to that channel.
-The client shares links to those channel files with a \emph{tracker}.
+The client software shares links to those channel files with a \emph{tracker}.
 The tracker is similar to a BitTorrent tracker~\cite{bittorrent} but
 rather than mapping torrent IDs to IP addresses
 it maps channel strings to channel file URLs.
-To run \texttt{discover}, the client queries the tracker
+To run \texttt{discover}, the client software queries the tracker
 about each channel of interest and then fetches each of the resulting URLs for objects.
 
 % More specifically, to \texttt{put} a new object, a client
@@ -680,14 +682,14 @@ about each channel of interest and then fetches each of the resulting URLs for o
 % Additionally, like the remote protocol, the commodity storage protocol
 % relies on delegation for verifying that an object was created by a particular actor.
 
-The commodity storage protocol is less efficient than the remote protocol because each
+The commodity storage implementation is less efficient than the remote implementation because each
 \texttt{discover} call requires a network request per-channel-per-actor,
-where as the remote protocol requires only one request per remote server.
+where as the remote implementation requires only one request per remote server.
 If, like email or Mastodon, many actors, especially those in regular contact
 use the same server~\cite{mastodonchallenges},
-then \texttt{discover} on the remote protocol can take as
+then \texttt{discover} on the remote implementation can take as
 few as \emph{one} request while requests made by
-the commodity storage protocol scale with the number of actors.
+the commodity storage implementation scale with the number of actors.
 Additionally, the schema provided to \texttt{discover} cannot be used for any
 server-side filtering---a client must download \emph{all} objects in a channel
 and discard ones that do not match the schema.
@@ -702,13 +704,12 @@ worry about developing the infrastructure.
 % storage solutions makes it more familiar and robust.
 
 At the time of writing, we have built the tracker server and client\footnote{
-  See supplementary materials.
-  % \url{https://github.com/graffiti-garden/link-service},
-  % \url{https://github.com/graffiti-garden/link-service-client}.
-  % WebTorrent was considered instead of a custom tracker,
-  % but unfortunately it does not persist announcements more than a few hours.
-}, and the reference \emph{implementation} of the protocol as a whole,
-using Solid ``pods'' as the storage providers,
+  \url{https://github.com/graffiti-garden/link-service},
+  \url{https://github.com/graffiti-garden/link-service-client}.
+  WebTorrent was considered instead of a custom tracker,
+  but unfortunately it does not persist announcements more than a few hours.
+}, and the complete implementation software,
+using Solid ``pods'' as storage providers,
 will soon be complete.
 
 % and the Solid protocol.
@@ -718,25 +719,25 @@ will soon be complete.
 % which we discuss in Section~\ref{above-and-below:coexisting-protocols}.
 % Objects stored on the protocol have URLs that start with \texttt{graffiti:solid:}.
 
-\subsubsection{Local Protocol}
+\subsubsection{Local Implementation}
 
 % One final ``protocol'' demonstrates additional power of the protocol-agnostic
 % API by creating a ``utility'' protocol.
-This protocol runs locally
+This implementation runs entirely client-side
 and handles objects with the URL scheme \texttt{graffiti:local:}.
-Any data created on the local protocol is only visible on the device on which
+Any data created using the local implementation is only visible on the device on which
 it was created.
 While such a restriction may seem like a non-starter for an implemetation
 of our \emph{social} API, it is invaluable for development.
 It provides a similar functionality to running a \texttt{localhost} development server,
-however it runs within the implementation of the API itself and so
+but
 does not require the complexity of standing up a local server.
-Developers can easily create test actors and test objects on the local protocol
+Developers can easily create test actors and test objects on the local implementation
 without polluting their own online presence or existing Graffiti applications.
 % Our implementation of this protocol also includes its own internal
 % identity provider allowing for the creation of various test actors.
-Finally, the protocol is accessible in deployed applications
-and lets regular users try a Graffiti application out without
+Finally, the implementation is accessible in deployed applications
+and lets users try a Graffiti application out without
 having to create or log in to an account, as shown in
 Figure~\ref{above-and-below:figure:login}.
 
@@ -750,12 +751,9 @@ Figure~\ref{above-and-below:figure:login}.
 % We implemented the local protocol\footnote{
 % } using PouchDB, a Javascript library that allows for persistent
 % storage in both the browser and in node.js.
-Because of its relative simplicity, our implementation of the local protocol\footnote{
-    See supplementary materials.
-    % \url{https://github.com/graffiti-garden/implementation-local}
-} also serves
-as a reference implementation of the Graffiti API and pieces of its code are also used
-throughout other implementations.
+Because of its relative simplicity, the local implementation\footnote{
+    \url{https://github.com/graffiti-garden/implementation-local}
+} serves as the reference implementation of the Graffiti API.
 
 
 
@@ -839,14 +837,15 @@ throughout other implementations.
 \subsubsection{Future Work}
 \label{above-and-below:below:future-work}
 
-The remote protocol offloads work to complex storage servers,
-while the commodity storage protocol shifts work to clients, keeping the servers simple.
-A middle ground could be created where slightly more information is given to
-the \emph{tracker}, like when a channel was last modified
-or some schema-based indexing of channel content,
-to allow for more efficient \texttt{discover} calls.
+The remote implementation offloads object filtering work to complex storage servers,
+while the commodity storage implementation shifts that work to clients, keeping the servers simple.
+A middle ground is possible by adding more structure to the organization of objects on
+the storage servers, and by adding complexity to the tracker to index that structure.
+For example, rather than putting all objects in a channel in one file,
+those files could be subdivided according to their schemas.
+This would maintain the simple server architecture but make \texttt{discover} calls more efficient.
 
-In the commodify storage protocol, the tracker also serves as a central point of control and so, like in BitTorrent,
+In the commodity storage implementation, the tracker also serves as a central point of control and so, like in BitTorrent,
 it could be replaced with a distributed hash table~\cite{bittorrentdht}. In small networks,
 a tracker may not be necessary at all and can be replaced with a gossip protocol.
 
@@ -867,9 +866,9 @@ post on your behalf without consent.
 This risk may make users hesitant to try new applications,
 restricting the ecosystem.
 Future work should introduce login scopes, such as
-ability to grant an application permission only to read objects
+the ability to grant an application permission only to read objects
 that match a particular schema and reside in a particular set of channels.
-Since the commodity storage protocol bootstraps off of
+Since the commodity storage implementation bootstraps off of
 existing storage services that lack such scoping,
 it may be necessary to implement scoping client-side
 via an iframe to a trusted intermediary domain.

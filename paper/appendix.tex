@@ -3,13 +3,13 @@
 
 Graffiti channels, as described in
 Section~\ref{concepts:channels},
-are designed to allow for new contextual meanings to evolve according to a folksonomy.
+are designed to allow for new contextual meanings to evolve according to a folksonomy~\cite{folksonomy}.
 % with new channel name constructions.
 In Table~\ref{concepts:channels-and-applications},
 we listed some of those possible meanings.
 Here, we expand on how continuous
 contexts, like locations, can be represented with
-discrete channel names and how channels names
+discrete channel names and how channel names
 can be combined to create new
 intersectional meanings.
 % we expand on how continuous contexts like
@@ -25,15 +25,15 @@ There are many standard models for representing
 discrete physical \emph{areas} that could be co-opted to construct channel
 names for location-centric contexts. These include
 human-generated divisions, like zip codes,
-and automatic divisions like what3words\footnote{
+and automatic divisions, like what3words\footnote{
     \url{https://what3words.com}
-}, a tiling of the earth into 3 meter squares.
+}, a tiling of the earth into three-meter squares.
 The construction chosen for a particular application will
 depend on that application's purpose,
 its ``reach'' needs, and its privacy needs.
 For example, a civic discussion application
 might benefit from using voting precincts and wards
-to construct the channel names.
+to construct channel names.
 A classifieds application, like Craigslist, may benefit from posting
 advertisement objects to channels representing multiple \emph{scales}
 in a ``resolution pyramid,'' to encourage discoverability,
@@ -77,10 +77,9 @@ rather than \texttt{r/\allowbreak{}programming+\allowbreak{}r/funny}.
 % intersections but the real-world use cases of those are limited.
 
 \section{Announce Protocol}
+\label{appendix:announce}
 
-\label{above-and-below:announce-protocol}
-
-The remote protocol, described in Section~\ref{above-and-below:remote-protocol},
+The remote implementation, described in Section~\ref{above-and-below:remote-protocol},
 is currently built with a \emph{registry} and applications must
 call \texttt{discover} on all the servers in the registry for
 each high-level \texttt{discover} call.
@@ -91,9 +90,9 @@ to the rest of the network.
 
 Alternatively, it is possible to use an ``announce'' protocol,
 which performs a similar service to that of the ``tracker'' used in
-the commodity storage protocol (see Section~\ref{above-and-below:commodity-storage-protocol}). However, the announce protocol is built on top of the isolated Graffiti
-API that is exposed by each remote server, without the need for a separate
-tracker service. Building on top of the Graffiti API also 
+the commodity storage implementation (see Section~\ref{above-and-below:commodity-storage-protocol}). However, the announce protocol is built on top of the isolated Graffiti
+API that is exposed by each remote implementation server, without the need for a separate
+tracker service. Building on top of the Graffiti API also
 allows the announce protocol to flexibly evolve as
 new object properties are introduced.
 
@@ -102,12 +101,12 @@ federated services like Email or Mastodon, with a small handful of
 massive ``well-known'' servers, like GMail or mastodon.social, and a long
 tail of smaller, possibly self-hosted servers~\cite{mastodonchallenges}.
 When an actor publishes an object to one such small server,
-their client also publishes an \texttt{"announce-server"}
+their client also publishes an \texttt{"AnnounceServer"}
 activity, pointing to their small server, on several of the well-known
 servers:
 \begin{minted}{javascript}
 {
-  activity: "announce-server",
+  activity: "AnnounceServer",
   target: "https://my-small-server.com"
 }
 \end{minted}
@@ -118,13 +117,13 @@ access-controlled objects, they must post additional announcement
 objects with appropriate \texttt{allowed} lists.
 
 To fulfill a high-level \texttt{discover} request,
-the client must first \texttt{discover} for 
-\texttt{"announce-server"} activities in the channels of
+the client must first \texttt{discover} for
+\texttt{"AnnounceServer"} activities in the channels of
 the high-level request
 on each of the well-known servers.
 Then, the client can \texttt{discover} for objects
 matching the high-level channels \emph{and} schema on each of the targeted servers.
-The protocol will not miss objects, so long as their
+The protocol will not miss objects, so long as there
 is an overlap between the retrieving and posting actors' well-known
 servers lists.
 The protocol will also not make requests to any server
@@ -133,18 +132,13 @@ The protocol could be updated to also include object
 \emph{schemas} in the announcements, as an additional
 filter to prevent querying unnecessary servers.
 This \texttt{"schemas"} property and other properties
-can be flexibly added to \texttt{"announce-server"} activities
+can be flexibly added to \texttt{"AnnounceServer"} activities
 in a folksonomic way, like any other Graffiti objects.
 
-We developed a proof-of-concept implementation of the announce protocol\footnote{
-    See supplementary materials.
-},
-however, it is not currently in use as the Graffiti ecosystem is not
-large enough for it to be relevant.
-It is not possible for the commodity-storage protocol to implement
-the announce protocol, removing the need for a tracker,
+The announce protocol is not applicable to the commodity storage implementation
 because commodity storage servers do not allow clients to
-query multiple actors' data at once.
+query multiple actors' data at once. A tracker is necessary
+for the commodity storage implementation.
 
 One downside of the announce protocol is that it leaks all
 channel names to the well-known servers.
@@ -265,5 +259,3 @@ this would no longer be an issue.
 % One particular benefit of the channel concept over near misses, is that channels more naturally allow for BCCing.
 % While many of the channels a user posts to are presumably related to properties of the data itself, it is also possible to post data to multiple channels without revealing those channels to each other.
 % For example, a user may be part of several different contexts invite them to a party with a universal thread, but doesn't want to inundate one with another by including them directly.
-
-

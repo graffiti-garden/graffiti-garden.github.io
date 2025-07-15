@@ -91,7 +91,7 @@ to prevent developer mode errors, where an application attempts to perform an ac
 that requires authentication without asking the user to log in first.
 These mode errors are detected by static type checking.
 Separating the \texttt{session} object also allows an application to be logged in to
-multiple actors at once, which can be useful for managing pseudonyms for anonymous interactions.
+multiple actors at once, which can be useful for managing pseudonyms or anonymous interactions.
 
 % To provide
 
@@ -187,7 +187,7 @@ so that no information about an object's status is leaked.
 
 The \texttt{url} and \texttt{actor} are assigned to an object when it is first \texttt{put}
 and are immutable.
-As mentioned in our discussion of ``total reification,'' Section~\ref{concepts:total-reification},
+As mentioned in our discussion of total reification in Section~\ref{concepts:total-reification},
 only the actor that created an object can mutate the object at that \texttt{url}.
 An object's owner can arbitrarily mutate the object's
 \texttt{value}, \texttt{channels}, and \texttt{allowed} list.
@@ -355,7 +355,7 @@ Below the API, an implementation might perform complex rate limiting on these re
 \subsection{Recovery Methods}
 
 It is intentionally impossible to get a global view of all objects
-in Graffiti to prevent context collapse. Most of the time,
+in Graffiti, to prevent context collapse. Most of the time,
 an application must know either an object's URL or one of the channels
 the object is contained in to retrieve it. However, we relax this
 constraint for an actor's \emph{own} objects, to prevent them from

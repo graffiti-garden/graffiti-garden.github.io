@@ -74,7 +74,7 @@ they can freely add an \texttt{ingredients} property to their objects.
 We are leveraging an idea here called a \emph{folksonomy}~\cite{folksonomy}.
 Social applications
 benefit from network effects, and so we expect that developers will make use of
-existing properties where possible
+existing properties where possible,
 but will introduce new properties when necessary.
 The result will inevitably be messy and inconsistent, but, as with the evolution of
 particular hashtags, we expect there will be an effective balance of creativity and convergence.
@@ -82,8 +82,8 @@ Importantly, the barrier to participating in the folksonomy is low
 and does not require a precise ontological agreement,
 which some argue contributed to the failure of the semantic
 web~\cite{semanticwebtwodecades}.
-The folksonomy approach encourages autonomous extensibility
-as per Requirement~\ref{requirements:autonomous-extensibility}.
+The folksonomy approach encourages autonomous extensibility,
+per Requirement~\ref{requirements:autonomous-extensibility}.
 
 % This folksonomy is an effective mean of ensuring that objects are autonomously extensible.
 % We also provide tooling that allows users to filter data and provide human-readable
@@ -91,7 +91,7 @@ as per Requirement~\ref{requirements:autonomous-extensibility}.
 
 Graffiti objects also have URLs that
 start with a \emph{scheme}, just like URLs on the web,
-enabling objects to be served by different \emph{coexisting} implementations,
+enabling objects to be served by different \emph{parallel} implementations,
 \hl{%
 per Requirement~{\ref{requirements:parallel-implementations}}.
 }%
@@ -133,7 +133,7 @@ which we discuss in
 Section~\ref{concepts:total-reification}.
 
 Finally, objects are mutable, meaning they can be changed or deleted.
-Mutability is necessary for the system to be forgiving per Requirement~\ref{requirements:forgiving}.
+Mutability is necessary for the system to be forgiving, per Requirement~\ref{requirements:forgiving}.
 The question of \emph{who} can mutate the objects
 will be answered once we discuss identity next and then total reification.
 
@@ -434,7 +434,7 @@ and thus to protect users from leaders---even of small communities---that abuse 
 ``benevolent dictator for life''~{\cite{governablespaces}}.
 Our solution matches the suggestion given by Melder et al.
 in their study of Fediverse communities with imperfect leadership
-to introduce ``user-level selective ability to bypass [moderator] filters''~{\cite{blocklistboundary}}.
+to introduce a ``user-level selective ability to bypass [moderator] filters''~{\cite{blocklistboundary}}.
 However, it is worth considering whether total reification makes it so easy
 to opt out of a community's norms that users are not held accountable for their actions.
 }%

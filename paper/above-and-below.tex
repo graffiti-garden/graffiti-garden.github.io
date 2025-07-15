@@ -34,12 +34,12 @@ without upheaving all the tools and applications that have been built on top.
 
 \subsection{Above}
 
-While the API has hidden a lot of complexity below,
+While the API has hidden signifigant complexity below,
 like the need to write and deploy server code or the need to
 consider the server infrastructure at all,
 writing front-end code is still inaccessible
 to many people.
-We have made some initial steps towards reducing the
+We have made some initial steps toward reducing the
 programming complexity by allowing for the \emph{reactive} and
 \emph{declarative} programming of Graffiti applications
 and by providing a growing library of reusable design patterns.
@@ -186,7 +186,7 @@ built with the plugin, that shows a (continuously updating) list of all messages
 
 We have started compiling a library of common patterns\footnote{
     \url{https://vue.graffiti.garden/examples/}
-} that currently includes likes, profiles, threaded comments,
+} that currently includes likes, profiles, following, threaded comments,
 and different messaging patterns.
 These patterns build on top of the Vue plugin
 and are self-contained in \emph{single HTML files}
@@ -262,7 +262,7 @@ In the ``remote'' implementation, objects are served by a ``federation'' of data
 each of which is a small version of the would-be centralized database.
 In the ``commodity storage'' implementation, the problems of storage and discovery are split up,
 with existing providers, similar to Dropbox, handling storage,
-and a new entity called a ``tracker'' handling discovery.
+and a new entity, called a ``tracker,'' handling discovery.
 
 These implementations have trade-offs, with
 the former implementation being more efficient,
@@ -462,7 +462,7 @@ For discovery, we currently provide a registry of servers
 and clients call \texttt{discover} on all servers in the registry.
 If many servers are deployed, discovering from every one
 will be infeasible and so instead we can use an ``announce''
-protocol, detailed in Appendix~\ref{appendix:announce}, that builds on top of the remote implementation
+protocol, detailed in Appendix~\ref{appendix:announce}, that builds on top of the remote implementation,
 but only requires the client to
 call discover on the servers containing relevant data,
 %DK what does "of interest" mean?  I'd like to contact only servers that have content in a target channel, but servers cannot announce what channels they have without publicizing channel names
@@ -685,7 +685,7 @@ about each channel of interest and then fetches each of the resulting URLs for o
 The commodity storage implementation is less efficient than the remote implementation because each
 \texttt{discover} call requires a network request per-channel-per-actor,
 where as the remote implementation requires only one request per remote server.
-If, like email or Mastodon, many actors, especially those in regular contact
+If, like email or Mastodon, many actors, especially those in regular contact,
 use the same server~\cite{mastodonchallenges},
 then \texttt{discover} on the remote implementation can take as
 few as \emph{one} request while requests made by
@@ -841,9 +841,9 @@ The remote implementation offloads object filtering work to complex storage serv
 while the commodity storage implementation shifts that work to clients, keeping the servers simple.
 A middle ground is possible by adding more structure to the organization of objects on
 the storage servers, and by adding complexity to the tracker to index that structure.
-For example, rather than putting all objects in a channel in one file,
-those files could be subdivided according to their schemas.
-This would maintain the simple server architecture but make \texttt{discover} calls more efficient.
+For example, rather than putting all objects in a channel into one file,
+those files could be subdivided according to common object schemas.
+This would maintain the use of simple servers, but make \texttt{discover} calls more efficient.
 
 In the commodity storage implementation, the tracker also serves as a central point of control and so, like in BitTorrent,
 it could be replaced with a distributed hash table~\cite{bittorrentdht}. In small networks,
@@ -866,7 +866,7 @@ post on your behalf without consent.
 This risk may make users hesitant to try new applications,
 restricting the ecosystem.
 Future work should introduce login scopes, such as
-the ability to grant an application permission only to read objects
+the ability to grant an application the permission only to read objects
 that match a particular schema and reside in a particular set of channels.
 Since the commodity storage implementation bootstraps off of
 existing storage services that lack such scoping,

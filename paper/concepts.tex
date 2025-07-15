@@ -487,7 +487,7 @@ an object can be and a property of the object itself.
 The channel namespace is \emph{global} with every string (up to a certain length)
 naming exactly one channel.
 Like object properties, these channel names have no inherent meaning
-other than the meaning ascribed to them by {\sethlcolor{pink}\hl{developers or users}}.
+other than the meaning ascribed to them by \hl{developers or users}.
 In practice, the meaning of a channel is a particular social \emph{context} and the channel
 name is some sort of \emph{shared information} implicit to that context.
 For example, the channel named by an object's URL is a natural place to post content ``\emph{talking about}'' that object, like replies, and we expect that most applications will follow that norm.
@@ -583,9 +583,13 @@ access to the replier's channel.
 A summary of these different designs is shown in Table~\ref{concepts:channel-replies}.
 
 \begin{table}[htbp]
-\centering
-\caption{The reply is posted to the...}
+% \centering
+\caption{Reply designs according to channel usage}
 \label{concepts:channel-replies}
+\begin{flushleft}
+\textbf{Is the reply posted to the...}
+\end{flushleft}
+\begin{flushright}
 \begin{tabular}{cc|c|c}
 & \multicolumn{1}{c}{} & \multicolumn{2}{c}{\textbf{...post's channel?}} \\
 & & ︎{\emoji✔️} & {\emoji❌} \\
@@ -595,6 +599,7 @@ A summary of these different designs is shown in Table~\ref{concepts:channel-rep
 \cline{2-4}
 & {\emoji❌} & Instagram Reply & N/A
 \end{tabular}
+\end{flushright}
 \end{table}
 
 Importantly, these reply designs interoperate in a way that allows content producers to target a particular audience,
@@ -786,12 +791,12 @@ those meanings can enable is shown in Table~\ref{concepts:channels-and-applicati
 
 \begin{table}[h]
 \small
-\caption{Channel Meanings and the Application Types they Enable}
+\caption{Applications enabled by channel meanings}
 \label{concepts:channels-and-applications}
 \centering
 \begin{tabular}{|l|l|}
 \hline
-\textbf{Channel Meaning} & \textbf{Application Types} \\ \hline
+\textbf{Channel Meaning} & \textbf{Representative Applications} \\ \hline
 External Media & Letterboxd, GoodReads, Genius \\ \hline
 User Media & YouTube, Medium, Github \\ \hline
 Topics & Reddit, Discord, Slack \\ \hline

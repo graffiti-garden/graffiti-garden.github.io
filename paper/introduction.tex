@@ -1,5 +1,16 @@
 \section{Introduction}
 
+\begin{figure*}[h]
+    \centering
+    \includegraphics[width=\textwidth]{paper/figures/gloof-and-glitter.jpg}
+    \caption{
+    Interoperation between two applications built with Graffiti:
+    The Glue Factory, an application operated by a venue to advertise their shows,
+    and Glitter, a microblogging site.
+    }
+    \label{case-studies:fig:gloof-and-glitter}
+\end{figure*}
+
 Most social applications today are built like international airports,
 designed to serve everyone, and soulless as a result.
 Where are the online spaces that feel like
@@ -313,15 +324,15 @@ Our design decisions are guided by a set of \emph{requirements}, outlined
 in Section~\ref{requirements}, that primarily focus on the direct experience
 of social application developers and the users of their applications,
 both users of Graffiti as a whole.
-{\sethlcolor{pink}\hl{%
+\hl{%
 We include one additional requirement that targets the indirect
 effects that \emph{power} over the underlying infrastructure
 can have on the user experience.
 Specifically, we leave room for users to retain control over their data
 via technologies like decentralization or encryption.
-}}%
+}%
 
-{\sethlcolor{pink}\hl{%
+\hl{%
 Importantly, however, Graffiti is not shaped by a particular
 means of achieving this distribution of power. This again contrasts Graffiti
 with systems like ActivityPub and the AT Protocol,
@@ -340,7 +351,7 @@ In fact, the Graffiti API is designed so that multiple implementations can exist
 \emph{in parallel} underneath it,
 allowing for the incremental adoption of new technologies,
 similar to the web's transition from HTTP to HTTPS.
-}}%
+}%
 % We reply to the provocation ``\emph{Protocols, Not Platforms}''~\cite{protocolsnotplatforms},
 % the rallying cry that sparked Bluesky\footnote{
 % \url{https://bsky.app/profile/jay.bsky.team/post/3kkrxedmatv2p}

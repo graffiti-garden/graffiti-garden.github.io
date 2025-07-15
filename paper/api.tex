@@ -67,7 +67,7 @@ the application to call the \texttt{login()} method.
 \item
 In response, the implementation of the API may do any manner of things,
 including opening up a pop up or redirecting the user to a new page.
-In that implementation-specific interface, which the application developer
+In that \allowbreak{implementation-specific} interface, which the application developer
 does not need to build, the user might be asked to provide credentials like a username
 and password or a public key pair.
 See Figure~\ref{above-and-below:figure:login} for our implementation.
@@ -156,10 +156,8 @@ the following meta properties:
 \texttt{allowed} (array of strings \hl{or undefined}): An \hl{optional} list of actor URIs that are allowed to access the object.
 \hl{When undefined, any actor can access the object when they know either its \texttt{url} or one of its \texttt{channels}.}
 \item
-{\sethlcolor{pink}\hl{%
 \texttt{revision} (number): A unix timestamp, lamport timestamp~{\cite{lamport}}, or other counter that
 increases with each modification of the object.
-}}%
 \end{enumerate}
 
 Subtly, \texttt{channels} and \texttt{allowed} do not necessarily
@@ -191,7 +189,7 @@ As mentioned in our discussion of total reification in Section~\ref{concepts:tot
 only the actor that created an object can mutate the object at that \texttt{url}.
 An object's owner can arbitrarily mutate the object's
 \texttt{value}, \texttt{channels}, and \texttt{allowed} list.
-The {\sethlcolor{pink}\hl{\texttt{revision}}} field is {\sethlcolor{pink}\hl{increased}} by the underlying implementation on each modification.
+The \texttt{revision} field is increased by the underlying implementation on each modification.
 
 We expect that the ecosystem will contain many posts that a particular application cannot understand and will wish to ignore.  To simplify this process,
 \texttt{get} requires the application developer to specify

@@ -65,19 +65,8 @@ in which case it only appears on Glitter, regardless of where it originated.
 Additionally, replies to the crosspost made on Glitter appear in the replier's followers'
 feeds while replies made on The Glue Factory only appear in the reply thread,
 similar to the difference between Instagram-like and X-like replies described in Section~\ref{concepts:channel-replies}.
-Some of this interoperation is shown in Figure~\ref{case-studies:fig:gloof-and-glitter}\footnote{
-Flyers are blurred for anonymization during review.
-}.
+Some of this interoperation is shown in Figure~\ref{case-studies:fig:gloof-and-glitter}.
 
-\begin{figure*}[h]
-    \Description[Two screen shots beside each other.]{Two screen shots that show textual content from the Gloof application being presented in the general purpose Glitter application.}
-    \centering
-    \includegraphics[width=\textwidth]{paper/figures/gloof-and-glitter.png}
-    \caption{A reply to a Glue Factory event appears like a quote Tweet on Glitter, with
-    interoperating replies.}
-
-    \label{case-studies:fig:gloof-and-glitter}
-\end{figure*}
 % on Namebook but replies
 % to the crosspost show up on both applications,
 % allowing repliers ask clarifying questions.
@@ -89,13 +78,13 @@ Flyers are blurred for anonymization during review.
 % appear on the user's profile, even if they are in
 % reply to posts on The Gloof.
 
-The applications are built out of the objects and channels
+The applications make use of the objects and channels
 shown in Figure~\ref{case-studies:fig:schemas-and-channels}.
 Importantly, both applications use the same reply object schema,
 and the post object schema used by Glitter is a subset of the flyer
 object schema used by The Glue Factory.
 This overlap makes interoperation \emph{possible},
-but selecting ``crosspost'' in The Glue Factory intentionally collapses the
+but selecting ``crosspost to Glitter'' in The Glue Factory intentionally collapses the
 channel usage of the two applications,
 causing the interoperation to actually \emph{happen}.
 
@@ -103,8 +92,7 @@ causing the interoperation to actually \emph{happen}.
     \Description[Diagram showing four channels with examples of objects in each.]{Diagram showing that Glitter and Glue Factory each have a channel, each actor and each post has a channel, and an object can be in both the actor and post channels.  }
     \centering
     \includegraphics[width=\textwidth]{figures/schemas-and-channels.png}
-    \caption{The objects and channels used by Glitter and the Glue Factory, and their overlap}
-
+    \caption{Example object values and channels used by Glitter and The Glue Factory. When crossposting is selected, the reply is put into two channels.}
     \label{case-studies:fig:schemas-and-channels}
 \end{figure*}
 
@@ -258,12 +246,12 @@ as shown in Figure~\ref{case-studies:fig:wikiffiti}.
 The user can only control which users' edits \emph{they} see, not exert any global control---so different users may end up seeing different pages.
 
 \begin{figure*}[htb]
-    \Description[Four screen shots showing changes to a Wikifitti page.]{Four screen shots showing how the actions of successive edits evolve the text as viewed.}
     \centering
     \includegraphics[width=\textwidth]{paper/figures/wikiffiti.png}
-    \caption{(a) [REDACTED] 1 makes some edits to a Wikifitti page. (b) [REDACTED] 2 ``vandalizes'' the page (c) [REDACTED] 3 manually deletes some of [REDACTED] 2's edits and adds new content. (c) All of [REDACTED] 2's edits are retroactively removed.
-    }
-
+    \caption{
+    An interaction on Wikiffiti with changes highlighted for clarity.
+    (a) Theia creates a new Wikiffiti page. (b) CEO vandalizes the page. (c) David manually overwrites some of
+    CEO's content. (d) All of CEO's edits are retroactively removed.}
     \label{case-studies:fig:wikiffiti}
 \end{figure*}
 % total reification provides every user with affordance

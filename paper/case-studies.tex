@@ -30,9 +30,9 @@ top of the Graffiti Vue plugin.
 The following example demonstrates how a community-specific application,
 %DK I would call this a social site rather than an application (and explain why).
 \emph{The Glue Factory}\footnote{
-\url{https://gluefactory.live}
+\url{https://gluefactory.live}, Source: \url{https://github.com/horseyhouse/glue-factory}
 }, can interoperate with a general-purpose application, \emph{Glitter}\footnote{
-\url{https://glitter.graffiti.garden}
+\url{https://glitter.graffiti.garden}, Source: \url{https://github.com/graffiti-garden/glitter}
 },
 without the explicit permission of Glitter.
 Not all of the community-specific features on The Glue Factory
@@ -43,7 +43,7 @@ Still, there is enough interoperation between the two to be meaningful.
 \emph{Glitter} is a text-centric microblogging platform
 where users can post, follow, reply, and change their display name.
 Replies are threaded and, like Twitter, appear in the replier's followers' feeds in addition to the reply thread.
-There is also a a directory that users can add themselves to,
+There is also a directory that users can add themselves to,
 so others can find them.
 %DK Is the directory glitter specific?   why?   finding users seems important for most applicatoins.
 
@@ -52,17 +52,19 @@ venue to share event flyers.
 The flyers are displayed in a grid, similar to Instagram,
 but there is just one feed, collectively curated by
 the application's fixed set of venue organizers.
-Flyers can be replied to but the organizers can remove replies they disapprove of.
+Flyers can be replied to, but the organizers may remove replies they disapprove of.
 
-Importantly, The Glue Factory gives the ability for
-top-level repliers to ``crosspost'' their replies
-to Glitter, effectively sharing the flyer like a quote tweet.
+Importantly, The Glue Factory lets
+top-level repliers ``crosspost'' their replies
+to Glitter, effectively sharing the flyer like a Quote Tweet.
 Glitter does not support images and so only the
 event description appears.
 Replies to the crosspost made on Glitter also appear on The Glue Factory
-and vice versa, \emph{unless} the The Glue Factory's organizers ``remove'' the reply,
+and vice versa, \emph{unless} The Glue Factory's organizers ``remove'' the reply,
 in which case it only appears on Glitter, regardless of where it originated.
-Additionally, replies to the crosspost made on Glitter appear in the replier's followers' feeds while replies made on The Glue Factory only appear in the reply thread, as expected of each.
+Additionally, replies to the crosspost made on Glitter appear in the replier's followers'
+feeds while replies made on The Glue Factory only appear in the reply thread,
+similar to the difference between Instagram-like and X-like replies described in Section~\ref{concepts:channel-replies}.
 Some of this interoperation is shown in Figure~\ref{case-studies:fig:gloof-and-glitter}\footnote{
 Flyers are blurred for anonymization during review.
 }.
@@ -92,12 +94,10 @@ shown in Figure~\ref{case-studies:fig:schemas-and-channels}.
 Importantly, both applications use the same reply object schema,
 and the post object schema used by Glitter is a subset of the flyer
 object schema used by The Glue Factory.
-This overlap makes interoperation \emph{possible}
-but selecting ``crosspost'' in The Glue Factory collapses the
-channel usage of the two applications
+This overlap makes interoperation \emph{possible},
+but selecting ``crosspost'' in The Glue Factory intentionally collapses the
+channel usage of the two applications,
 causing the interoperation to actually \emph{happen}.
-The difference in reply visibility between the two applications
-is exactly as described in Section~\ref{concepts:channels}.
 
 \begin{figure*}[h]
     \Description[Diagram showing four channels with examples of objects in each.]{Diagram showing that Glitter and Glue Factory each have a channel, each actor and each post has a channel, and an object can be in both the actor and post channels.  }
@@ -165,8 +165,8 @@ used by the co-operative that owns the venue space.
 %DK perhaps before getting into the crazy bits, talk about how easy it is to implement a basic group chat application ("Grack").   Each group is defined by a channel, and you invite someone to the group by notifyig them about the channel.  There is no admin---anyone in the group can invite others---and no way to remove people without their consent (but you can always create a new group excluding them).  Maybe also describe how you would design a facebook clone ("Gracebook") differently: a user can post content for friends by putting it in their own actorID channel but with an allowlist consisting of their friends.  alternatively they can create a different channel for sharing posts to their friends and invite all friends to subscribe to it.
 
 \emph{Parallax}\footnote{
-\url{https://parallax.graffiti.garden}
-} is a realtime group chat application that demonstrates
+\url{https://parallax.graffiti.garden}, Source: \url{https://github.com/graffiti-garden/parallax}
+} is a real-time group chat application that demonstrates
 how, under total reification, it is possible for \emph{every} user to employ a different
 moderation scheme.
 Specifically,
@@ -191,12 +191,14 @@ as shown in Figure~\ref{case-studies:fig:parallax}.
 
 Under the hood, a group is represented by a random identifier,
 generated when the group is created, and also used as the group's channel.
-Changes to a group's name are similar to name changes on Glitter, only they
+Changes to a group's name are similar to profile name changes on Glitter, only they
 \texttt{describe} the group identifier.
-Changes to the group's membership are \texttt{"Add"}
-and \texttt{"Remove"} activities that \texttt{target} the relevant actor.
-Messages are like posts on Glitter, only they have \texttt{allowed} lists, which are determined
-by aggregating the user's own \texttt{"Add"} and \texttt{"Remove"} activities.
+A group's membership can be changed with reified \texttt{"Add"}
+and \texttt{"Remove"} activities.
+Messages use the same object schema as posts on Glitter,
+only they have \texttt{allowed} lists, which are determined
+by aggregating the user's own \texttt{"Add"} and \texttt{"Remove"} activities
+to determine the group membership state.
 
 Of course, complete independence is not always desirable:
 work usually done by just one group administrator must, in Parallax,
@@ -206,7 +208,7 @@ but it can be
 % transformed
 % but by changing X lines of functional code,
 transformed into a more reasonable (but more restrictive) application called \emph{Provenance}\footnote{
-\url{https://provenance.graffiti.garden}
+\url{https://provenance.graffiti.garden}, source code is in the parallax repository.
 },
 where a group's administrator is the  \emph{creator} of the group chat.
 %DK not sure what this means.   how does being the creator give them administrator privileges?   and was does admin privilieges mean given adversarial interoperability?
@@ -215,7 +217,7 @@ where a group's administrator is the  \emph{creator} of the group chat.
 % by aggregating the \texttt{"Add"} and \texttt{"Remove"} activities made by the first
 % actor to post in the chat.
 
-Parallax and Provenance both interoperate
+Parallax and Provenance both interoperate,
 but some messages sent from one will not be seen in the other
 according to their unequal membership lists. However, this messiness is already present and tolerable
 in messaging applications like Signal, where users can block other group members,
@@ -245,14 +247,15 @@ Graffiti's inevitable assymetry most accessible and engaging.
 \subsection{Wikiffiti}
 
 Wikiffiti\footnote{
-\url{https://wikiffiti.graffiti.garden}
+\url{https://wikiffiti.graffiti.garden}, Source: \url{https://github.com/graffiti-garden/wikiffiti}
 } is a Wikipedia-like application that demonstrates that
 collaborative editing in Graffiti is possible,
 even though an actor can only mutate their own objects.
 Additionally, unlike Wikipedia,
 every user on Wikiffiti can choose which other users have ``permission'' to edit an article,
 \emph{retroactively} undoing edits by unpermissioned users,
-as shown in Figure~\ref{case-studies:fig:wikiffiti}.  Of course, the user can only control which users' edits \emph{they} see, not exert any global control---so different users may end up seeing different pages.
+as shown in Figure~\ref{case-studies:fig:wikiffiti}.
+The user can only control which users' edits \emph{they} see, not exert any global control---so different users may end up seeing different pages.
 
 \begin{figure*}[htb]
     \Description[Four screen shots showing changes to a Wikifitti page.]{Four screen shots showing how the actions of successive edits evolve the text as viewed.}
@@ -279,7 +282,7 @@ Currently, our implementation is inefficient with a 40x space blowup;
 however, there are plenty of existing optimizations that one could apply~\cite{logootbetter}
 and release as part of a standard collaborative editing library.
 
-Like Parallax, Wikiffiti is an extreme. Clearly, not every user
+Like Parallax, Wikiffiti is an extreme. Clearly not every user
 has the expertise or desire to vet all the editors of
 every article they read. In reality, the work of approving editors
 or individual edits will be delegated to

@@ -15,22 +15,6 @@ Fortunately, by having a fixed API in the middle, work done above the API
 is \emph{decoupled} from work done below.
 It is possible to drop in a new, more efficient, or privacy-preserving implementation
 without upheaving all the tools and applications that have been built on top.
-% Additionally, as mentioned, it is possible for different implementations to coexist,
-% allowing for a smooth transition to a strictly better solution, akin the move from \texttt{http} to \texttt{https},
-% or the perpetual coexistence of solutions, each with their own strengths.
-% allowing for a smooth transition o
-% It is also possible below for different implementations to coexist,
-% much like how on top it is possible for different development frameworks
-% to coexist.
-% Implementations that are more efficient, secure can be developed independently
-% of the high level tools and moreover switching will be easy.
-
-% both above and below there is future work to be done.
-% Low and now code tools and graphical editors.
-% Efficient protocols.
-% However by building this API in the middle
-% we have \emph{decoupled} these two endeavors and they can
-% proceed in parallel without being dependent or interfering on each other.
 
 \subsection{Above}
 
@@ -46,45 +30,6 @@ and by providing a growing library of reusable design patterns.
 We also point to a future where Graffiti applications could be built
 without any code at all.
 
-% \subsubsection{Internal Synchronization}
-
-% When a user likes a post or sends a message,
-% it is necessary, for the usability of the interface, for the user
-% to get instant feedback that their action completed
-% successfully, by seeing a like counter increment or seeing their message
-% appear in the chat.
-% While it is possible to manually update the relevant sections of the UI,
-% this is unnecessary work for the developer and
-% can become unwieldy with many interconnected components.
-
-% Instead, we built a library for internal synchronization\footnote{
-%   \url{https://sync.graffiti.garden/classes/GraffitiSynchronize.html}
-% } that wraps around the Graffiti API to make these updates automatic.
-% Whenever the library encounters a new or changed object, either because
-% the user created, modified, or deleted an object,
-% or because an object was received from \texttt{get}
-% or \texttt{discover}, that change is internally forwarded to an
-% appropriate listener.
-% These listeners can be set up manually with the new methods \texttt{synchronizeDiscover}
-% and \texttt{synchronizeGet} or automatically by our Vue Plugin, described next.
-
-% a user makes or receives a change, that change is internally forwarded
-% to an appropriate listener.
-% This library frosm the building block of reactivity that we build on
-% in Section
-
-% , set up with a new method \texttt{synchronizeDiscover}.
-
-
-
-% This makes changes instant, without having to go over the network
-% and require little additonal work
-
-% Suppose one of a user's friends changes their name. As soon as the user's
-% application receives one notice of that change (using get or discover),
-% then synchronizeDiscover listeners can be used to update all instance's of
-% that friend's name in the user's application instantly, providing a consistent user experience.
-
 \subsubsection{Vue Plugin}
 
 Vue is a popular front-end framework that enables ``reactive'' programming where
@@ -99,43 +44,7 @@ Any CRUD operation that the user triggers locally instantly updates
 the relevant array, while remote changes can be polled manually
 with \texttt{poll()} or automatically
 with an \texttt{autopoll} setting.
-% The plugin similarly provides reactive variants of \texttt{get} and
-% \texttt{recoverOrphans}.
 
-% the array automatically while the \texttt{poll}
-% function can be called to fetch remote changes.
-% Vue lets all of these changes propogate automatically to UI components.
-
-% operation to be returned reactively.
-% The plugin combines the traditional
-
-% We built a plugin for the Vue frontend framework that
-% builds upon the internal syncrhonization library.
-% The plugin combines \texttt{discover} with \texttt{syncrhonizeDiscover}
-% and keeps a reactive array of all the results returned by a discover stream
-% in
-% Local changes update live, while remote changes can be polled by calling
-% \texttt{poll}.
-% It is still possible for a user to manually manage other \texttt{session}s
-% for multi-actor applications.
-
-% The plugin exposes this reactive functionality with both
-% ``composable'' functions,
-% % \footnote{
-% %   \url{https://vuejs.org/guide/reusability/composables.html}
-% % }
-% like \texttt{useGraffitiDiscover}, which can be used
-% in a more traditional programming environment, as well as
-% ``renderless components,''
-% \footnote{
-%   \url{https://vuejs.org/guide/components/slots#renderless-components}
-% }
-% like \texttt{<GraffitiDiscover>},
-% which can be used declaratively within an HTML template.
-% Additionally, for convenience,
-% the plugin sets up a global Graffiti class instance, \texttt{\$graffiti},
-% as well as a global
-% \texttt{\$graffitiSession}.
 This reactivity is available in a traditional programming
 environment as well as in a declarative HTML-like template.
 The plugin maintains complete TypeScript support and
@@ -215,10 +124,7 @@ It is not hard to imagine a future where a developer asks
 a large language model to ``make a messaging app''
 or to ``add a bookmark button to posts in this application'' and
 it simply works.
-% CITE
-% https://www.geoffreylitt.com/2023/03/25/llm-end-user-programming
 
-%DK this paragraph is somewhat hard to understand and could safely be sacrified for space I think
 Work could also be done to develop ``meta'' applications.
 Users of these applications could easily change their functionality
 by swapping out different plugins,
@@ -226,12 +132,6 @@ which could represent different feed sorting algorithms
 (similar to \cite{threeleggedstool, bluesky}),
 different moderation policies, different styles,
 or different features.
-% A code-as-data approach would allow these plugins to be shared
-% as Graffiti objects themselves~\cite{webstrates}.
-% Or portions of applications may become represented within social objects themselves.
-% MySpace, for example, let users style their own pages --- what if users could easily add
-% custom social functionality to their own
-% or their community's ``pages''?
 
 \hl{%
 Alternatively, Graffiti could serve as a new basis for
@@ -256,7 +156,6 @@ One solution is to store all objects on a massive database
 and then discovery is trivially a query on that database.
 Unfortunately, this centralizes all control of the network
 on that single server.
-%DK I wouldn't discard this so quickly, especially since this is basically what you get if you implement the remote: protocol but only have one server (which I suspect is the situatinon we are currently in).   So instead of appearing to discard this, I would talk about *extending* it to allow multiple servers so there is no single point of control.
 
 Instead, we explore \emph{decentralized} implementations of the API.
 In the ``remote'' implementation, objects are served by a ``federation'' of databases,
@@ -268,8 +167,6 @@ and a new entity, called a ``tracker,'' handling discovery.
 These implementations have trade-offs, with
 the former implementation being more efficient,
 and the latter more robust.
-%DK I am not sure what "robust" means in this context and would prefer a more direct explanation of the tradeoffs.  Also by some measures it is the second protocol that is more efficient since it outsources the storage work.
-% There are tradeoffs between these in terms of efficiency, scalability,
 Fortunately, multiple implementations can be understood within one \emph{meta}-implementation,
 per Requirement~\ref{requirements:parallel-implementations},
 allowing new implementations,
@@ -285,7 +182,6 @@ their meta-implementation will employ the commodity storage implementation.
 To handle \texttt{discover}, the meta-implementation simply aggregates
 the results of each implementation-specific \texttt{discover}
 operation into one stream.
-%DK I don't understand what this last means, since a discover call does not specify a protoco.   so what is a protocol-specific discover call?   In fact, this paragraph is retrospecively a bit confusing because it talks about URLs (getting single objects) but doesn't talk about channels (central too discover)
 
 There are two additional questions we need to resolve to
 make coexisting implementations work.
@@ -307,13 +203,7 @@ users who do not know or care about the underlying infrastructure.
 Importantly, this interface is built into the \emph{meta-implementation}
 of the API and so it is not the concern of developers building
 applications on top of the API.
-% As mentioned in Section~\ref{above-and-below:delegation},
-% a user can later migrate their data to a different protocol
-% or server without breaking their object's URLs.
 
-% Some choice is give to users - which they can ignore - but none of
-% this needs to be build by developed implementing on top of the API,
-% it all exists in the implementation \emph{below} the API.k
 \begin{figure}[h]
     \Description[Screen shot showing options for storing content.]{Screen shot showing that user has option to store content on Graffitti servers or on Solid Pods.}
     \includegraphics[width=\columnwidth]{paper/figures/choose-protocol.png}
@@ -336,116 +226,9 @@ do not capture Solid OIDC's property of silent authentication~\cite{dids}.
 This would produce a tedious and confusing experience analogous to having to log in every time you receive email from a new server.
 We hope that DIDs or new specifications evolve past this restriction.
 
-% Importantly, our protocols
-% are directly \emph{client-to-server}, since
-% the API is designed to be used by client-side applications
-% to make development ``serverless'' per requirement~\ref{requirements:serverless}.
-
 After discussing our two main implementations, we discuss
 a bonus ``utility'' implementation that demonstrates
 the additional power of an abstract API.
-% of our separation
-% between the API and the protocol.
-% We also discuss how
-% how objects are verified to come from a particular
-% actor without repudiation per
-% requirement~\ref{requirements:forgiving}.
-
-
-% more than one implementation can
-% exist.
-
-
-
-% The API we've described is fairly simple, and can be done
-% with existing technologies.
-% The main things are:
-% - storing objects,
-% - retrieving objects,
-% - authenticating
-% - and verifying.
-
-% As mentioned, different protocols can do these different
-% things. The web gives us a way to do storing.
-
-% While we have not implemented why not create another protocol
-% called \texttt{graffiti-google}.
-% Users store objects in spreadsheets.
-% Obviously there are limitations regarding who can control.
-% But it is nice.
-
-% Now we come to the problem of actually \emph{implementing} the Graffiti API.
-% As mentioned, an implementation can consist of multiple coexisting communication
-% \emph{protocols}.
-% We outline several communication protocols and their implementations first,
-% and then how they can be used in tandem.
-% in a single implementation.
-
-% We focus on scalability and trust.
-
-% Finally, when there are multiple competing protocols,
-% some user interface must be provided to the end user to choose which protocol
-% they would like to use to \texttt{put} their own data
-% as shown in Figure.
-% some small amount of input on which protocol they would
-% use to host their own data, however this decision can be remembered.
-% can be remembered after they first call \texttt{put}.
-% to
-% \texttt{discover} can aggregate the results of \texttt{discover} from multiple protocols.
-% Finally, there is the small problem of decided which protocol to use
-% when an actor first \texttt{put}s an object.
-% A URL includes within it a scheme that specifies which protocol to use.
-% When calling \texttt{discover}, it can pull results from multiple
-% different implementations and aggregate the results.
-
-% j
-% related to the Solid project,
-% however it.
-% A user logs in once to an \emph{identity provider} which then allows them
-% to log in to various services.
-
-% However a Solid OIDC only allows for webIds not other sorts of identity.
-% It also has usability challenges - a user is asked to type in a URL.
-% Chapi is attempting to fix this.
-% We recommend to authors in this space to try to fuse the benefits
-% of these protocols.
-
-% but currently has shortcomings listed in Section~\ref{protocols}.
-
-% The goal of systems \emph{below} the API is to make sure the
-% API is implemented efficiently, scalably, and to provide \emph{trust}.
-% For example, we could implement
-
-
-% Since Graffiti implementations can coexist by using different URL schemes,
-% it is possible to use the local implementation in tandem with other implementations.
-% This lets a user try out Graffiti applications without having to create an
-% account. The data they use in the trial will simply only be visible locally but
-% not available to others. At this time the data cannot be transferred once
-% a user decides to create an account, but this is scheduled to be added in the future.
-
-% Our local implementation builds on PouchDB which provides persistent
-% storage both in the browser and in node.js.
-% and pieces of its implementation are used in all of the other implementations.
-
-% The local implementation is an implementation of Graffiti where all data is stored
-% locally and only availble on one device. While this seems strange for a tool
-% proported to build social applications, it is paramount to the developement experience.
-% It allows for rapid iteration and testing, and creation of users.
-
-% When a user calls "login()" in the local implementation, a popup appears that
-% simply asks them to type in their actor ID, no additional authentication is required.
-% They don't need to worry about polluting their own online presence with test data.
-% Once an application it can be swapped out seamlessly with any of the other applications
-% by just changing one line of code.
-
-% Our local implementation builds on PouchDB which provides persistent
-% storage both in the browser and in node.js.
-
-% A local implementation is possible to be used
-
-% Additionally, it also makes it possible to have hybrid implementations,
-% that draw from multiple sources.
 
 \subsubsection{Remote Implementation}
 \label{above-and-below:remote-protocol}
@@ -469,10 +252,6 @@ call discover on the servers containing relevant data,
 plus a small constant number of well-known
 ``\emph{rendez-vous}'' servers.
 
-% However, unlike email federation happens at the
-% \emph{client}. Individual servers do not pass messages to
-% each other, the client implementation just polls multiple servers, similar
-% to the way that it can pull data from multiple protocols.
 Our server-side software for the remote implementation
 consists of a NestJS server with a CouchDB database,
 bundled as a Docker image for easy cross-platform
@@ -480,156 +259,12 @@ deployment\footnote{
 \url{https://github.com/graffiti-garden/implementation-remote}
 }.
 
-% The remote protocol exposes the Graffiti API as a.
-% We've implemented it as a node.js server and a Docker
-% Users can stand up their own server like an email or Mastodon
-% server enabling more control.
-
-% Unlike those other services, which pass messages between
-% server, federation happens at the client, ensuring that
-% a user's experience can be flexibly changed by what
-% application they are using not what storage service they happen to use.
-
-% We currently provide a \emph{registry} of servers which
-% users can use to find other servers to communicate with.
-% This is a central point of control and has efficiecy issues which we discuss later.
-% Currently we only offer one server so this is not an issue,
-% but we provide an alternative ``anouncement protocol''
-% built on the system themselves in the appendix.
-% The simplest way for a client to know which
-% servers to query is for there to
-% be a public ``registry'' of servers.
-% This is the method used by BlueSky~\cite{bluesky}
-% % and by other federated services like
-% % the \texttt{apt} package manager
-% % certificate authorities
-% % and package managers
-% and is available in our
-% own implementation.
-% A registry is simple, but it is a potential central point of control
-% and it does not allow for new
-% servers to easily enter the network.
-% Additionally, if there are too many servers, a registry can become
-% incredibly inefficient as each \texttt{discover} operation needs to be called
-% on \emph{every} registered server, when it is likely that relavent data
-% will only exist on a sparse subset of servers.
-
-% We provide a more decentralized and efficient
-% solution that works \emph{on top} of the remote protocol,
-% however it is involved enough that we consider it its own sub-protocol.
-% We discuss it in Section~\ref{above-and-below:announce-protocol} after introducing the concept
-% of a \emph{tracker}
-% in Section~\ref{above-and-below:commodity-storage-protocol}.
-
-% The remote protocol maps the Graffiti API onto
-% a monolithic HTTP server.
-% The protocol is a relatively straightforward transformation of
-% Graffiti's API methods to HTTP requests: the CRUD operations
-% easily translate to HTTP PUT, GET, PATCH, and DELETE while
-% the other operations are additional POST endpoints.
-% \texttt{discover}, \texttt{recoverOrphans}, and \texttt{channelStats}
-% are additional POST endpoints.
-% Object URLs start with the scheme \texttt{graffiti:remote:}
-% followed by the domain name of the server and the
-% path to the object. The result is similar to a traditional
-% web URL only with \texttt{https://} replaced by \texttt{graffiti:remote:}.
-% For example, \texttt{graffiti:remote:pod.graffiti.garden/123}.
-
-% When there is only one server in use, the protocol is essentially
-% \emph{centralized} which is extremely efficient and scalable but requires
-% enourmous trust in the central server.
-% With multiple servers deployed,
-% a user can choose which they would like to use to store their own data
-% (see Figure~\ref{above-and-below:choose-protocol})
-% and their client can call \texttt{discover} on
-% multiple servers and aggregate the results,
-% allowing the user to communicate with others regardless
-% of their choice of server.
-
-% This network topology is an example of \emph{federation},
-% a form of decentralization, which is used by most of the
-% existing social protocols that we survey in Section~\ref{related-work},
-% as well as familiar services like email.
-% Federation provides defense against a centralized entity
-% co-opting the network.
-% However, our use of it here begs the questions:
-% How does a client know which servers to federate with?
-% How can an actor authenticate with multiple servers?
-% We answer these questions and others below.
-
-% There are several questions:
-% \begin{enumerate}
-%     \item How does a client application know which servers to query?
-%     \item How can actor authenticate with multiple servers to receive
-%     private objects?
-%     \item How can a client application verify that an object
-%     was created by a particular actor?
-% \end{enumerate}
-
-% \paragraph{Server Discovery}
-
-
-% \paragraph{Authentication}
-% Actors in the remote protocol are authenticated with an existing
-% identity protocol called Solid OIDC.
-% Solid OIDC allows an actor to log in \emph{once} to an
-% ``identity provider'' (see Figure~\ref{above-and-below:login})
-% and then silently authenticate with multiple
-% other servers.
-% The user's actor URI is a URL called a \emph{webId}.
-% We discuss Solid OIDC and identity in general in our discussion of
-% coexisting protocols, Section~\ref{above-and-below:coexisting-protocols}.
-% with different
-% which provides a webId.
-% We will delve into identity later when we talk about coexisting protocols
-% Our implementation of the remote protocol builds upon
-% our implementation of the local protocol.
-
-% As we saw in \cref{identity-provider}, the Solid OIDC specification
-% allows a user to store some amount of data at their webId.
-% That data is a URL which points to a Graffiti object owned by the user
-% on some pod, and includes global settings.
-% These settings include a list of
-
-% The settings also include forwarding rules which allow a user to
-
-% The verification of these settings is done by the client core library.
-
-% The issue of the federated implementation is delegation.
-% Which pods does a user say they want to do?
-% It becomes necessary for the Actor to link to a "settings" document
-% containing delegation and forwarding rules.
-% This means there are no signatures which would violate the deniability property.
-
-% \paragraph{Implementation}
-
-% Our implementation of the remote protocol server\footnote{
-%     \url{https://github.com/graffiti-garden/implementation-remote}
-% } wraps our local implementation behind
-% a web server built on node.js with NestJS and Fastify.
-% We point the local implementation's PouchDB instance
-% to use a CouchDB database for efficiency and robustness.
-% We also use a library from the Community Solid Server project
-% for Solid OIDC authentication~\cite{communitysolidserver}.
-% The server is bundled as a Docker image for easy
-% cross-platform deployment.
-
-% The client-side library makes sure to validate
-% incoming data and to verify delegation in case a server attempts
-% to lie or otherwise misbehave.
-
 \subsubsection{Commodity Storage Implementation}
 \label{above-and-below:commodity-storage-protocol}
 
 An alternative Graffiti implementation builds on top of existing
 \emph{commodity storage} providers,
 similar to Dropbox.
-% Additionally, storage providers have already established
-% a viable economic model with a freemium tier and paid service
-% for more storage or bandwidth.
-% A user does not need to worry about an experimental new service going down.
-% However they post performance issues:
-% At a high level, the protocol works as follows.
 Like the remote implementation, users get to choose which storage
 service they would like to store their objects in, including
 from one they host themselves.
@@ -642,45 +277,6 @@ rather than mapping torrent IDs to IP addresses
 it maps channel strings to channel file URLs.
 To run \texttt{discover}, the client software queries the tracker
 about each channel of interest and then fetches each of the resulting URLs for objects.
-
-% More specifically, to \texttt{put} a new object, a client
-% performs the following:
-
-% \begin{enumerate}
-% \item
-% If this is the first time the storage service is being used
-% for Graffiti,
-% create a directory called \texttt{graffiti} and
-% within it directories called \texttt{objects} and
-% \texttt{channels}.
-% \item
-% Create a file containing the object's
-% \texttt{value} and \texttt{actor} and store it in the
-% \texttt{objects} directory with access control
-% set so that only actors in the object's \texttt{allowed} list
-% can access it.
-% \item
-% Create a sharable link to this object
-% to use as its \texttt{url}.
-% \item
-% For each of the object's channels, create a file for it
-% within the \texttt{channels} directory, if it does not
-% already exist, like \texttt{channels/my-channel}.
-% Then add the object's \texttt{url} to the end of the file.
-% \item
-% Create a sharable link to each channel-specific file
-% and publish it to the tracker, if not already done.
-% \end{enumerate}
-
-% There is some additional bookkeeping that must be done to
-% keep objects in multiple channels in sync, and to enforce an object's
-% \texttt{allowed} list using the storage provider's built-in access control,
-% but we've omitted those details for brevity.
-% The procedure of \texttt{discover}ing an object happens essentially in
-% reverse.
-% Some additional bookkeeping and privacy details have been ommitted for brevity.
-% Additionally, like the remote protocol, the commodity storage protocol
-% relies on delegation for verifying that an object was created by a particular actor.
 
 The commodity storage implementation is less efficient than the remote implementation because each
 \texttt{discover} call requires a network request per-channel-per-actor,
@@ -699,9 +295,6 @@ of scale are not a concern and the use of ``simple'' storage servers can be appe
 The user does not need to worry that an experimental new service
 will go offline or lose their data, and we, as implementers do not need to
 worry about developing the infrastructure.
-% While the protocol is less efficient than the remote
-% protocol, its bootstrapping off of existing
-% storage solutions makes it more familiar and robust.
 
 At the time of writing, we have built the tracker server and client\footnote{
   \url{https://github.com/graffiti-garden/link-service}\\
@@ -712,17 +305,8 @@ At the time of writing, we have built the tracker server and client\footnote{
 using Solid ``pods'' as storage providers,
 will soon be complete.
 
-% and the Solid protocol.
-% For our purposes, Solid is essentially a federated form of Dropbox.
-% % where people can stand up their own Dropbox instance.
-% It also shares the same identity system as our remote protocol,
-% which we discuss in Section~\ref{above-and-below:coexisting-protocols}.
-% Objects stored on the protocol have URLs that start with \texttt{graffiti:solid:}.
-
 \subsubsection{Local Implementation}
 
-% One final ``protocol'' demonstrates additional power of the protocol-agnostic
-% API by creating a ``utility'' protocol.
 This implementation runs entirely client-side
 and handles objects with the URL scheme \texttt{graffiti:local:}.
 Any data created using the local implementation is only visible on the device on which
@@ -734,8 +318,6 @@ but
 does not require the complexity of standing up a local server.
 Developers can easily create test actors and test objects on the local implementation
 without polluting their own online presence or existing Graffiti applications.
-% Our implementation of this protocol also includes its own internal
-% identity provider allowing for the creation of various test actors.
 Finally, the implementation is accessible in deployed applications
 and lets users try a Graffiti application out without
 having to create or log in to an account, as shown in
@@ -747,91 +329,10 @@ Figure~\ref{above-and-below:figure:login}.
     \label{above-and-below:figure:login}
 \end{figure*}
 
-% We implemented the local protocol\footnote{
-% } using PouchDB, a Javascript library that allows for persistent
-% storage in both the browser and in node.js.
 Because of its relative simplicity, the local implementation\footnote{
     \url{https://github.com/graffiti-garden/implementation-local}
 } serves as the reference implementation of the Graffiti API.
 
-
-
-% Solid OIDC has some shortcomings
-% In the future we would like to support a more extensible identity system
-% Solid OIDC is useful for us because it allows a user to log in once.
-% However it makes some strong assumptions about identity on the web and
-% has left over baggage from the Solid's semantic web vision that can be confusing to users.
-% A more recent and extensible Decentralized Identifier is more extensible
-% --- identity can be stored by various ``methods'' like \textttt{did:eth:}
-% for storing an identity on ethereum.
-
-
-% such a universal identity standard does not yet exist
-% and developing one is outside the scope of this paper.
-
-% The Decentralized Identifier (DID) specification~\cite{dids}
-% is an attempt to unify various identity systems, decentralized and centralized.
-% % is \emph{almost} sufficient.
-% A DID is a URL and, like web URL or a Graffiti object URL,
-% the scheme at the beginning of the URL indicates how it should be
-% \emph{resolved}.
-% For example, a DID with the scheme \texttt{did:web:}
-% can be resolved by fetching a web document, where as
-% a DID with the scheme \texttt{did:eth:} can be resolved by querying
-% the Ethereum blockchain.
-% A DID resolves to a \emph{document} that specifies \emph{methods}
-% to authenticate the DID.
-
-% Unfortunately, DID authentication methods prove the user's identity
-% to only \emph{one} service.
-% In the case of Graffiti, this means that a user would have to log in
-% once for each underlying server they want to receive private data from,
-% which is repetitive for the user and exposes them
-% to the complexity of the underlying infrastructure.
-% Instead, we would like the the user to be able to only log in \emph{once} to establish a \texttt{session}
-% which can then be reused for all interactions.
-
-% Therefore, we are using an earlier identity solution called Solid OIDC.
-% Solid OIDC is less extensible, carries over some unneeded baggage from the Solid project,
-% and has some usability issues.\footnote{
-%     URLs are unnecessarily long.
-%     The Solid OIDC specification also provides
-%     each user with a webId, a globally unique and human-readable URL
-%     that can be shared like a username or an email address.
-%     At this URL, the user can store a small amount of public data
-%     which we use to implement "delegation".
-
-%     Additionally, existing OIDC servers generate their own
-%     webIds, which are often verbose,
-%     \emph{e.g.} \url{janedoe.solidcommunity.net/profile/card#me}.
-%     There is no reason why a user could not come with their own, simple, domain name, for example
-%     \url{id.janedoe.com}, similar to the AT Protocol~\cite{bluesky}. This would also give the users the ability
-%     to switch identity providers while maintaining their identity.
-%     It is not also currently easy to generate throwaway webIds
-%     which could be useful for one-time or anonymous interactions.
-% }
-% However, a user only logs in \emph{once} to an ``identity provider'' which then
-% silently authenticates the user with various services.
-% It can also be decentralized, allowing the user to change providers.
-
-% We have implemented this specifically on top of Solid.
-% Object URLs start with \texttt{graffiti:solid:}
-% This is because it has portable identity,
-% where as Dropbox requires each application to register an API key
-% and locks in to a partciular mode.
-% - Dropbox does not provide a portable identity and becomes a centralized point of control.
-% It is also not possible for access control to happen between platforms like Dropbox and Google Drive.
-% This is not a problem for Solid, but Solid is unfamiliar and not as robust.
-% - With Dropbox application developers need to register an application key.
-% We use Solid as our storage provider because it provides
-% a more open API and a portable identity system.
-% We discuss identity in more detail in section X.
-
-% Using a commercial storage provider like Dropbox allows for access control but only if users
-% have a Dropbox account, which locks users into a proprietary service.
-% Solid does not have this problem. In fact, it is not possible to use the Dropbox API
-% without being used into a Dropbox account, but it is possible to use the Solid API
-% without being locked into a Solid account.
 
 \subsubsection{Future Work}
 \label{above-and-below:below:future-work}
@@ -872,30 +373,3 @@ existing storage services that lack such scoping,
 it may be necessary to implement scoping client-side
 via an iframe to a trusted intermediary domain.
 }%
-
-% Finally, non-federated architectures like a peer-to-peer
-% implementaiton may also be possible.
-% To our knowledge it is not directly possible to implemenet
-% Graffiti on top of ecosystems like the AtProtocol or ActivityPub
-% without leaking channels. However encrypting data may
-% work.
-
-% service where a lot of the work is done on individual
-% servers and the commodity storage protocol demonstrates one where.
-% There are indexes.
-% There are also ways of fusing ideas from both the
-% commodity storage and
-% The remote implementation maps
-% tracker: channel->objects
-% It requires all servers in the system to be relatively complex.
-% The tracker implementation maps
-% tracker: channl->directories
-% Most of the servers are \emph{simple}
-% but the system is inefficient.
-% There is a middle ground where slightly more information
-% is given to the tracker, but
-
-% There is much more work to be done making.
-% For example, in cases like private messaging where a user
-% is continually polling for an object a protocol should silently
-% ``upgrade'' to a bidirectional socker.

@@ -30,78 +30,6 @@ how Graffiti might be implemented to uphold these requirements over time, despit
 the natural tendency for social technologies to ``enshittify''~{\cite{enshittification}}.
 }%
 
-% are measured on a spectrum.
-
-% many of these are aspirational
-% and we seek to work \emph{towards}.
-% For example Graffiti does not yet for \emph{any}
-% community to build their personal social application,
-% but it lowers the barrier to entry significantly
-% and in Section~\ref{above-and-below:above:future-work}
-% we outline paths for lowering it even further.
-
-% How easy is personalization?
-% It should be possible to add new features
-% with a lengthy standards process (\ref{requirements:autonomous-extensibility})
-% and it should be possible to do so without writing server code (\ref{requirements:serverless}).
-% The others serve to mitigate problems that
-% we have observed other interoperating systems:
-% namely protect users from context collapse, and
-% namely the ability for users to delete posts,
-
-% Our driving requirements are \ref{requirements:easy},
-% to make social applications personalizable and
-% \ref{requirements:adversarial-interop},
-% to make them interoperable.
-
-% Some requirements
-% clarify how accessible this personalization is...
-
-% Our other requirements elaborate on these:
-% How easy should personalization be?
-% Requirement
-
-% Our primary requirements are 1: personlization and interoperability.
-% The other requirements elaborate:
-% how easy should personalization be?
-% it should be done without compliance (autonomous extensibility)
-% and without writing server code (serverless)
-% What are the limits of personalization?
-% Also with moderation (autonomous extensibility)
-% and forgiving
-% What are the harms of interoperability: context collapse
-
-
-
-% We also leave open the possibility of establishing trust through
-% non-technical means, like legal regulation, as argued for by
-% some scholars~\cite{}.
-% Or alternatively, aspects related to establish trust leak through to the
-% API or even users, like ``instances'' or
-% We believe this is their APIs don't seem to provide user needs
-% (even basics like making private content)
-% Additionally, some of these systems were designed in such a way where mechanisms
-% related to establishing trust like `instances,' or keypair managed
-% leaked through
-% ed the web to smoothly change from
-% \texttt{http:} to \texttt{https:} as technology advanced
-% All the time the API of the web
-
-% where URLs begin \emph{scheme}.
-% like HTTP or HTTPS.
-% which allowed the web to asynchronously upgrade
-% Instead, our design is more like the World Wide Web.
-% The API of the the web affords the publishing and retreival of web pages at particular URLs.
-% URLs begin with a
-% its protocol from HTTP to HTTPS in response to a changing threat model
-% (browsing data becoming more sensitive and valuable) and technology advancements
-% (certificate authorities).
-% In the case of social media, ho
-
-% Requirements X and Y are our primary design goals.
-% The others elaborate on specific user needs
-% that are included in the diversity of applications that can be built
-
 \begin{requirement}[Personalization]
 \label{requirements:personalization}
    It should be feasible for communities to build
@@ -123,13 +51,6 @@ the hypermedia curation platform \href{https://www.are.na}{are.na},
 the movie review site \href{https://letterboxd.com/}{Letterboxd},
 and Vermont's local \href{https://frontporchforum.com/}{Front Porch Forum}~\cite{threeleggedstool}.
 
-% In most cases, the application developers are community members themselves
-% and listen closely
-% and listen closely to the preferences, to guide the design of the application
-
-% Most importantly these applications are iterated on with feedback from the community,
-%
-% These applications were all
 From their styling, to the features they include (and the ones they omit),
 to their moderation policies, to their social norms, these applications
 are a reflection of the communities they serve and have a
@@ -161,47 +82,6 @@ We attempt to design for all of them, but are limited by
 the scope of this work and the tension that the requirements put
 on each other.
 
-% While we call them ``requirements,''
-% most are on a spectrum and our design
-% does its best to accommodate all of them
-% to the best of its ability.
-
-
-% % they give autonomy to the communities that they are serving
-% % Proponents argue that these such small applications create healthier communities,
-% % can provide benefits to civic society, and
-% % Most of all they respect the \emph{autonomy} of community
-
-% platforms
-% could benefit civic discussion,
-% provide better onboarding conflict resolution
-
-% With Graffiti, it should be possible for these communities
-% to build their own platforms.
-
-% autonomy
-% evolving platform policies, rigid and inadequate feature sets,
-% may users resort to hacking in features, suggesting a need for
-% to have greater autonomy over their spaces.
-
-% they do not offer the same
-% freedom and malleability as having full design control over an application.
-% Many users resort to hacking in features, suggesting a need for greater control.
-
-% Before the WWW, only established publishing companies could
-% produce content, effecting the type of media that was.
-% The WWW and Web 2.0 democratized this process, allowing users to choose what was
-% "publishable" and a much.
-% What would it look like if users were given similar control?
-
-% The world wide web gave people the ability to publish websites
-% and later Web 2.0 lowered the barrier.
-% But what if people had the ability to shape the ecosystem as well?
-% Curating the virtual environments their social interaction exists
-% in, like designing a public space.
-
-% With a system like Graffiti, hopefully many more such social applications will exist and evolve to genuinely support the needs of their users.
-% We believe user-guided evolution is not possible when only a small handful of technically savvy people have the means to create and change the social application landscape.
 \begin{requirement}[Adversarial Interoperability]
 \label{requirements:adversarial-interop}
 Any application \emph{A} can be built to interoperate with an application \emph{B} without any compliance from application \emph{B}.
@@ -222,9 +102,6 @@ or the applications may drift further apart as their users' needs diverge. Howev
 evolution should be driven entirely by users rather than by external pressures
 to either conform to a particular design or abandon community altogether.
 
-% - the scope of such features will be discussed in
-% requirement~\ref{}.
-
 We use the term ``adversarial interoperability''~\cite{adversarialinterop} because it may not be in the
 interest of a large existing application to interoperate with a new application that may co-opt some of its market share.
 For example, Facebook, X, and Reddit all have a history of intentionally breaking
@@ -237,108 +114,6 @@ It should never be possible for one entity to hold users
 and their data hostage to a particular experience.
 Empowerment should not be limited to a community ``as a whole'' but
 distributed amongst its subgroups and individual members.
-
-% Smaller services like Del.icious,  Tumblr, all have a history of making changes
-% When disagreements occur it should not be up to the application developers
-% to hold their users (and their data) hostage.
-
-% Even on a small scale, dis
-% such disagreements can occur.
-% moderation policies are too harsh. One application may believe the
-% moderation policies are too harsh
-
-% This requirement for interoperability is in support requirement~\ref{req:easy}.
-% This can aid with experimentation too.
-% A user may want to
-% In addition to the technical difficulties of a building a social application,
-% developers are faced with the social cold start problem
-% of building up a critical mass of users. If a new application can choose to interoperate with a popular existing application
-% then it gets a user base ``for free.''
-
-
-% In simple cases this might be changing the layout of the website,
-% or. We will
-% losing all of their friends.
-% It also becomes possible for a user to "try out" a new feature without
-% requiring that everyone commit to it.
-% Interoperability gives the ecosystem the ability to naturally
-% split off with different ideas.
-
-% This is particularly important when one user wants to take an existing application
-% and modify it a little. In a system without in
-
-% However, adverserial interoperability provides enourmous value to \emph{users}, allowing them to freely migrate between applications without pressure to "lock-in" to any one just
-% because it is the one all of their friends use.
-% It may be the case the users use different applications to interact with
-% different communities that may offer different
-% even a little interoperability, like being able to
-% update one's profile photo once can be of benefit.
-
-
-% The business model of many exising social applications is dependent on their
-% ability to "lock-in" a particular user base, and so we discuss economic implications
-% and hypothesis at the end of this document.
-
-% Many of the small social applications we imagine will interoperate with each other.
-% Sometimes that interoperability will be comprehensive, for example if one application forks
-% another only to change minor styling, all of the data shown in one application will be
-% available in the other. Other times the interoperability may be subtle, for example
-% a user's name and profile photo set in one application is visible in another, but otherwise the data between them is different.
-
-% Finally, an application may intentionally not interoperate with existing applications:
-
-
-% While some users are not conscious of collapsed contexts, leading to accidental disclosures like the
-% father's or the priest's, others self-suppress their speech to appeal to the ``lowest common denominator.''
-% This suppression can be isolating and a constant source of paranoia for some
-% individuals~\cite{contextcollapseimpact}, for example for queer youth who may experience
-% violence if they accidentally out themselves~\cite{contextcollapsequeer}.
-
-% Suppression can also lead to a ``spiral of silence.'' The theory was developed in 1974 to describe the phenomenon that people are more willing to share their opinions to people they believe will agree with them~\cite{spiralofscience}. The phenomenon also occurs online and effects can bleed over into the real world.
-% % Facebook users were more willing to share their opinions about the Snowden leaks if they thought their followers agreed with them.
-% For example, Facebook users with more diverse followers were less likely to share their opinion online
-% \emph{and in face-to-face discussion}~\cite{spiralofsilencesocialmedia}.
-
-% Boundary-less applications, like Twitter, will inevitably have their niche as they are key to building `bridging capital' which provides widespread benefits to individuals and society as a whole [38, 49].
-% But to permit a broader range of applications, a pluralistic infrastructure should add affordances to protect against context collapse.
-
-% Shibboleth
-
-% Specifically, pluralistic infrastructures must deal with context collapse of \emph{public} contexts.
-% Unix style access-control lists provide a general and well understood solution to private contexts: posts or conversations that are only accessible to a select set of users or groups of users.
-% However, access control will not solve the reply dillema where a user wants their interaction to be "public" but only to one of their audiences.
-
-% In the real world, boundaries between public contexts can be shaped by walls and distance, and those contexts can acquire different norms and expectations, like the difference between a library, a bar, a church, and a public park.
-% Online, other examples of public contexts include topic-based discussions like (SubReddits), location based communication (Nextdoor), media-centric communication (LetterBoxd). In our current ecosystem of monolithic infrastructures, application boundaries also serve as contextual boundaries: while Discord and Slack have similar affordances, one is often used for play and the other for work. And the existence of distinct non-interoperating Discord serves means that contexts can be separated even in the same application.   But this ability to jerry-rig context separation through partitioned applications is lost if we implement a single shared infrastructure; we need new design affordances to recover it.
-
-% Monolithic social media infrastructures can also create contextual boundaries around public data by simply choosing where or where not to show data in their interfaces, as Instagram did when it removed its Following tab.
-% It is not as immediately clear how pluralistic infrastructures, designed to accommodate many different designs could also enforce such boundaries.
-
-% ActivityPub creates some boundaries around reply threads or subreddit-like topics by the selective forwarding of messages, but this forwarding depends on side effects that are server-dependent and violate data reification.
-% The At Protocol and Nostr do not put any boundaries around public content.
-% Most compelling is Matrix's `rooms,' concept to which we will return.
-
-% One method that existing infrastructures have is to create \emph{private} data that, like standard Unix access control, is only available to a specific set of users or groups of users.
-% However this does not cover cases where data is public.
-% However, the case outlined at the beginning of this section about public spaces must be captured as well.
-% For lack of a better phrase `don't ask don't tell' scenarios. Alcoholics Anonymous is a public space.
-
-% We provide two possible solutions: near-misses which are extremely general but complicated, and channels which are not so general but we conjecture are good enough for practical uses.
-% We include the near-miss concept because it frames context as coming from within data as opposed to an external phenomenon, which explains the differences between our channels and Matrix's rooms.
-
-% Context collapse is the "flattening of multiple audiences".
-% It occurs in existing applications, for example when posting.
-% But it is particularly important in a highly interoperable environment.
-% It is particularly important, and the reason this is our third requirement, in a highly interoperable environment.
-% For example, consider an application like Tinder and another one like LinkedIn. Both involve constructing detailed user profiles that include a name, bio, interests, and current employment. However there is a clear social signal attached to the fact that the profiles are in the apps themselves. Even just \emph{having} a public tinder profile is a sign that someone is interested in dating.
-
-% Some system models might make interoperation \emph{too} easy. For example, on platforms like BlueSky and Nostr data lives in a shared public database. Queries for datatypes could easily appear in the other.
-
-% However one is for dating and the other for networking.
-
-% So while (2) allows applications to interoperate with each other, this implies that developers need to be \emph{intentional} about their interoperability.
-
-% an application can put guardrails in place to prevent an applciation from interoperating with it unintentionally. In other words to prevent context collapse. An application like Tinder and Linkedin bleed together. This is what could happen if it was just one big database. Also.
 
 \begin{requirement}[Autonomous Extensibility]
 \label{requirements:autonomous-extensibility}
@@ -371,32 +146,6 @@ They should be able to build the feature into their application
 entirely \emph{on their own}, with other applications able to adopt the
 feature as they see fit.
 
-% It is to important remember here that these applications are
-% intended for \emph{people} rather than machines, which invites
-% the possibility of messy and imperfect solutions so long as the ecosystem
-% can, again, move quickly to clean things up.
-
-% For example, in the ActivityPub standard, described in Section~\ref{related-work:activitypub},
-% when user \emph{A} replies to a post by user \emph{OP}, \emph{A}'s application
-% sends \emph{A}'s reply to \emph{OP}'s server, which then automatically forwards
-% it to users who wish to view the replies to \emph{OP}'s post.
-% This setup makes it impossible to reply to posts that are hosted on servers
-% without automatic reply forwarding;
-% the introduction of the reply feature (or any similar feature) requires \emph{compliance}
-% from interoperating applications.
-% It is also not possible to introduce other features that require similar
-% ``side effects'' without all existing applications from complying.
-
-% Notably, we also require that \emph{moderation} features are extensible.
-% For example, it should be possible for one application to introduce the feature
-% ``certain users (moderators) can delete other users' posts.''
-% This allows moderation policies to evolve flexibly according to user needs
-% but there is an obvious tension between this requirement
-% and our requirement for interoperability (\ref{requirements:adversarial-interop}).
-% What happens when two interoperating applications have conflicting moderation policies?
-% This tension is resolved by our design concept ``Total Reification,''
-% discussed in section~\ref{concepts:total-reification}.
-
 \begin{requirement}[Serverless]
 \label{requirements:serverless}
     It should be possible to build a new social application without writing or deploying any server code.
@@ -423,17 +172,6 @@ analyzing billions of posts, functionality that is not built into our infrastruc
 This work focuses on the broad range of applications
 that do not require massive machine learning algorithms,
 but we conclude with a brief discussion of extending Graffiti to enable them, too.
-% However, we will argue that a broad range of applications similar to twitter, facebook, whatsapp, Reddit, and others \emph{can} be implemented in our infrastrucrure while meeting this goal.
-% The extent to which this requirement can be applied is potentially limited
-% by the compute and storage capacities of modern devices.
-% For example, constructing something like TikTok's For You feed requires
-% analyzing billions of posts, well beyond the capability of any user's personal device.
-% However, it is certainly possible for even mobile devices to handle many thousands of posts.
-
-% Relying on generic servers also rules out the possibility that
-% the ecosystem inadvertently relies on server ``side effects,''
-% like ActivityPub's reply forwarding which, as mentioned in
-% requirement~\ref{requirements:autonomous-extensibility}, can impede extensibility.
 
 \begin{requirement}
 \label{requirements:context-differentiation}
@@ -450,12 +188,10 @@ Either self-suppressing to appeal to the ``lowest-common denominator'' or ignori
 and simply posting to an ``imagined audience'' can lead to harm for both
 the users involved and society at large~\cite{contextcollapse, contextcollapseimpact, contextcollapsequeer, spiralofsilencesocialmedia}.
 
-
 Users currently leverage the ``siloing'' of existing applications to manage contexts---using
 one application to stay in contact with family and another to connect with friends~\cite{whatsappforfamily}.
 Interoperability between applications introduces the possibility
 of collapsing all of these silos.
-% of \emph{much more} context collapse.
 For example, both Tinder, a dating app, and Linkedin, a professional networking app, involve the authoring
 and browsing of user profiles.
 These user profiles have many semantic similarities (name, biography, employment status) and so
@@ -557,22 +293,3 @@ used to retrieve the resource.
 This allows new implementations, such as HTTPS, to be
 incrementally adopted without invalidating existing ones.
 }%
-
-% \hl{%
-% As mentioned in our introduction,
-% this requirement has the side effect of reducing complexity.
-% It is not possible for implementation-level details like
-% ``instances'' or ``key management'' to leak through to users
-% if those details are not present in the first place.
-% % This has the side effect of helping to support our requirement for serverlessness,
-% % and it reduces the complexity of the API because concerns like ``instances''
-% % cannot be leaked through as they do not exist.
-% % Additionally, by by seperating out the concerns of protocols,
-% % this helps to ensure that the \emph{API} that we are building does not
-% % loeak aspects of the protocol through, like ``instances'' or ``key management''
-% % ---specific mechanisms designed to make the protocol robust, but
-% % not important to the users building aplications on top of it.
-% Using language from cryptography literature,
-% we are designing for the ``\emph{ideal functionality}''~{\cite{universallycomposable}}
-% of the system, rather than its specific instantiation.
-% }%

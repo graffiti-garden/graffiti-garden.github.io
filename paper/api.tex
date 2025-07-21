@@ -35,26 +35,12 @@ with Electron\footnote{
     \url{https://developer.mozilla.org/en-US/docs/Web/Progressive_web_apps}
 }.
 
-% Self-describing objects and channels push a lot of expressive
-% power above the API,
-% while URLs, our login, continue push
-% things below
-% Hidden by the "URL" concept, not having to think about where stuff is stored.
-% Might open popup on first time to ask "where to store this?"
-% Hidden by discover returning just a "cursor" rather than new polling functionality.
-% Hidden by login() logout() functions with the flow.
-
-% We later describe additional tools that make it even easier (Vue Plugin)
-
 \subsection{Logging In}
 
 While it is possible to retrieve public content without logging in,
 all other functionality, including
 creating and modifying content or reading access-controlled content,
 requires proof that the user owns a particular \emph{actor}, thus requiring a login.
-% requires a login.
-% The goal of logging in is to establish the user's ownership of a
-% a particular \texttt{actor} URI, as described in Section~\ref{concepts:actor}.
 
 Modern log in methods, like OAuth 2.0, while secure, are incredibly complex~\cite{oauth}.
 To hide this complexity from application developers and to make the API future proof
@@ -92,52 +78,6 @@ that requires authentication without asking the user to log in first.
 These mode errors are detected by static type checking.
 Separating the \texttt{session} object also allows an application to be logged in to
 multiple actors at once, which can be useful for managing pseudonyms or anonymous interactions.
-
-% To provide
-
-% In addition to identifying the owner of particular objects,
-% an actor URI may also be used as a channel
-% or used in reified actions regarding the actor, like ``following'' the actor.
-
-% However, that change should
-% However, regardless of the underlying identity system,
-% as much of the complexity as possible should be hidden from
-% application developers.
-
-% Today on the web most application provide log in throught the OAuth 2.0
-% protocol. While this protocol provides security, it is extremely complex
-% and it should not be up to users to understand and implement it correctly.
-% Instead we provide the user with simple \texttt{login} and \texttt{logout} methods.
-
-
-% Ideally we would like the system here to be portable across different implementations.
-% Unfortunately, at the mome
-
-% A user clicks a "log in" button in an application which trigger the login() method
-%     A user interface appears, either as a dialog or a redirect, and asks for some user credentials.
-%         In our federated implementation, we use Solid OIDC. First, a dialog opens and the user is asked to choose an identity provider, for example https://login.inrupt.com or https://solidcommunity.net. Then, they are redirected to that provider and must enter a username and password. After submitting, they are redirected back to the application.
-%         In our local implementation (where the operations store and fetch data from local storage), a popup appears that asks what username a user would like. They do not need to supply any additional information.
-%         In a distributed implementation (which we have not implemented), the user might be prompted to select a certificate containing a public keypair. They would not need to interface with a remote server because the certificate authenticates itself.
-%     Once a user enters and submits their information, if successful, a GraffitiLoginEvent will fire. This will contain the GraffitiSession object. The session object contains, at the very least, an "actor" field which is a URI identifying the user. It may also include additional information. For example:
-%         In our federated implementation, the "actor" field is their webId, a globally unique URL. For example mine is https://solid.theias.place/profile/card#me. The session also contains a token that the user can use to authenticate with any storage server. So regardless of whether I try to contact https://pod.graffiti.garden or https://graffiti.theias.place, both servers will be able to correctly verify that I am indeed https://solid.theias.place/profile/card#me. They can use that identity to know whether I am allowed to access access-controlled information, etc.
-%         In our local implementation, the "actor" field just includes the username that the user specified. The session doesn't contain any other information because there is no other entity that needs proof that the user owns that username - everything is local, so they own everything.
-%         In a (hypothetical) distributed implementation, the "actor" field could be the hash of the user's public key. The session would also include the the user's private key (or more securely a "signing function" and "decrypt function" so that client applications don't have direct access to the private key). The session can be used to sign objects the user creates to prove they own them, or decrypt objects that only the user is allowed to see.
-
-% They provide strong typing even in an object of flexible envireonemtn
-% We would like to rely on an existing standard for identity,
-% but none so far exist and we point to future work in that
-% area.
-% As we are building on JSON Schema, it would be nice to also build on
-% an existing standard for login. Unfortunately, one does not currently
-% exist that suits are needs.
-% As mentioned, it would be nice to build on an existing and
-% well used standard for login. There is an emerging specification
-% called DID, however it lets the user authenticate with \emph{one}
-% service. We would like different services or even protocols.
-% In our implementations we use an older speicification Solid OIDC,
-% which has some serious usability limitations and is not flexible,
-% but at least provides the high level functionality we would like.
-% However we can not say with confidence that the
 
 \subsection{Objects and CRUD}
 
@@ -198,10 +138,6 @@ the structure of JSON objects~\cite{jsonschema}.
 Any object that does not match the provided schema is rejected.
 The API includes type inference on these schemas which makes it possible to work
 with objects as if they were strongly typed, even though they can take on arbitrary values.
-% This ensures that developers can have a consistent.
-% This can also be harnassed by the underlying implementation for
-% performance benefits, which is more necessary to \texttt{discover}.
-
 
 \begin{minted}{javascript}
 const object = await graffiti.get(url, {
@@ -221,31 +157,6 @@ unspecified properties, allowing developers to freely
 add new object properties without breaking
 interoperability with existing applications,
 encouraging the folksonomy.
-% This is related to the concept of
-
-
-% Methods in the API including \texttt{get} and \texttt{discover} allow the application
-% developer to provide a JSON schema that the fetched objects must adhere to.
-% This makes it possible to
-% The patch operation build on the JSON patch standard~\cite{jsonpatch}
-% and can be made to reject if a schema mismatches to allow users to update
-% concurrently from different devices.
-
-
-
-% Objects returned by the API are strongly typed when possible
-
-% Additionally, the API builds on existing JSON Schema standard~\cite{jsonschema}.
-% This is a well established method and we use a library that
-% provides strong typing based on schemas.
-% These objects can be interacted with through standard CRUD methods:
-% \texttt{put}, \texttt{get}, \texttt{patch}, and \texttt{delete}.
-% \texttt{get} requires a JSON schema to ensure that the object
-% retrieved is of the correct type and \texttt
-% \texttt{patch} and JSONPatch~\cite{jsonpatch} and allows users to update
-% concurrently for example if they are using different devices.
-% \texttt{delete} removes an object from the system but some amount of
-% metadata is preserved.
 
 \subsection{Discover}
 
@@ -299,8 +210,6 @@ For example, the schema may exclude objects by
 actors who have been ``blocked'' by a sufficient
 number of other actors.
 %DK really?  this seems like for more than a schema language, turning into a general graph-database query language?
-% However, some features like TikTok's ``For You'' page
-% requires processing beyond the
 
 The \texttt{discover} iterator will end once all objects
 currently matching the channels and schema have been fetched.
@@ -329,27 +238,6 @@ that signals to the application to poll \texttt{discover} from scratch.
 like direct messaging, that require real-time updates.
 Below the API, an implementation might perform complex rate limiting on these recursive calls or
 adaptively switch to a more efficient push-based transport, like a WebSocket, but this is hidden from developers working above.
-% However we intentionally chose this pattern over having the updates
-% happen
-
-% However we intentionally chose not to provide an live update mechanism as
-% it can be visually distracting or lead to toxic engagement.
-
-% all objects have been fetched.
-% The choice to not keep it live was intentional.
-% discover needs to be polled for new data because live updates to an application can be visually distracting or lead to toxic engagement. If and when an application wants real-time updates, such as in a chat application, application authors must be intentional about their polling.
-% The asynchronous generator ends by returning a \texttt{cursor} string and a
-% \texttt{continue} method each of which can be used to resume the \texttt{discover}
-% call.
-% These methods are the only
-% They hide state management below the API.
-
-% At the end it returns a cursor and continue method.
-% These hide the complexity of state management below the API.
-% Also leaves open the possibility of different protocols having different state to maintain.
-% This continuation is the only situation where tombstones are returned.
-% They only contain the URL of the object in question, preserving the users right to be forgotten.
-
 
 \subsection{Recovery Methods}
 

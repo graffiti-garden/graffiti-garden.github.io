@@ -8,32 +8,8 @@ Below, we discuss \emph{frameworks} that make it easy to build
 and \emph{protocols} that support interoperation but
 make application development difficult and restrict the design space.
 We also discuss other systems with related designs to Graffiti.
-% We overview existing frameworks and protocols, as well
-% a handful of systems that have similar design concepts
-% to the ones introduced in Graffiti.
-
-% \begin{table}[h]
-%     \centering
-%     \begin{tabular}{lccccc}
-%         \toprule
-%         \textbf{System} & \textbf{Accessible Design} & \textbf{Adversarial Interoperability} & \textbf{Context Differentiation} & \textbf{Autonomous Extensibility} & \textbf{Serverless} \\
-%         \midrule
-%         Firebase     & ● & ○ & ◐ & ○ & ● \\
-%         Deja Vue     & ● & ○ & ◐ & ○ & ◐ \\
-%         ActivityPub  & ○ & ○ & ◐ & ○ & ◐ \\
-%         Matrix       & ○ & ○ & ● & ○ & ◐ \\
-%         At Protocol  & ● & ● & ○ & ○ & ◐ \\
-%         Nostr        & ○ & ● & ○ & ○ & ◐ \\
-%         \bottomrule
-%     \end{tabular}
-%     \caption{Comparison of properties across different systems}
-%     \label{tab:systems_properties}
-% \end{table}
 
 \subsection{Frameworks}
-% These frameworks are useful for building self-contained communities
-% but are limited in their ability to fork into different
-% designs without breaking their existing community apart.
 
 Facebook groups, subreddits, and
 Slack workspaces are \emph{no-code} frameworks for creating social
@@ -47,39 +23,9 @@ custom \emph{bots} that enable the
 ~\cite{changemyview}
 and the PolicyKit moderation system in Slack~\cite{policykit}.
 
-% One could consider things like Subreddits can be considered
-% no-code frameworks for creating social media applications.
-% With the use of bots, custom ranking
-% custom ranking algorithms can be deployed like the use of ``delta''
-% rankings in \texttt{r/changemyview}~\cite{changemyview}.
-% Of course, there are limitations to how much expressivity can
-% be utilized.
-% The hierarchy of SubReddit moderator and user is strict,
-% there are
-% Similar limitations are in place on Facebook Groups, Discord,
-% and Slack.
-% All of these projects add features
-% that prioritize within-server interactions,
-% and PubHubs disables federated interactions
-% This means that the communities created on top of these
-% projects are bound to a particular user experience unless
-% they migrate to a different instance where they risk losing
-%  some or all of their interactions with the community
-% underlying \emph{protocols} which we discuss next
-
-% While different subreddits interoperate with each other,
-% it is not possible for a user to change a subreddit without
-% going off and creating their own entirely.
-% Additionally, it is not possible to \emph{interoperate}
-
 Déjà Vu is a more expressive framework that allows developers
 to declaratively construct a social media application out
 of a catalog of primitive \emph{concepts}.
-%The authors demonstrate how a Hacker News-style forum can be built by
-%recursively composing a ``comment'' concept for threading
-%with a ``scoring'' concept to rank those comments.
-%Each concept is a self-contained full stack module
-%and so building with existing concepts requires no new server code.
 Unfortunately, these concepts are limited in their extensibility.
 For example, the ``scoring'' concept cannot be expanded
 to support multiple ``reactions''
@@ -95,39 +41,6 @@ For example, Mavo Chat\footnote{
 } is a real-time chat application written in 156 lines of HTML
 with Mavo and Firebase.
 %DK could a graffiti remote server be implemented on firebase?
-
-% allow a relatively
-% easy application development experience.
-% It hides away server hosting and scaling.
-% Identity management is done with traditional, "log in with Google".
-% There are plugins for front end frameworks, including Vue,
-% and it is also been used with the low-code tool
-% Mavo to create a real-time chat application declaratively.
-% Firebase applications are siloed
-
-% There are a number of existing tools that allow users to more easily create personal social applications with little to no interoperation.
-% We call these tools \emph{frameworks} rather than infrastructures.
-% These frameworks are useful for building self-contained communities
-% but are limited in their ability to fork into different designs
-% without breaking their existing community apart.
-% % Many of these frameworks tend lo focus on low or no code development, a practice we intend to carry over more into infrastructure design.
-
-% Classic commercial tools like WordPress allow users to create sites with basic comment sections. With the help of plugins, like BuddyPress, users can add on pre-built social components like profiles, posting, and private messages.
-
-
-% Google Firebase is a commercial database system that allows users to
-% create applications with
-
-% The low-code syntax Mavo has been used to create
-% a real-time messaging client using just
-% modified HTML, although it is unclear whether
-% the affordances offered by Mavo scale to
-% creating a larger scale social application
-% This approach does not handle operation, although perhaps it would be possible to impliment these primitives in an interoperable way.
-% However, as we discuss in Reification, we choose to make our
-
-% The Initiative for Digital Public Infrastructure has proposed the creation of a ``Friendly Neighborhood Algorithm Store'' that would include bre-built solutions for detecting spam, mis/disinformation, harassment and CSAM as well as providing various ``For You'' recommendation algorithms.
-% The store has not yet been realized~\cite{threeleggedstool}.
 
 \subsection{Protocols}
 \label{related-work:protocols}
@@ -209,26 +122,6 @@ Projects like Hometown, Smalltown, and Glitch\footnote{
 to instance creation, but beyond basic configuration panels,
 new application designs require modifying the underlying server code~\cite{smalltown,runyourownsocial}.
 
-% There are other subtle differences.
-% Actors in AP include global names and profiles and
-% are linked to a particular instance that doubles as their storage,
-% making it impossible to migrate.
-% Objects are typed with a \texttt{type} property,
-% which doesn't allow for an object like an event to
-% merge with an object like a post.
-
-% Slightly more extensibility can be achieved with self-hosted tools
-% like Hometown and Smalltown, but on Mastodon, and PubHubs, built on Matrix.
-% Unfortunately, self-hosting is already a barrier to entry and beyond
-% basic configuration options, actually changing the underlying features
-% requires a lot of technical expertise and is inevitably limited
-% by the underlying protocols, discussed in the next Section~\ref{}~\cite{
-% smalltown,runyourownsocial,pubhubs,pubhubsidentity
-% }.
-
-% Many ActivityPub activities have required or suggested side effects and additional side effects are added to make certain application-specific features possible.
-% Therefore there is no general purpose ActivityPub server.
-
 \subsubsection{Matrix}
 
 The Matrix protocol\footnote{
@@ -240,7 +133,6 @@ While generally intended for messaging, we mention Matrix because of a
 prototype microblogging application built on top of it called \emph{Cerulean}~\cite{cerulean}.
 
 Cerulean creates a ``timeline'' room for each of its users.
-%that is public but read-only to other users.
 Users publish posts to their own timeline room
 and follow each other by subscribing to each other's timeline rooms.
 When a user posts, their application creates a
@@ -248,12 +140,6 @@ public ``thread'' room and replies are copied to both the
 thread room and the replier's timeline room.
 Matrix's client-server API is flexible enough that this prototype
 was written with front-end code over a generic Matrix server.
-
-% similar to an ActivityPub outbox. One user can follow another by subscribing to messages from their timeline room.
-% Whenever someone creates a post, they must also create a public `thread' room for that post, for users to write comments in.
-
-% Matrix has a standardized API of creating rooms and forwarding messages between participants within in rooms, so Cerulean was implemented with frontend code over a \emph{generic} Matrix server.
-% However, the prototype is fairly limited and does not explain, for example how other features will work, like user discovery.
 
 This is similar to Graffiti's channel-based implementation of microblogging, described
 in Section~\ref{case-studies:fig:gloof-and-glitter}.
@@ -271,167 +157,6 @@ which might not be the case for conversations centered around topics, external m
 
 Still, Cerulean's existence indicates that
 Matrix might be modified to support the Graffiti API.
-% Additionally, events (the equivalent of objects in Matrix) can't be linked
-% to and so an event needs to be copied.
-% promising that Matrix could be
-% adapted to implement the Graffiti API. We were unable to due
-% to its moderation and linking.
-
-
-% However there are major differences:
-% - Moderation (moderation occurs based on a fixed
-% Additionally, Matrix is limited by a coarse moderation system.
-% - Cross posting
-% - Owner created
-% - Not possible to know channel in advance (location)
-
-% Given its similarity, Matrix is the existing protocol most suited to support
-% Graffiti, however its limitations were too great for us to independently
-% build on top of.
-
-% Users within a room each have a `power level' from 0 to 100.
-% The creator of a room starts with a power level 100 and others start at level 0.
-% Different room actions can be assigned to require different power levels.
-%  By default, posting and inviting users to the room require power level 0, redacting messages or kicking users out of the room requires power level 50, and changing a person's or action's power level requires power level 100.
-% While this system may be enough for most chat applications, it is overly simplified for the complex moderation needs of large social networks~\cite{policykit}.   And because it is built in to the server, it is difficult if not impossible to design alternative moderation schemes for custom client applications.
-
-% PubHubs are built on top of Matrix. Homeservers serve their own clients. It uses it's own identity system.~\cite{pubhubs, pubhubsidentity}
-
-% PubHubs, like
-
-
-
-% Graffiti is novel in that it makes it easy to create social media,
-% while also having those sites interconnected and malleable.
-% The systems we overview below either create standalone social media and other sites,
-% or allow for interconnectedness.
-
-% Additionally there are some systems that have some similar
-% to channels that were intended for a different purpose
-% features but were intended
-% for a different purpose.
-
-% One type of evolution that is required is evolution in data schemas.
-% This evolution rules out designs that have a fixed set of features,
-% like diaspora*,
-% or even designs that allow users to compose applications out of a pre-defined set of concepts, like
-% Déjà vu.
-% In either case, these functionalities can't be easily expanded.
-
-% \subsection{Pluralistic Infrastructures for Social Applications}
-
-% An \emph{infrastructure} for social applications
-% is the
-
-% to be the technologies upon which some set of social applications can be built.
-% Additionally, we expect applications built upon an infrastructure to interoperate easily, as opposed to applications built with a \emph{toolkit}, which we will review below.  A good infrastructure will offload significant effort for a developer but (somewhat in tension with this) will minimize the constraints the infrastructure imposes on the design of applications using it.  The IP routing infrastructure, for example, generally permits developers to ignore the details of packet delivery, but imposes no restrictions on what goes into a packet besides a size limit and a source and destination address.
-
-% Many of the infrastructures for major social applications are \emph{monolithic}, supporting only a single end-user application: there is only one experience for Facebook or TikTok.
-% Some infrastructures are quasi-monolithic and permit a narrow design space of social applications to be built upon them, such as Twitter and Reddit, which (before 2023) allowed third party apps to be built using their API.
-% A \emph{pluralistic} infrastructure is one that permits a broad design space of interoperable applications\footnote{The idea of pluralism comes from the indigenous anarchist revolutionaries, the Zapatistas. They capture pluralism in the phrase ``A world where many worlds fit''~\cite{designsforthepluriverse,firstworldhahaha}}.
-
-% The ones we are interested in are pluralistic.
-% Our goal for Graffiti is for it to be highly
-% protocols, servers and other resources on top of which other social applications can be built.
-% Reddit API and Twitter API.
-
-% In the following subsections we review infrastructures that demonstrate high degrees of pluralism.
-% It happens that all of these infrastructures are motivated in part, if not in full, by a distrust of \emph{centralized} social media infrastructures.
-% Centralized infrastructures are ones whose technology is controlled by a single entity, like a corporation.
-% This distrust is understandable as a malicious central entity
-% can interfere with content distribution, mine user data to develop algorithms for manipulation,
-% sell user data to third parties, or make themselves more monolithic as both Reddit and Twitter did in 2023 by limiting API access~\cite{ageofsurveillancecapitalism, platformsociety, standoutofourlight}.
-%Not to mention handing data to third parties like banks or governments.
-% But while we hare this distrust, and consider it in our implementation, it is diversity rather than distrust that is the central motivator for this work.
-% However, distrust is not the central adversary in our work.
-
-% Instead, we are concerned that infrastructures, whether centralized or decentralized, can be difficult to build upon and lock people in to certain design patterns --- in other words, we are concerned that existing infrastructures are not pluralistic enough.
-% Decentralized infrastructures can limit themselves to design patterns copied from the centralized services they were designed to replace or use technology for decentralization that introduces new limits on the user experience.
-% For example, many of these systems have locked in designs that make user interactions highly public
-% and many have introduced cryptography that makes posts undeniable and unforgettable.
-
-
-% In the space of alternatike social media ecosystems, a common design goal is to uphold the security, privacy, and ownership of personal data.
-% While we generally stand by these goals and consider them in the implementation of our system, they are orthogonal to primary goal of this work: making social applications easier to create, change, and migrate between.
-
-% Concerns over security, privacy, and data `ownership stem from a distrust in platforms.
-% For the sake of unraveling these motivations,
-% we are not directlt concerned that Untrusted platforms may
-% use user data to personalize user experiences and keep users on platforms longer, often with harmful externalities;
-% they may give or sell data to third parties resulting in higher insurance premiums, rejection from jobs, schools, or loans, and incarceration;
-% they may use user data to manipulate what users consume, how users spend money, who they meet, and what their public opinions are.
-
-% For example, two early decentralized infrastructures that we consider quasi-monolithic are diaspora* and Secure ScuttleButt.
-% These infrastructures bake in Twitter-like microblogging design patterns: a feed of content posted by people a user follows and interactions via comments and likes.
-% Both further limit the experience by signing all posts cryptographically with a user's public key. This makes all of a user's messages undeniable, unlike many centralized platforms where users can claim, for example, that a screenshot of a deleted post has been doctored.
-% ScuttleButt takes this a step further by using an append-only structure that makes it impossible to truly edit or delete content~\cite{diaspora, securescuttlebutt}.
-
-% However, distrust is not the central adversary in our work. Instead, we are concerned that social infrastructures, regardless of their trustworthyness, can be difficult to build upon and lock people in to certain design patterns.
-% Trustworthy services can limit themselves to design patterns copied from the distrustful services they were designed to replace or use technology to establish trust that introduces new limits on the user experience.
-% For example, many of these systems have locked in high levels of content publicity and many have introduced cryptography that makes posts undeniable and unforgettable.
-
-% Still, almost all existing systems that allow for more user security, privacy, and data ownership \emph{also} introduce more flexibility in developing end-user experiences than their centralized counterparts.
-% We explore these systems in the following subsections.
-
-% In our exploration of existing systems we will
-% So while all the infrastructures below are decentralized,
-% we will not touch touch on the mechanisms that make them decentralized
-% except where those mechanisms limit or expand the end-user experience
-% in some way.
-% We focus on what these infrastructures have done to expand the scope of possible application designs, and where they have room to grow that scope more.
-
-% Such mechanisms include peer-to-peer interactions, federation, and end-to-end encryption.
-% These mechanisms include peer-to-peer systems that do not rely on a central trusted authority; federated systems that are composed of many smaller authorities, one of which is a user can put trust in; and end-to-end encrypted systems that only reveal information to communicating parties, removing the need for trust in a platform.
-
-% \subsubsection{diaspora*}
-
-% Founded in 2010, diaspora* is one of the first distributed social networking protocols.
-% diaspora* is a microblogging service like Twitter and includes concepts like profiles, posts, comments, and likes.
-% diaspora* allows for content to shared either publicly, or to an `aspect': a reusable, asymmetric, and hidden set of users specified by the sender, supposedly the inspiration for the `circles' concept in Google+.
-% % The stream of content a user receives is typically presented in a feed.
-
-% Like many systems to follow, diaspora* signs all user interactions with the user's public key.
-% While this is useful to prove authenticity in the distributed implimentation, it does mean that all of the user's messages are undeniable, unlike traditional social media platforms where users can claim, for example, that a screenshot of a deleted post has been doctored.
-
-% The diaspora* protocol only defines server to server interactions rather than client to server interactions. This means that that application developers most likely need to roll their own servers to build out custom clients.
-
-%https://wiki.diasporafoundation.org/FAQ_for_users
-%https://diaspora.github.io/diaspora_federation/
-
-% \subsubsection{Secure ScuttleButt}
-
-% Founded in 2014, Secure ScuttleButt, offers a relatively similar experience to to diaspora* and Twitter with affordances to
-% follow, post, reply, and like.
-% Users mostly see content posted by people that they follow but there are built-in heuristics for getting content of `transitive interest' by friends of friends~\cite{securescuttlebutt}.
-
-% ScuttleButt's unique peer-to-peer infrastructure gives it some limitations.
-% First, ScuttleButt is an append only system.
-% While some clients allow for users to edit or delete posts, the original posts are still in the system and can be found and attributed to the original user by anyone curious.
-% Second, ScuttleButt requires knowing someone already in the network to bootstrap it's peer-to-peer network and begin receiving posts.
-% Third, its architecture does not allow for central moderation, so moderation done by user flagging of harmful content.
-
-% Like, diaspora*, ScuttleButt only specifies server-to-server interactions, requiring full stack development to create custom clients.
-
-% ActivityPub builds on its sister standards Activity Streams and Activity Vocabulary, schemas which provide a diverse and extensible set of \emph{objects} that can be created and \emph{activities} that can be performed by \emph{actors}, which may be users or other entities like communities.
-% Activities include Announce, Like or Follow, and objects include Note, Image, or Profile.
-% Activities and objects are represented in JSON-LD and each have standard associated properties like `content,' `tag,' and `inReplyTo.'
-% The `LD' in JSON-LD stands for `linked data' and allows for this schema to be extended and so
-% Mastodon, for example, has expanded the schema to include an Emoji object for posting emojis with custom icons and a `featured' property for pinning posts to the top of one's profile.
-% https://docs.joinmastodon.org/spec/activitypub/
-
-% To share these activities and objects around, ActivityPub gives each actor an inbox for receiving messages and an outbox for broadcasting messages.
-% This model naturally allows for direct messaging: to message another user you put a message in their inbox, like an email; and friend/follower interactions: to subscribe to posts from another user you poll that user's outbox, like an RSS feed.
-% However, there are other interactions that cannot be easily simulated with inboxes and outboxes alone and so ActivityPub adds \emph{side effects} to activities and objects to compensate.
-
-%This system gives ActivityPub a lot of flexibility, however the protocol is vague or silent on how many objects, activities, and properties should interpreted.
-% For example, a reply can be represented in the Activity Vocabulary as an Announce activity of a Note object that has an `inReplyTo' property pointing to the parent post that is being replied to.
-% However, if a user simply posts the Announce activity publicly to their outbox, how are viewers of the parent post supposed to know to look in the replying user's outbox?
-% The \emph{suggested} solution is that when a user posts a reply, it has the side effect of also being sent directly to the parent poster's inbox. When that parent poster receives the reply, they have the side effect of rebroadcasting it to their followers.
-% This generally works but number of edge cases can lead to `ghost replies' that implementers have built various heuristics to catch.
-
-%https://fedidb.org/software
-
-%https://matrix.org/blog/2020/12/18/introducing-cerulean/
 
 \subsubsection{The AT Protocol and Nostr}
 
@@ -469,14 +194,6 @@ of moderation that we go on to describe are possible with total reification,
 including the reified group membership and document authorship
 that we demonstrate in Section~\ref{case-studies}.
 Additionally, labelers on the AT Protocol need to run their own labeling servers.
-%and rooted in continuing
-%an existing top-down moderator-user hierarchy, rather than a democratih approach where the
-
-% TODO: moderation
-% They use ``stackable'' moderation. Labelers
-% This is one specific form of the moderation that
-% can be achieved with total reification, however
-% other forms are possible as well.
 
 Both protocols include extensible objects, but these objects are not
 \emph{autonomously} extensible (see Requirement~\ref{requirements:autonomous-extensibility})
@@ -485,67 +202,6 @@ Additionally, both protocols sign all objects with their users' public keys, mak
 all content \emph{unrepudiable}, violating our Requirement~\ref{requirements:forgiving}.
 Finally, the AT Protocol does not currently allow for
 any private interactions, including private messaging.
-
-% It is technically decentralized although some critics suggest
-% that decentralization scales quadratically and so realistically it
-% can only support a fixed number of users.
-% However it does offer a "credible exit".
-% Cite Christine.
-
-% Released in 2022, the At Protocol is the protocol underlying the Bluesky social network.
-% All posts in the At Protocol are public --- as of March 2024, there is not even private messaging.
-
-% All of a user's posts are kept in a personal data store that tracks changes like a git repository. All of these changes are signed with the user's public key which means posts are undeniable and unforgettable, since all deletions and edits a user makes are publicly available in this log.
-
-% Independent developers can build relays that index the content stored in individual data repositories to compute algorithmic feeds. Clients can be built on top of a relay's API by calling methods like `getTimeline` or `getPostThread.' However, relays don't necessarily need to share an API so there is no universal client-server API.
-% The relay-specific client-server APIs are at least be described by a common At Protocol-specific lexicon.
-
-% Relays may perform some amount of baseline moderation, but there is standardized labeling system that allows users to mark posts or other users as `rude,' `troll,' etc.
-% Users can subscribe to other users' labeling, allowing relays to filter or blur posts labeled by those users.
-% They call this system `composable moderation.'
-
-% \subsubsection{Nostr}
-
-% Released in 2020, Nostr's infrastructure, like the At Protocol's, is divided into three layers: data storage, relays, and clients.
-% Unlike the At Protocol, Nostr relays use a universal client-server API that allow users to query the relays for content they've indexed like a general purpose database.
-
-% For example, when one user follows another, their client simply queries the relays it is connected to for posts by that user.
-% This system is so generic it has allowed for at 78 different applications to be built on top of Nostr, including microblogging sites, Reddit-like forums, Pinterest-like collaborative tagging, an app for collaborative music remixing, and more.
-% %https://www.nostrapps.com/
-
-% However the flexibility to make arbitrary queries is also Nostr's drawback:
-% all of a user's activity across all client applications can be revealed by simply querying for their user ID.
-% Nostr provides basic mechanism for crafting private messages (which, by necessity, leaks a lot of metadata so the messages appear in queries)
-% but this won't prevent, for example, a user's posts in in a public political forum from mixing with their public life updates from mixing with their public dating profile --- this is the phenomenon of context collapse, which we will return to in \S.
-
-% Many of Nostr's users are cryptocurrency enthusiasts and cryptocurrency micropayments are a built-in feature of the platform. Unsuprisingly, all Nostr data is signed by a user's public key.
-% Similar to the At Protocol, users can opt-in to moderation by subscribing to block lists.
-
-% https://www.youtube.com/watch?v=89Y-Bj_VBk8
-
-%https://github.com/nostr-protocol/nips/blob/master/45.md
-%https://gregwhite.blog/nostr-content-moderation/
-
-% \subsubsection{Spritely}
-
-% Spritely was founded in 2020 by one of the cofounders of ActivityPub, although as of writing, there is no working implimentation.
-% In an announcement, the founder shares similar concerns to our own:
-% A co-author of the ActivityPub protocol wrote, ``contemporary fediverse interfaces borrow from surveillance-capitalism based popular social networks by focusing on breadth of relationships rather than depth.''
-% For example, a co-author of the ActivityPub protocol later critiqued it, writing: ``Much of the fediverse has imported `what works' directly from Facebook and Twitter, but I’d argue there’s a lot we can do if we drop the assumption that this is the ideal starting base''~\cite{spritely}.
-
-% Spritely uses object capabilities and is concerned with objects acting upon other objects in a globally consistent and permissioned way. This is important, for example, in social gaming whlre you would like to trade
-% This could potentially be used to create actors, that have well defined behaviouhs (e.g. routing messages), but
-
-% To our knowledge, spritely implimenters must run their own servers, cryptography
-
-% https://spritely.institute/static/papers/spritely-core.html
-
-% \subsection{Social Application Frameworks}
-
-% Classic commercial tools like WordPress allow users to create sites with basic comment sections. With the help of plugins, like BuddyPress, users can add on pre-built social components like profiles, posting, and private messages.
-
-% This approach does not handle operation, although perhaps it would be possible to impliment these primitives in an interoperable way.
-% However, as we discuss in Reification, we choose to make our
 
 \subsection{Adversarial Interoperability}
 
@@ -564,63 +220,14 @@ Discord, Slack, and Messenger
 It may be possible to build bridges with other services either into or out of
 Graffiti as a way to encourage adoption.
 
-% Adversarial services necessarily cater to the lowest common denominator of different social applications designs.
-% While we believe these tools are certainly important for \emph{adoption} of new tools, they don't inherently broaden the design space of social applications, as we aim to in this work.
-
-% Interoperability is also supposed to be legally enforced
-
-% \subsection{Legally Enforced Interoperability}
-
-% Graffiti aims to make social applications easier to create by reducing development load and reducing lock-in to applications.
-% While we take a technical approach to tackle both problems simultaneously in a \emph{new} ecosystem, legal work is being done to deal with platform lock-in to the \emph{existing} ecosystem of social applications.
-% While a full survey of legal work is beyond the scope of this paper, we highlight two major works: the General Data Protection Regulation (GDPR) and the Digital Markets Act (DMA), both passed in the European Union.
-
-% \subsubsection{GDPR} Adopted in 2016 and effective since 2018, the GDPR provides a \emph{right of data portability}
-% to ``foster opportunities for innovation by means of sharing of personal data between data controllers.''
-% % These rights allow users to receive a copy of their `data provided' to a platform, however a narrow interpretation of this wording does not include data that a platform has \emph{observed} about a user.
-% However, while the legislation states that platforms ``should be encouraged to develop interoperable formats that enable data portability'' there is no explicit provision that they must, and while users ``should have the right to have the personal data transmitted directly from one controller to another,'' it is only where ``technically feasible''~\cite{gdpr,gdprinteroperability}.
-
-% In practice, this leads to an `adieu scenario' where users can remove their data from one platform and bring it another, often with substantial difficulty~\cite{howportable}. However some legal scholars are optimistic that it could be expanded to a `fusing scenario,' a ``user-centric platform where all digital services are interconnected''~\cite{gdprinteroperability}.
-% Perhaps Graffiti or a similar system could be required by law as the interoperable format and means of data transmission between platforms.
-
-% \subsubsection{DMA} Adopted in 2022, the DMA enforces that specific `gatekeepers,' including Meta, Apple, and ByteDance must make their \emph{messaging} services interoperable.
-% While the legislation does not specify what protocol gatekeepers are supposed to use to interoperate, it must allow for the interoperation of multimedia point-to-point and group texting as well as voice and video calls.
-% The gatekeepers have several years to comply, and as of writing, interoperability has not been implemented.
-% The legislation does not extend to include more general social media~\cite{digitalmarketsact}.
-
 \subsection{Channel-Like Models}
 
 Channels, as discussed in Section~\ref{concepts:channels}
 are one of the novel aspects about the Graffiti API.
-% We have, so far, discussed channels in relation to IRC and Slack channels
-% and Matrix rooms, which are user-facing instances of a general
 So far, we have discussed channels in relation to the publish-subscribe
 pattern~\cite{pubsub}.
 Here we mention two other concepts that relate to and shaped our
 design of Graffiti's channels.
-
-% While relatively simple, they are highly expressive and remove the
-% need for many server-side effects.
-% We have discussed channels in relation to ``Room-like'' models
-% of IRC, Slack, and Matrix which correspond to publish-subscribe
-% systems more broadly. Here we mention two other systems that
-% are related to channels but were designed for different purposes.
-
-
-% While they are more powerful than the Actor model, used by ActivityPub
-% and the Firehose model used by BlueSky, we outline the differences from
-% other familiar and related concepts.
-
-% \paragraph{Publish Subscribe}
-
-% Publish subscribe, has been implemented by RSS or
-% more efficiently by WebSub, formerly PubSubHubub.
-% Some systems have owners.
-% Others are not persistent.
-
-% Also that one paper Dave Clark told me to cite.
-
-% Graffiti combines both aspects.
 
 \subsubsection{Bidirectional Links}
 
@@ -640,12 +247,6 @@ The ability for an object's creator to select which of its links should be bidir
 is critical for managing context collapse.
 The general Dexter hypertext model allows for mixed link types, but
 as far as we can tell, it was never implemented~\cite{dexter}.
-
-% A reply object will have pointers to the object it is replying to and the actor who created the reply.
-% Adding the object's URI or the actor's URI as channels selectively adds backlinks to those entities
-% making it possible to go \emph{from} the original post \emph{to} the reply (in the case of Instagram-like comments)
-% or \emph{from} the actor \emph{to} the reply (in the case of Twitter/X-like comments).
-% Of course, channels also make it possible to create "links" from non-digital artifacts like topics or locations.
 
 \subsubsection{Object Capabilities}
 \label{related-work:ocaps}
@@ -668,51 +269,3 @@ in addition to channels.
 
 ``Write'' capabilities are irrelevant in Graffiti given that total reification enables many coexisting permissions structures
 to be built out of only self-writes.
-% TODO: We also do not handle write capabilities because all
-% writing is handled by total reactivity.
-
-
-% hile we are in support of these systems, this sort of legislation will lag behind the technology, so we are attempting to envision a system that leads to better outcomes from the getgo.
-% This paper makes the stand that there is a systematic problem with social media architecture that must be. However, there is plenty of work t
-% While this paper takes a technosolutionist approach to a social problem.
-% Digital Markets Act: interoperability between messaging applications.
-% Some of these
-% Issues with social media rile, from it's.
-% There are attempts to curtail the problem with legal, li
-% For example GDPR or a proposed ban on TikTok.
-% We see this as treating the symptoms, not the underlying problem: if users had more
-
-% \subsection{Three Legged Stool}
-
-% The Initiative for Digital Publish Infrastructure has a "three-legged" proposal to fix social media: first they want to uplift usage of Very Small Online Platforms (VSOPs) while recognizing that VSOPs won't entirely replace massive-scale platforms; second they want to create "loyal clients" that aggregate content from different platforms, making it easier to belong to multiple platforms at the same time; third, they want to create a "Friendly Neighborhood Algorithms Store" full of pre-built recommendation algorithms, moderation systems and other tools that VSOPs can use to build up their own platforms with relative ease~\cite{threeleggedstool}.
-
-% In many respects our work is an answer to this initiative: Graffiti makes it easy to create VSOPs and the univeral backend naturally connects them - there is no need for the adverserial interoperability~\cite{adverserialinterop} that the IDPI suggests is necessary to create loyal clients.
-
-% While truly creating a ``Friendly Neighborhood Algorithm Store'' is beyond the scope of this, we imagine many tools built upon Graffiti including algorithms, moderation, as well as design frameworks - our Vue plugin for graffiti is a first step in that direction.
-% The friendly neighborhood algorithm store itself could be implimented in Graffiti, which would mean that it wouldn't be able to lock users in unlike the Apple app store which has strict developer requirements.
-
-% % We agree wholeheartedly with the first and third points:
-% We too imagine that in the Graffiti ecosystem there are different scales of interaction, local communities, niches, as well as the massive scale networks like TikTok, X, or Facebook.
-% By moving computation to client side, Graffiti reduces the complexity of building apps and our Vue plugin is just a start to the marketplace of development tools that could be built on top.
-% With regard to the loyal client, The IDPI imagines these clients need to perform "adverserial interoperation", as done with the Gobo platform CITE - Graffiti may need to too, to acheive more widespread adoption.
-% Moreover, aggregation will move beyond feed-based systems.
-
-% The At Protocol has flexible schemas but servers will only handle certain types of objects,
-% breaking our serverless requirement.
-% At proto is not serverless since it restricts the type of objects that can be placed on it.
-% While there may need to be some filtering for spam and illegal content, no strict set of schemas
-% The At Protocol, to our knowledge does not add such side effects and has invented its own vocabulary, similar to the Activity Vocabulary, and lexicon for extensible object definitions, similar to JSON Schema.
-% Our design is similar, starting from Activity Vocabulary rather than the At Protocol's syntax, but we do not \emph{require} applications to specify schemas for the data they produce. Doing so would put up more barriers to less-technical users; the semantic web's slow adoption has made it clear that users don't like to add metadata~\cite{semanticwebtwodecadeson}.
-% % The Activity Vocabulary is an essential step in this direction that provides an extensive and extensible vocabulary for objects and activities.
-% % However, the ActivityPub protocol that builds on  the vocabulary undercuts the reification benefits by adding \emph{side effects} to the creation or reception of various activities and object, that undoes the reification.
-% % As mentioned, these side effected are implemented inconsistently across servers and changing or adding new functionality requires changing servers, violating our server-less design
-% \subsubsection{Comparison to Other models}
-
-% The channel model is clearly different from the Firehose Model used by BlueSky
-% which.
-% The firehose model dumps all user data into one public database,
-% which doesn't allow for the carving out of different contexts that we did in our comment
-% example above. In the firehose model a comment will always be visible to *both* the original post's audience and
-% the commenter's followers.
-% It also has subtle differences.
-% There are several other contextual models.

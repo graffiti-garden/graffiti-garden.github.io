@@ -83,13 +83,13 @@ of a catalog of primitive \emph{concepts}.
 Unfortunately, these concepts are limited in their extensibility.
 For example, the ``scoring'' concept cannot be expanded
 to support multiple ``reactions''
-without creating a new concept with new server code~\cite{dejavu}.
+without creating a new concept and new server code~\cite{dejavu}.
 
-Commercial frameworks like Google Firebase allow developers
+Commercial frameworks, like Google Firebase, allow developers
 to build on top of Google's database and identity systems,
 enabling pure client-side development.
 Firebase plugins for the front-end framework Vue and the low-code tool
-Mavo~\cite{mavo} allow these applications to be written declaratively.
+Mavo~\cite{mavo} enable developers to write these applications declaratively.
 For example, Mavo Chat\footnote{
     \url{https://dmitrysharabin.github.io/mavo-chat/}
 } is a real-time chat application written in 156 lines of HTML
@@ -446,10 +446,10 @@ and intermediate ``app views'' can consume content from this firehose to
 construct algorithmic feeds, reducing client-side computation compared
 to our own approach, at the cost of standing up custom servers.
 
-A globally queryable stream of data makes contextual seperation impossible.
+A globally queryable stream of data makes contextual separation impossible.
 For example, it is impossible for a user, Alice, to post a reply on either protocol
 without that reply surfacing in a query for ``anything by Alice.''
-This appears to be causing inter-application collapse, similar to
+This also appears to be causing inter-application collapse, similar to
 what we predict in our discussion of Requirement~\ref{requirements:context-differentiation}.
 An application called Flashes, built on the AT Protocol,
 currently places all images a user has posted to Bluesky within
@@ -634,7 +634,7 @@ from one document you can see all the other documents that link to it.
 Channels can be seen as a way to \emph{selectively} create bidirectional links.
 A reply object points \emph{to} the object it is replying to.
 Placing the reply in the channel represented by the original post's URL
-creates a link in the opposite direction
+creates a link in the opposite direction,
 pointing \emph{from} the original post object \emph{to} the reply.
 The ability for an object's creator to select which of its links should be bidirectional
 is critical for managing context collapse.

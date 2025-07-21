@@ -34,7 +34,7 @@ without upheaving all the tools and applications that have been built on top.
 
 \subsection{Above}
 
-While the API has hidden signifigant complexity below,
+While the API has hidden significant complexity below,
 like the need to write and deploy server code or the need to
 consider the server infrastructure at all,
 writing front-end code is still inaccessible
@@ -141,8 +141,8 @@ environment as well as in a declarative HTML-like template.
 The plugin maintains complete TypeScript support and
 is a relatively light wrapper over a Graffiti-specific reactivity library we have developed\footnote{
    \url{https://sync.graffiti.garden/classes/GraffitiSynchronize.html}
-}
-and so support for other front-end frameworks, like React, will be
+}.
+Therefore, support for other front-end frameworks, like React, will be
 fairly easy to add in the future.
 
 Below is the complete template for a micro social application,
@@ -234,16 +234,17 @@ or different features.
 % or their community's ``pages''?
 
 \hl{%
-Alternatively, the malleable, interoperable, and declarative nature of
-Graffiti could allow it to serve as a new basis for \emph{computational media}~{\cite{computationalmedia}}.
+Alternatively, Graffiti could serve as a new basis for
+\emph{computational media}~{\cite{computationalmedia}},
+where the boundary between developing and using applications is blurred.
+This would require representing Graffiti applications with
+Graffiti objects, potentially by extending the
+collaborative editing capabilities we demonstrate in Section~{\ref{case-studies:wikiffiti}}.
 Graffiti's social focus may fill gaps left by existing computational media
 systems like WebStrates~{\cite{webstrates}} and its successors, CodeStrates~{\cite{codestrates}}
 and Mirrorverse~{\cite{mirrorverse}}, which provide malleable interactive environments
-for small trusted teams, but have limited affordances
+for small, trusted teams, but have limited affordances
 for \emph{moderation} or \emph{discovery} of social content.
-A scheme would need to be developed to build Graffiti applications out of
-Graffiti objects themselves, in order to blur the line between developing
-the applications and using them.
 }%
 
 \subsection{Below}
@@ -461,11 +462,10 @@ in the object's URL, just as different implementations are selected by \emph{sch
 For discovery, we currently provide a registry of servers
 and clients call \texttt{discover} on all servers in the registry.
 If many servers are deployed, discovering from every one
-will be infeasible and so instead we can use an ``announce''
-protocol, detailed in Appendix~\ref{appendix:announce}, that builds on top of the remote implementation,
+will be infeasible, and so instead we can use an ``announce''
+protocol, detailed in Appendix~\ref{appendix:announce}. The protocol builds on top of the remote implementation,
 but only requires the client to
 call discover on the servers containing relevant data,
-%DK what does "of interest" mean?  I'd like to contact only servers that have content in a target channel, but servers cannot announce what channels they have without publicizing channel names
 plus a small constant number of well-known
 ``\emph{rendez-vous}'' servers.
 
@@ -631,7 +631,7 @@ similar to Dropbox.
 % However they post performance issues:
 % At a high level, the protocol works as follows.
 Like the remote implementation, users get to choose which storage
-service they would like to store their objects on, including
+service they would like to store their objects in, including
 from one they host themselves.
 The client software
 manages channel-specific files on the storage provider,
@@ -688,7 +688,7 @@ where as the remote implementation requires only one request per remote server.
 If, like email or Mastodon, many actors, especially those in regular contact,
 use the same server~\cite{mastodonchallenges},
 then \texttt{discover} on the remote implementation can take as
-few as \emph{one} request while requests made by
+few as \emph{one} request, while requests made by
 the commodity storage implementation scale with the number of actors.
 Additionally, the schema provided to \texttt{discover} cannot be used for any
 server-side filtering---a client must download \emph{all} objects in a channel
@@ -704,8 +704,8 @@ worry about developing the infrastructure.
 % storage solutions makes it more familiar and robust.
 
 At the time of writing, we have built the tracker server and client\footnote{
-  \url{https://github.com/graffiti-garden/link-service},
-  \url{https://github.com/graffiti-garden/link-service-client}.
+  \url{https://github.com/graffiti-garden/link-service}\\
+  \url{https://github.com/graffiti-garden/link-service-client}\\
   WebTorrent was considered instead of a custom tracker,
   but unfortunately it does not persist announcements more than a few hours.
 }, and the complete implementation software,
@@ -851,7 +851,7 @@ a tracker may not be necessary at all and can be replaced with a gossip protocol
 Currently each server owner can see all the objects and channels
 that pass through it. While federation allows users to switch
 to servers they trust, those servers are still vulnerable to
-subpoenas, putting groups like activists at risk.
+subpoenas, putting groups, like activists, at risk.
 It would be valuable to build end-to-end encrypted versions of the remote servers,
 tracker, and commodity storage servers, perhaps building on
 searchable encryption~\cite{searchableencryption}.

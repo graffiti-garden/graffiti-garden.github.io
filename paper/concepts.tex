@@ -135,7 +135,7 @@ Section~\ref{concepts:total-reification}.
 Finally, objects are mutable, meaning they can be changed or deleted.
 Mutability is necessary for the system to be forgiving, per Requirement~\ref{requirements:forgiving}.
 The question of \emph{who} can mutate the objects
-will be answered once we discuss identity next and then total reification.
+will be answered once we discuss identity, next, and then total reification.
 
 In summary, Graffiti objects are:
 
@@ -172,8 +172,8 @@ so long as they are on that private object's ``allowed'' list
 }%
 The actor is represented by a globally unique string or \emph{URI},
 just as an email account is represented by an email address.
-The term \emph{actor} is again inherited from ActivityStreams
-and is used rather than \emph{user} since a user may own
+The term \emph{actor} is again inherited from ActivityStreams,
+and is used rather than \emph{user}, since a user may own
 multiple actors or
 an actor may be a non-human entity
 like a bot or recommendation service.
@@ -587,14 +587,14 @@ A summary of these different designs is shown in Table~\ref{concepts:channel-rep
 \caption{Reply designs according to channel usage}
 \label{concepts:channel-replies}
 \begin{flushleft}
-\textbf{Is the reply posted to the...}
+\emph{Is the reply posted to the...}
 \end{flushleft}
 \begin{flushright}
 \begin{tabular}{cc|c|c}
-& \multicolumn{1}{c}{} & \multicolumn{2}{c}{\textbf{...post's channel?}} \\
+& \multicolumn{1}{c}{} & \multicolumn{2}{c}{\emph{\textbf{...post's channel?}}} \\
 & & ︎{\emoji✔️} & {\emoji❌} \\
 \cline{2-4}
-\multirow{2}{*}{\shortstack{\textbf{...replier's} \\ \textbf{channel?}}}
+\multirow{2}{*}{\shortstack{\emph{\textbf{...replier's}} \\ \emph{\textbf{channel?}}}}
 & ︎{\emoji✔️} & X Reply & Quote Tweet \\
 \cline{2-4}
 & {\emoji❌} & Instagram Reply & N/A

@@ -8,7 +8,7 @@
 % The first demonstrate interoperability.
 % The latter demonstrate how ``weird'' social applications
 % can become when there is not central moderator.
-The case studies below demonstrate the diversity of applications
+Our case studies demonstrate the diversity of applications
 that can be built on top of the Graffiti API and explore interoperation
 between those applications.
 The studies also demonstrate some of the unusual design patterns that
@@ -30,9 +30,9 @@ top of the Graffiti Vue plugin.
 The following example demonstrates how a community-specific application,
 %DK I would call this a social site rather than an application (and explain why).
 \emph{The Glue Factory}\footnote{
-\url{https://gluefactory.live}, Source: \url{https://github.com/horseyhouse/glue-factory}
+\url{https://gluefactory.live}\\Source: \url{https://github.com/horseyhouse/glue-factory}
 }, can interoperate with a general-purpose application, \emph{Glitter}\footnote{
-\url{https://glitter.graffiti.garden}, Source: \url{https://github.com/graffiti-garden/glitter}
+\url{https://glitter.graffiti.garden}\\Source: \url{https://github.com/graffiti-garden/glitter}
 },
 without the explicit permission of Glitter.
 Not all of the community-specific features on The Glue Factory
@@ -42,7 +42,7 @@ Still, there is enough interoperation between the two to be meaningful.
 
 \emph{Glitter} is a text-centric microblogging platform
 where users can post, follow, reply, and change their display name.
-Replies are threaded and, like Twitter, appear in the replier's followers' feeds in addition to the reply thread.
+Replies are threaded and, like Twitter, appear in the replier's followers' feeds, in addition to the reply thread.
 There is also a directory that users can add themselves to,
 so others can find them.
 %DK Is the directory glitter specific?   why?   finding users seems important for most applicatoins.
@@ -154,7 +154,7 @@ used by the co-operative that owns the venue space.
 %DK perhaps before getting into the crazy bits, talk about how easy it is to implement a basic group chat application ("Grack").   Each group is defined by a channel, and you invite someone to the group by notifyig them about the channel.  There is no admin---anyone in the group can invite others---and no way to remove people without their consent (but you can always create a new group excluding them).  Maybe also describe how you would design a facebook clone ("Gracebook") differently: a user can post content for friends by putting it in their own actorID channel but with an allowlist consisting of their friends.  alternatively they can create a different channel for sharing posts to their friends and invite all friends to subscribe to it.
 
 \emph{Parallax}\footnote{
-\url{https://parallax.graffiti.garden}, Source: \url{https://github.com/graffiti-garden/parallax}
+\url{https://parallax.graffiti.garden}\\Source: \url{https://github.com/graffiti-garden/parallax}
 } is a real-time group chat application that demonstrates
 how, under total reification, it is possible for \emph{every} user to employ a different
 moderation scheme.
@@ -197,7 +197,7 @@ but it can be
 % transformed
 % but by changing X lines of functional code,
 transformed into a more reasonable (but more restrictive) application called \emph{Provenance}\footnote{
-\url{https://provenance.graffiti.garden}, source code is in the parallax repository.
+\url{https://provenance.graffiti.garden}\\Source code is in the Parallax repository.
 },
 where a group's administrator is the  \emph{creator} of the group chat.
 %DK not sure what this means.   how does being the creator give them administrator privileges?   and was does admin privilieges mean given adversarial interoperability?
@@ -234,9 +234,10 @@ Graffiti's inevitable assymetry most accessible and engaging.
 % it interoperates?
 
 \subsection{Wikiffiti}
+\label{case-studies:wikiffiti}
 
 Wikiffiti\footnote{
-\url{https://wikiffiti.graffiti.garden}, Source: \url{https://github.com/graffiti-garden/wikiffiti}
+\url{https://wikiffiti.graffiti.garden}\\Source: \url{https://github.com/graffiti-garden/wikiffiti}
 } is a Wikipedia-like application that demonstrates that
 collaborative editing in Graffiti is possible,
 even though an actor can only mutate their own objects.
@@ -279,8 +280,8 @@ a hierarchy of user access levels,
 friend-of-a-friend networks of trust,
 or automatic vandalism detectors, for example.
 Still, the data underneath can always be reinterpreted, allowing
-for new systems to independently evolve that,
-for example, might be more welcoming to newcomers~\cite{wikibourgeoisie, wikirisedecline}
+for new systems to independently evolve that
+might be more welcoming to newcomers~\cite{wikibourgeoisie, wikirisedecline}
 or promote edits made by women and non-binary people~\cite{wikigender}.
 An application could even highlight edits that are vandalism to some,
 but art to others: graffiti.

@@ -156,7 +156,7 @@ the following meta properties:
 \texttt{allowed} (array of strings \hl{or undefined}): An \hl{optional} list of actor URIs that are allowed to access the object.
 \hl{When undefined, any actor can access the object when they know either its \texttt{url} or one of its \texttt{channels}.}
 \item
-\texttt{revision} (number): A unix timestamp, lamport timestamp~{\cite{lamport}}, or other counter that
+\texttt{revision} (number): A unix time\-stamp, lamport time\-stamp~{\cite{lamport}}, or other counter that
 increases with each modification of the object.
 \end{enumerate}
 
@@ -252,7 +252,7 @@ encouraging the folksonomy.
 \texttt{discover} lets an application developer query for objects
 from a particular set of channels.
 Objects are returned from \texttt{discover} as an \emph{asynchronous generator}.
-This allows the application to process objects as they come in
+This allows the application to process objects as they come in,
 using a \texttt{for\ldots{await}} loop, rather than waiting for all objects
 to be fetched. The generator also hides the potential complexity of
 query pagination below the API.
@@ -360,7 +360,7 @@ constraint for an actor's \emph{own} objects, to prevent them from
 ``losing'' objects.
 
 The \texttt{recoverOrphans} method finds objects that an actor has created
-that are not contained in \emph{any} channel and \texttt{channelStats}
+that are not contained in \emph{any} channel, and \texttt{channelStats}
 returns a list of all the channels that an actor has posted in.
 Both methods output streams similar to \texttt{discover}
 and require a \texttt{session}.

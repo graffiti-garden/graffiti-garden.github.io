@@ -23,10 +23,14 @@
 \usepackage{graphicx} % Required for inserting images
 \graphicspath{{paper/}}
 
-\usepackage{fontspec}
-\newfontfamily\emoji{Noto Emoji}
+% \usepackage{fontspec}
+% \newfontfamily\emoji{Noto Emoji}
 
-\usepackage{soul}
+% Highlighting
+% \usepackage{soul}
+% Disable highlighting
+\newcommand{\hl}[1]{#1}
+
 
 % Uncomment to double-space so you have
 % room to write comments on the print-out
@@ -66,8 +70,6 @@
 }
 \email{ddc@csail.mit.edu}
 
-\sethlcolor{white}
-
 \begin{document}
 \begin{abstract}
 \input{paper/abstract}
@@ -75,11 +77,12 @@
 
 
 \ccsdesc[500]{Human-centered computing~Collaborative and social computing systems and tools}
-% \ccsdesc[500]{Human-centered computing~Interactive systems and tools}
+\ccsdesc[500]{Information systems~Collaborative and social computing systems and tools}
 
 \keywords{interoperability, social media, personalization, decentralization, malleable software, client-side programming}
 
 \maketitle
+\newpage
 \input{paper/introduction}
 \input{paper/requirements}
 \input{paper/concepts}

@@ -56,9 +56,9 @@ fairly easy to add in the future.
 
 Below is the complete template for a micro social application,
 built with the plugin, that shows a (continuously updating) list of all messages posted to a real-time group chat and enables the user to post their own message:
-\begin{minted}{vue}
+\begin{minted}{html}
 <form v-if="$graffitiSession.value"
-  @submit.prevent="$graffiti.put({
+  |\PYG{p}{@}|submit|\PYG{p}{.}|prevent="$graffiti.put({
     value: { content },
     channels: [ 'my-group' ]
   }, $graffitiSession.value)"
@@ -66,13 +66,13 @@ built with the plugin, that shows a (continuously updating) list of all messages
   <input v-model="content" />
   <input type="submit" value="Post" />
 </form>
-<button v-else @click="$graffiti.login()">
+<button v-else |\PYG{p}{@}|click="$graffiti.login()">
   Log In to Post!
 </button>
 <GraffitiDiscover autopoll
   v-slot="{ objects: messages }"
-  :channels="[ 'my-group' ]"
-  :schema="{
+  |\PYG{p}{:}|channels="[ 'my-group' ]"
+  |\PYG{p}{:}|schema="{
     properties: {
       value: {
         required: ['content'],

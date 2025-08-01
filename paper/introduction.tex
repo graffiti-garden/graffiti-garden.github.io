@@ -50,7 +50,6 @@ The types of social applications that can be built on the same set of Graffiti p
 with plenty of room for entirely new creations.
 %including social ``sites'' with distinctive personalities.
 
-\hl{%
 Our goal of interoperability leads almost immediately
 to the conclusion that a user's
 social data---their posts, likes, friend lists, and so on---\emph{cannot}
@@ -58,9 +57,7 @@ be stored within any single application.
 Instead, user data is stored on a collective infrastructure
 that all applications can access (subject to access control)
 and selectively present data from according to their individual designs.
-}%
 
-\hl{%
 This application-infrastructure separation
 is an interoperability mechanism similar to
 those used by
@@ -81,7 +78,6 @@ In contrast, Graffiti provides a simple yet minimally constraining
 client-side \emph{application programming interface} (API)
 upon which a much broader range of personalized applications can be built, all
 without server code or bureaucracy.
-}%
 
 % To illustrate the ecosystem this enables,
 % suppose a group of friends start out by using an Instagram-like application,
@@ -128,15 +124,12 @@ Our design decisions are guided by a set of \emph{requirements}, outlined
 in Section~\ref{requirements}, that primarily focus on the direct experience
 of social application developers and the users of their applications,
 both users of Graffiti as a whole.
-\hl{%
 We include one additional requirement that targets the indirect
 effects that \emph{power} over the underlying infrastructure
 can have on the user experience.
 Specifically, we leave room for users to retain control over their data
 via technologies like decentralization or encryption.
-}%
 
-\hl{%
 Importantly, however, Graffiti is not shaped by a particular
 means of achieving this distribution of power. This again contrasts Graffiti
 with systems like ActivityPub and the AT Protocol,
@@ -155,7 +148,6 @@ In fact, the Graffiti API is designed so that multiple implementations can exist
 \emph{in parallel} underneath it,
 allowing for the incremental adoption of new technologies,
 similar to the web's transition from HTTP to HTTPS.
-}%
 
 After our requirements, we describe the Graffiti API,
 first through high level concepts in Section~\ref{concepts},

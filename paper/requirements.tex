@@ -24,11 +24,9 @@ interoperation that we need to avoid,
 namely by protecting users from ``context collapse,''
 and ensuring their ``right to be forgotten.''
 
-\hl{%
 Requirement~{\ref{requirements:parallel-implementations}} stands apart to address
 how Graffiti might be implemented to uphold these requirements over time, despite
 the natural tendency for social technologies to ``enshittify''~{\cite{enshittification}}.
-}%
 
 \begin{requirement}[Personalization]
 \label{requirements:personalization}
@@ -253,13 +251,10 @@ However, to leave the most room for personalization, forgiveness should be the d
 
 \begin{requirement}[Parallel Implementations]
 \label{requirements:parallel-implementations}
-\hl{%
     Applications should be able to send and receive data
     from multiple independent implementations of Graffiti.
-}%
 \end{requirement}
 
-\hl{%
 If a single organization were in charge of hosting Graffiti,
 history has shown that, even if it started out by making promises of
 personalization and interoperability,
@@ -270,18 +265,14 @@ such as surveillance.
 Therefore, we want to ensure that Graffiti can be implemented using
 technologies like decentralization and end-to-end encryption
 to protect users and their data.
-}%
 
-\hl{%
 However, just as we do not want to lock users into a particular application (Requirement~{\ref{requirements:adversarial-interop}}),
 or developers into a particular set of features (Requirement~{\ref{requirements:autonomous-extensibility}}),
 we do not want to lock the system itself into a particular implementation.
 The ``ecosystem is moving''~{\cite{ecosystemmoving}}, with both rapidly evolving
 technologies and threats, and
 leaning too heavily into any one solution would set Graffiti up for failure.
-}%
 
-\hl{%
 Instead, we require that Graffiti supports multiple implementations
 \emph{in parallel}.
 This is similar to the World Wide Web, which was designed according to the
@@ -292,4 +283,3 @@ such as \texttt{http:}, indicating which implementation should be
 used to retrieve the resource.
 This allows new implementations, such as HTTPS, to be
 incrementally adopted without invalidating existing ones.
-}%

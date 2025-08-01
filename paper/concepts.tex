@@ -17,12 +17,10 @@ Actors cannot modify other actors' objects and so for actors to interact with ea
 those interactions must be \emph{reified} into individual
 activities,
 allowing for different interpretations of them.
-\hl{%
 Objects can be configured to be either public
 (to anyone observing its channels),
 or private to a set of users on its \emph{allowed list},
 an additional affordance for context management.
-}%
 
 \subsection{Objects}
 \label{concepts:objects}
@@ -70,9 +68,7 @@ per Requirement~\ref{requirements:autonomous-extensibility}.
 Graffiti objects also have URLs that
 start with a \emph{scheme}, just like URLs on the web,
 enabling objects to be served by different \emph{parallel} implementations,
-\hl{%
 per Requirement~{\ref{requirements:parallel-implementations}}.
-}%
 For example, a post might have the URL
 \texttt{graffiti:\allowbreak{}remote:\allowbreak{}pod.\allowbreak{}graffiti.\allowbreak{}garden/\allowbreak{}123},
 where the scheme \texttt{graffiti:\allowbreak{}remote:} refers to an implementation that we describe
@@ -130,10 +126,8 @@ Mutable: Objects can be changed or deleted.
 
 An actor is an account that a user can ``log in'' as
 to identify themselves, publish objects, and access private objects,
-\hl{%
 so long as they are on that private object's ``allowed'' list
 (to be discussed in Section~{\ref{concepts:allowed-lists}}).
-}%
 The actor is represented by a globally unique string or \emph{URI},
 just as an email account is represented by an email address.
 The term \emph{actor} is again inherited from ActivityStreams,
@@ -186,23 +180,21 @@ still interoperating.
 
 For example, suppose a developer would like to create an application
 that interoperates with an existing application,
-but that allows certain actors (moderators) to \hl{remove} other actors' posts.
-If the moderators' \hl{removals} are reified into \hl{\texttt{"Remove"}} activities,
+but that allows certain actors (moderators) to remove other actors' posts.
+If the moderators' removals are reified into \texttt{"Remove"} activities,
 then the original application can simply ignore the activities
-while the new application can attend to the new signal and hide \hl{``removed''} posts from the display.
-\hl{%
+while the new application can attend to the new signal and hide ``removed'' posts from the display.
 To be clear: an offending object is not removed from Graffiti as a whole,
 it is just removed from any application that understands \emph{and respects}
 the moderators' \texttt{"Remove"} activities.%
-}%
 
 These moderation rules can evolve as developers
 introduce new objects and properties,
 or new procedures to interpret those objects.
 For example,
 perhaps the set of moderators is elected by actors who vote with reified \texttt{"Vote"} activities.
-Or, perhaps an application hides posts that exceed a certain threshold of \hl{\texttt{"Remove"}} activities,
-regardless of whether the \hl{removing} actors are considered moderators.
+Or, perhaps an application hides posts that exceed a certain threshold of \texttt{"Remove"} activities,
+regardless of whether the removing actors are considered moderators.
 Applications may also consider authors of posts to be the \emph{de facto} moderators of the replies to their
 own posts or allow them to disable replies altogether by adding a \texttt{disableReplies}
 property to their post objects.
@@ -238,7 +230,6 @@ Channels are \emph{permissionless}: actors can freely read from and write to cha
 
 \subsubsection{Antipaternalism}
 
-\hl{%
 Total reification grants people the ability to keep content off of ``their'' applications,
 but it prevents anyone from keeping content off of Graffiti as a whole\footnote{%
 It \emph{is} possible for content to be deleted in implementations ``below'' the API,
@@ -255,24 +246,20 @@ like ActivityPub or the AT Protocol:
 people can always find \emph{some}
 web server, ``instance,''
 or ``personal data store'' to host their content.
-}%
 
-\hl{%
 However, our design is more than a reluctant acceptance of the way things are.
 In line with harm reduction practices~\expandafter{\expandafter\cite{harmreduction}},
 there are benefits to keeping harmful content---which will inevitably
 exist---within Graffiti as a whole, while filtered from mainstream spaces.
 For example, when users drawn into extremist ideologies are not
 siloed away on entirely disconnected systems
-like 8kun or Gab}~\cite{8kun,gab}\hl{, it becomes possible to create off-ramps
+like 8kun or Gab~\cite{8kun,gab}, it becomes possible to create off-ramps
 to help them disengage gradually without going ``cold turkey.''
 Of course, further work is needed to assess the efficacy of
 such a strategy and its possible harms.
-}%
 
 \subsubsection{Accountability}
 
-\hl{%
 Total reification works to enforce ``adversarial interoperability''
 per Requirement~{\ref{requirements:adversarial-interop}}
 and thus to protect users from leaders---even of small communities---that abuse their role as
@@ -282,16 +269,13 @@ in their study of Fediverse communities with imperfect leadership
 to introduce a ``user-level selective ability to bypass [moderator] filters''~{\cite{blocklistboundary}}.
 However, it is worth considering whether total reification makes it so easy
 to opt out of a community's norms that users are not held accountable for their actions.
-}%
 
-\hl{%
 While there is work to be done studying this in the context of Graffiti specifically,
 work by Hessel et al.
 suggests the opposite effect~{\cite{highlyrelatedcommunities}}.
 They find that users who explore parallel community spaces
 with different norms not only still meaningfully participate in their original community space,
 but also become more engaged in it.
-}%
 
 \subsection{Channels}
 \label{concepts:channels}
@@ -314,7 +298,7 @@ an object can be and a property of the object itself.
 The channel namespace is \emph{global} with every string (up to a certain length)
 naming exactly one channel.
 Like object properties, these channel names have no inherent meaning
-other than the meaning ascribed to them by \hl{developers or users}.
+other than the meaning ascribed to them by developers or users.
 In practice, the meaning of a channel is a particular social \emph{context} and the channel
 name is some sort of \emph{shared information} implicit to that context.
 For example, the channel named by an object's URL is a natural place to post content ``\emph{talking about}'' that object, like replies, and we expect that most applications will follow that norm.
@@ -424,27 +408,19 @@ However, security by obscurity does not allow for \emph{revocation}\footnote{
 }
 of access,
 which is why objects may also be access-controlled,
-\hl{%
 as we will discuss in Section~{\ref{concepts:allowed-lists}}.
-}%
 
-\hl{%
 Despite the fact that the ``Obscure'' property implies that
 there is no global directory of channels,
-}%
 many channels may be found by spidering Graffiti like a search engine.
 Therefore, a determined
 developer could make an application that intentionally collapses contexts.
-\hl{%
 This is an unfortunate possibility with any public content.
 For example, snoopreport.com sells a context-collapsing service for Instagram.
-}%
 
-\hl{%
 Given this, users with privacy critical needs should, again, use the
 access control affordances described in Section~{\ref{concepts:allowed-lists}}.
 For less critical needs,
-}%
 we hope to cultivate social norms that dissuade scraping, similar to informal notions of privacy in the real world.
 For example, it is entirely possible for a person in the real world
 to attend various support groups, like alcoholics anonymous,
@@ -497,25 +473,20 @@ mapped onto specific channel names in Appendix~\ref{appendix:more-channel-names}
 \subsection{Allowed Lists}
 \label{concepts:allowed-lists}
 
-\hl{%
 Allowed lists are an access control mechanism
 that an actor can optionally apply to an object
 to limit its visibility to a specific list of actors.
 Allowed lists enable direct messaging and private groups,
-as well as ``visibility control''}~\cite{visibilitycontrol, toogayforfacebook}
-\hl{affordances in networked settings such as
+as well as ``visibility control''~\cite{visibilitycontrol, toogayforfacebook}
+affordances in networked settings such as
 Facebook-like ``Friends''-only posts.
-}%
 
-\hl{%
 We use this simple whitelist mechanism of access control rather than,
 say, Unix file types, because the additional affordances that
 such a system would provide can be built more flexibly with total reification.
 For example, in Section~{\ref{case-studies:parallax}} we show how mutable group
 membership in a messaging application can be constructed.
-}%
 
-\hl{%
 Allowed lists do not replace channels when they are used
 but rather complement them,
 with allowed lists providing guaranteed privacy
@@ -526,4 +497,3 @@ for each other to see.
 Objects representing interactions in these different scenarios
 would have identical allowed lists,
 but objects would be placed in different channels based on their context.
-}%

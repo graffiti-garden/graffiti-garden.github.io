@@ -1,7 +1,10 @@
 \documentclass[sigconf]{acmart}
 
 % Code styling
-\usepackage{minted}
+% For minted you must use pdflatex -shell-escape main
+\usepackage[finalizecache=true,cachedir=./_minted]{minted2}
+% Use this line for TAPs / arXiv
+% \usepackage[frozencache=true,cachedir=./_minted]{minted}
 \usepackage{xcolor}
 \usemintedstyle{borland}
 \setminted{
@@ -22,7 +25,6 @@
 \usepackage{multirow}
 
 \usepackage{graphicx} % Required for inserting images
-\graphicspath{{paper/}}
 
 % Highlighting
 % \usepackage{soul}

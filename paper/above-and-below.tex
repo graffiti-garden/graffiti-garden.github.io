@@ -56,9 +56,9 @@ fairly easy to add in the future.
 
 Below is the complete template for a micro social application,
 built with the plugin, that shows a (continuously updating) list of all messages posted to a real-time group chat and enables the user to post their own message:
-\begin{minted}{html}
+\begin{minted}{vue}
 <form v-if="$graffitiSession.value"
-  |\PYG{p}{@}|submit|\PYG{p}{.}|prevent="$graffiti.put({
+  @submit.prevent="$graffiti.put({
     value: { content },
     channels: [ 'my-group' ]
   }, $graffitiSession.value)"
@@ -66,13 +66,13 @@ built with the plugin, that shows a (continuously updating) list of all messages
   <input v-model="content" />
   <input type="submit" value="Post" />
 </form>
-<button v-else |\PYG{p}{@}|click="$graffiti.login()">
+<button v-else @click="$graffiti.login()">
   Log In to Post!
 </button>
 <GraffitiDiscover autopoll
   v-slot="{ objects: messages }"
-  |\PYG{p}{:}|channels="[ 'my-group' ]"
-  |\PYG{p}{:}|schema="{
+  :channels="[ 'my-group' ]"
+  :schema="{
     properties: {
       value: {
         required: ['content'],
@@ -322,7 +322,7 @@ having to create or log in to an account, as shown in
 Figure~\ref{above-and-below:figure:login}.
 
 \begin{figure*}[t]
-    \includegraphics[width=\textwidth]{figures/login.jpg}
+    \includegraphics[width=\textwidth]{paper/figures/login.jpg}
     \caption{The flow that pops up when the user triggers a \texttt{login()}.}
     \Description{The figure shows a series of pop-up windows with arrows between them. The first window says "Graffiti Application Login" and below there are buttons to "Log In with Solid" and "Try Without an Account". An arrow pointing from the "Try Without and Account" option points to another window titled "Trial Login" which contains the paragraph "With a trial account, *only you will be able to see your posts*. If you want others to see your posts, log in with Solid instead" and below that a form saying "Choose a username" with "test-user" entered in the input and finally a button to "Log In". From the "Log In with Solid" button in the original panel there is an arrow pointing to a window titled "Solid Login" which says "Choose a Solid Identity Provider" and below an input containing "htttps://login.inrupt.com" and "Log In" and finally "Don't want to sign up right now? Try without an account." An arrow points from the "Log In button of the "Solid Login" window to a new window that looks minimal rather than the more maximalist graffiti designs of the previous windows. This minimal window is titled "inrupt PodSpaces Developer Preview" with the paragraph "Sign in with your username and password" and below a username and password form, text that says "Forgot your password", a "Sign in" button, and finally "Need an account? Sign up".}
     \label{above-and-below:figure:login}

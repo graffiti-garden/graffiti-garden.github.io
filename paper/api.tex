@@ -140,7 +140,7 @@ The API includes type inference on these schemas which makes it possible to work
 with objects as if they were strongly typed, even though they can take on arbitrary values.
 
 \begin{minted}{javascript}
-const object = |\PYG{k}{await}| graffiti.get(url, {
+const object = await graffiti.get(url, {
   value: {
     required: ["content"],
     properties: {
@@ -199,7 +199,7 @@ const iterator = graffiti.discover(
   session
 )
 
-for |\PYG{k}{await}| (const object of iterator) {
+for await (const object of iterator) {
   console.log("alice → me:", object.value.content);
 }
 \end{minted}

@@ -72,7 +72,7 @@ causing the interoperation to actually \emph{happen}.
 
 \begin{figure*}[t]
     \centering
-    \includegraphics[width=\textwidth]{paper/figures/schemas-and-channels.png}
+    \includegraphics[width=\textwidth]{figures/schemas-and-channels.png}
     \Description{
      The figure shows a series of four rounded rectangles, some overlapping like a Venn diagram, each containing one or multiple JSON blobs. Each rectangle contains at the top a header that says "Channel" followed by a string in quotes and each JSON blob contains a "summary" property. The first rectangle has the channel "Glitter" and contains one JSON blob with the summary "Add Theia to the Glitter directory". The rest of the blob contains { activity: "Add", object: "https://theia.example.com", target: "Glitter" }. The second rectangle has the channel "The Glue Factory" and contains one JSON blob with the summary "A show flyer." The blob also contains { content: "dance your queer hooves off...", attachment: [{ image: "https://example.com/flyer.jpg", alt: "A show flyer featuring..." }], startTime: 1728165600000 }. A third rectangle has the channel "https://theia.example.com" and contains two full JSON blobs and part of one blob that is overlapping with the last rectangle. The first blob has the summary "A post." and one addition property "content" with the value "hot girls use graffiti [nail polish emoji]". The second blob has the summary "Theia's profile." and also contains { name: "Theia", describes: "https://theia.example.com" }. The final blob contains the summary "A reply to a post." and also { content: "omg yess!...", inReplyTo: "graffiti:remote:example.com/12345" }. That blob is contained in a rectangle with the channel "graffiti:remote:example.com/12345". There is an arrow pointing from the channel name of the last rectangle to the blob in show flyer blob in the second rectangle. The arrow is labeled "The URL of the flyer". The overlap between the rectangles with the channels "https://theia.example.com" and "graffiti:remote:example.com/12345" is highlighted and labeled "Crosspost to Glitter?"
     }
@@ -109,7 +109,7 @@ as shown in Figure~\ref{case-studies:fig:parallax}.
 
 \begin{figure*}[t]
     \centering
-    \includegraphics[width=\textwidth]{paper/figures/parallax.png}
+    \includegraphics[width=\textwidth]{figures/parallax.png}
     \caption{An interaction on Parallax. On the left is Bob's view of an exchange. On the right are Alice and Bob's \emph{different} membership lists.}
     \Description{
      The figure shows a screenshot of a chat application and cropped screenshots of the "Members" popup in that application. The chat window is titled "Alice is a Superstar [starstruck emoji]" with a button "Edit Name" and a button "Members". Below that the transcript contains both centered text and text in bubbles in either side. Center text: "Alice and you added you to your views of the chat". Left bubble: "Alice: hii bob c:". Center text: "You added Alice to your view of the chat". Right bubble: "hey alice what's up :)". Center text: "Alice added Eve to their view of the chat." and below a button labeled "Add Eve". Right bubble: "[side eye emoji]". Right bubble: "u know i have some beef with eve right? im gonna keep her out of my chat for now...". Left bubble: "Alice: nw @bob! for context @all, i just needed a place to vent while I'm writing this paper, feel free to keep each other on mute". Center text: "Alice named their view of the chat 'Alice is Stressed [weary face emoji]'" and a button "Name the chat 'Alice is Stressed [weary face emoji]'". Right bubble: "You got this!! [raising hands emoji][sparkle emoji][crown emoji]". Center text: "You named your view of the chat 'Alice is a Superstar [starstruck emoji]'". Left bubble: "Alice: c:". Finally there is a message text box. On the right one popup reads "Members of 'Alice is Stressed [weary face emoji]'" with the text "Your messages will *only* be sent to members you choose to list below, regardless of who other people add to their 'views' of the chat." below there is place to enter a username a button "Add" and then finally a list containing "Alice (you)", "Bob", "Eve" with the labels "Leave", "Remove", "Remove" respectively. On the right one popup reads "Members of 'Alice is a Superstar [starstruck emoji]'", containing the same text and form but the members "Bob (you)" and "Alice" with the buttons "Leave" and "Remove" respectively.
@@ -162,7 +162,7 @@ The user can only control which users' edits \emph{they} see, not exert any glob
 
 \begin{figure*}[t]
     \centering
-    \includegraphics[width=\textwidth]{paper/figures/wikiffiti.png}
+    \includegraphics[width=\textwidth]{figures/wikiffiti.png}
     \caption{
     An interaction on Wikiffiti, with changes highlighted for clarity.
     (a) Theia creates a new Wikiffiti page. (b) CEO vandalizes the page. (c) David manually overwrites some of

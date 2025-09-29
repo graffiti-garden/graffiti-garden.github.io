@@ -369,11 +369,14 @@ fieldset {
     display: flex;
     gap: 1rem;
     flex-direction: column;
-    align-items: center;
+    align-items: stretch;
     border-radius: 1rem 1rem 0 0;
     position: relative;
     margin-bottom: 1.5rem;
     transition: border-radius 0.2s;
+    ul {
+      font-size: 2rem;
+    }
 }
 
 .demo-render.alone {

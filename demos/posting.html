@@ -1,0 +1,37 @@
+<form v-if="$graffitiSession.value"
+    @submit.prevent="$graffiti.put({
+        value: {
+          content,
+          published: Date.now(),
+        },
+        channels: ['uist-2025'],
+    }, $graffitiSession.value)"
+>
+    <input v-model="content" placeholder="what's up?" />
+    <input type="submit" value="Post" />
+</form>
+<p v-else>Log in to post!</p>
+
+<GraffitiDiscover autopoll
+    v-slot="{ objects: messages }"
+    :channels="['uist-2025']"
+    :schema="{ properties: { value: {
+        required: ['content', 'published'],
+        properties: {
+            content: { type: 'string' },
+            published: { type: 'number' },
+        },
+    }}}"
+>
+    <ul>
+        <li v-for="message in messages.sort(
+          (a, b) => b.value.published - a.value.published
+        )">
+            {{ message.value.content }}
+            <button v-if="$graffitiSession.value?.actor === message.actor"
+              @click="$graffiti.delete(message, $graffitiSession.value)">
+                Delete
+            </button>
+        </li>
+    </ul>
+</GraffitiDiscover>

@@ -14,7 +14,7 @@
             <a href="https://gluefactory.live">new designs</a>.
         </p>
 
-        <Playground path="introduction" :hide-source="true" />
+        <Playground path="posting" />
 
         <p>
             Applications within the Graffiti ecosystem also interoperate. If

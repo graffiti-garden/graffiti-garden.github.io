@@ -3,28 +3,33 @@
         <h1>Graffiti</h1>
 
         <p>
-            Graffiti lets you integrate custom social features into any static
-            website with just a few lines of HTML and JavaScript. These features
-            can be as relatively simple, as in the demo below, or amount to
-            full-fledged applications similar to
+            Graffiti is a system that lets you build a wide variety of custom
+            social apps with using only front end code. You can build apps like
             <a href="https://glitter.graffiti.garden">Twitter</a>,
-            <a href="https://parallax.graffiti.garden">Messenger</a>, and
+            <a href="https://parallax.graffiti.garden">Messenger</a>,
             <a href="https://wiki.graffiti.garden">Wikipedia</a>
-            with plenty of room for
-            <a href="https://gluefactory.live">new designs</a>.
+            or plenty of
+            <a href="https://gluefactory.live">new apps</a>.
         </p>
-
-        <Playground path="posting" />
 
         <p>
-            Applications within the Graffiti ecosystem also interoperate. If
-            your friends use a Graffiti application that you don't like, you can
-            either modify it, create your own from scratch, or switch to an
-            application that someone else has already built — all without losing
-            your friends! You can change pretty much anything including the
-            moderation system, privacy settings, feed sorting algorithm, site
-            layout, color scheme, and so on.
+            Applications within the Graffiti ecosystem also
+            <strong>interoperate</strong>. You can freely move between Graffiti
+            apps—each with its own aesthetic, feature set, and moderation—all
+            without losing your friends or data!
         </p>
+
+        <p>
+            <a href="https://doi.org/10.1145/3746059.3747627"
+                >Read the full paper 📄</a
+            >, awarded Best Paper 🏆 at ACM UIST 2025, to learn more about the
+            design.
+        </p>
+
+        Below is a small Graffiti app built with Vue. You can modify the code
+        and the app will update:
+
+        <Playground path="introduction" :hide-source="true" />
 
         <p>If you are interested in building, check out the:</p>
         <ul>
@@ -49,8 +54,14 @@
         </ul>
 
         <p>
-            If you want a theoretical grounding of Graffiti, please contact the
-            authors for a preprint of the paper, currently under review.
+            All of the code behind Graffiti is open source on
+            <a href="https://github.com/graffiti-garden">Github</a>.
+        </p>
+
+        <p>
+            We have more tutorials coming soon! In the meantime, please reach
+            out to <a href="mailto:theia@mit.edu">Theia Henderson</a>
+            if you are interested in building :)
         </p>
 
         <!-- <p>
@@ -58,11 +69,6 @@
             system, a guide to building your own Graffiti apps, and a series of
             guided examples on replicating common social media patterns with
             Graffiti.
-        </p> -->
-
-        <!-- <p>
-            All of the code behind Graffiti is open source on
-            <a href="https://github.com/graffiti-garden">Github</a>.
         </p> -->
 
         <!-- <footer>

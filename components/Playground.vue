@@ -63,13 +63,15 @@ watch(code, () => (errorMessage.value = undefined));
             <legend>Demo</legend>
             <p v-if="errorMessage" class="error">{{ errorMessage }}</p>
             <Renderer v-else :code="code" :data="data" />
-        </fieldset>
-        <Transition name="stretch" :duration="700">
-            <fieldset class="demo-code">
-                <PrismEditor v-model="code" :highlight="highlighter" />
-            </fieldset>
-        </Transition>
-        <div>
+            <menu>
+                <li>
+                    <button
+                        @click="state = state === 'source' ? null : 'source'"
+                    >
+                        {{ state === "source" ? "Hide" : "Show" }} Source Code
+                    </button>
+                </li>
+                <li>
                     <button
                         v-if="$graffitiSession.value"
                         @click="
@@ -94,15 +96,22 @@ watch(code, () => (errorMessage.value = undefined));
                     >
                         {{ logInOutWorking ? "Logging in..." : "Log in" }}
                     </button>
-        </div>
+                </li>
+            </menu>
+        </fieldset>
+        <Transition name="stretch" :duration="700">
+            <fieldset v-if="state === 'source'" class="demo-code">
+                <PrismEditor v-model="code" :highlight="highlighter" />
+            </fieldset>
+        </Transition>
     </div>
 </template>
 
 <style>
 .demo {
-    max-height: 100vh;
+    /*max-height: 100vh;
     display: flex;
-    flex-direction: column;
+    flex-direction: column;*/
 
     menu {
         position: absolute;
@@ -154,12 +163,12 @@ watch(code, () => (errorMessage.value = undefined));
     }
 }
 
-.demo-render {
+/*.demo-render {
   max-height: 50vh;
   overflow: scroll
 }
 
 .demo-code {
   overflow: scroll
-}
+}*/
 </style>

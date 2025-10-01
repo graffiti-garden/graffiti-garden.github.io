@@ -55,7 +55,7 @@
             </ul>
         </li>
         <li>
-            Documentation
+            Reference
             <ul>
                 <li>
                     <a href="https://api.graffiti.garden/classes/Graffiti.html">
@@ -70,6 +70,18 @@
                     </a>
                 </li>
             </ul>
+        </li>
+    </ul>
+    <ul>
+        <li>
+            <a
+                target="_blank"
+                class="logo"
+                href="https://github.com/graffiti-garden"
+            >
+                <img src="/media/github.png" />
+                Github
+            </a>
         </li>
     </ul>
 </template>

@@ -34,6 +34,12 @@
         <p>If you are interested in building, check out the:</p>
         <ul>
             <li>
+                <a href="https://vue.graffiti.garden/examples/">
+                    Minimal examples of common patterns</a
+                >, including likes, profiles, friends, threading, and
+                messaging.
+            </li>
+            <li>
                 <a href="https://api.graffiti.garden/classes/Graffiti.html">
                     API Documentation
                 </a>
@@ -46,22 +52,19 @@
                 </a>
             </li>
             <li>
-                <a href="https://vue.graffiti.garden/examples/">
-                    Minimal examples of common patterns</a
-                >, including "Likes", profiles, friends, threading, and
-                messaging.
+              Source code for apps like <a href="https://github.com/graffiti-garden/glitter">Twitter</a>, <a href="https://github.com/graffiti-garden/parallax">Messenger</a>, and <a href="https://github.com/graffiti-garden/wikiffiti">Wikipedia</a>.
             </li>
         </ul>
 
         <p>
-            All of the code behind Graffiti is open source on
-            <a href="https://github.com/graffiti-garden">Github</a>.
+            We have more tutorials coming soon! In the meantime, please reach
+            out to <a href="mailto:theia@mit.edu">Theia Henderson</a>
+            if you are interested in building or have other questions :)
         </p>
 
         <p>
-            We have more tutorials coming soon! In the meantime, please reach
-            out to <a href="mailto:theia@mit.edu">Theia Henderson</a>
-            if you are interested in building :)
+            All of the code behind Graffiti is
+            <a href="https://github.com/graffiti-garden">open source on Github</a>.
         </p>
 
         <!-- <p>

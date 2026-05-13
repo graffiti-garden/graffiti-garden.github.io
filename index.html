@@ -1,0 +1,156 @@
+<!doctype html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8" />
+        <title>Graffiti</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
+        <meta name="color-scheme" content="light dark" />
+        <script>
+            // A redirect from a 404 page (see public/404.html)
+            const redirectAddress = sessionStorage.redirectAddress;
+            delete sessionStorage.redirectAddress;
+            if (redirectAddress) {
+                history.replaceState(null, null, redirectAddress);
+            }
+        </script>
+        <link rel="stylesheet" href="./style.css" />
+        <script type="module" src="./src/main.ts"></script>
+    </head>
+    <body>
+        <header>
+            <h2 class="graffiti">
+                <a href="/"> Graffiti </a>
+            </h2>
+
+            <nav>
+                <ul>
+                    <li>
+                        <a
+                            href="https://dl.acm.org/doi/pdf/10.1145/3746059.3747627?download=true"
+                            download
+                        >
+                            📄 Paper
+                        </a>
+                    </li>
+                    <li>
+                        <a
+                            href="https://api.graffiti.garden/classes/Graffiti.html"
+                        >
+                            🛠️ API Docs
+                        </a>
+                    </li>
+                    <li>
+                        <a
+                            href="https://vue.graffiti.garden/variables/GraffitiPlugin.html"
+                        >
+                            <img src="/assets/vue-white.svg" alt="Vue logo" />
+                            Vue Plugin Docs
+                        </a>
+                    </li>
+                    <li>
+                        <a href="https://github.com/graffiti-garden">
+                            <img
+                                src="/assets/github-white.svg"
+                                alt="GitHub logo"
+                            />
+                            Source Code
+                        </a>
+                    </li>
+                </ul>
+            </nav>
+        </header>
+
+        <main>
+            <h1 class="graffiti">Graffiti</h1>
+
+            <h2>An infrastructure for building social software.</h2>
+
+            <p>
+                Graffiti is a system that lets you build a wide variety of
+                custom social apps with using only front end code—no need to
+                build or deploy your own server. You can build apps like
+                Twitter, Messenger, Wikipedia or something completely new!
+            </p>
+
+            <p>
+                Applications within the Graffiti ecosystem also
+                <strong>interoperate</strong>. You can freely move between
+                Graffiti apps—each with its own aesthetic, feature set, and
+                moderation—all without losing your friends or data!
+            </p>
+
+            <p>
+                Finally, the Graffiti infrastructure is
+                <strong>decentralized</strong>. While you don't have to,
+            </p>
+
+            <aside>
+                <a
+                    href="https://dl.acm.org/doi/pdf/10.1145/3746059.3747627?download=true"
+                    download
+                >
+                    <figure>
+                        <img
+                            src="/assets/paper.avif"
+                            alt="Screenshot of the front page of the Graffiti paper"
+                        />
+
+                        <figcaption>Download the Paper</figcaption>
+                    </figure>
+                </a>
+            </aside>
+
+            <section>
+                <h2>Demo</h2>
+
+                <div id="app">Loading...</div>
+            </section>
+
+            <section>
+                <h2>Resources</h2>
+
+                <ul>
+                    <li>
+                        <a
+                            href="https://api.graffiti.garden/classes/Graffiti.html"
+                        >
+                            API Documentation
+                        </a>
+                    </li>
+                    <li>
+                        <a
+                            href="https://vue.graffiti.garden/variables/GraffitiPlugin.html"
+                        >
+                            <img src="/assets/vue-white.svg" alt="Vue logo" />
+                            Vue Plugin Docs
+                        </a>
+                    </li>
+                </ul>
+            </section>
+
+            <section>
+                <h2>How To Cite</h2>
+
+                <pre>
+                    <code>
+@inproceedings{graffiti,
+    title = {Graffiti: Enabling an Ecosystem of Personalized and Interoperable Social Applications},
+    author = {Henderson, Theia and Karger, David R. and Clark, David D.},
+    booktitle = {Proceedings of the 38th Annual ACM Symposium on User Interface Software and Technology},
+    url = {https://doi.org/10.1145/3746059.3747627},
+    doi = {10.1145/3746059.3747627},
+    isbn = {9798400720376},
+    year = {2025},
+    publisher = {ACM},
+    address = {New York, NY, USA},
+    articleno = {202},
+    numpages = {21},
+    series = {UIST ’25},
+    collection = {UIST ’25}
+}</code
+                    >
+                </pre>
+            </section>
+        </main>
+    </body>
+</html>

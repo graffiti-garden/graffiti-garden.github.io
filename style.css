@@ -1,0 +1,38 @@
+:root {
+    --blurpix: 4px;
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    word-break: break-word;
+    word-wrap: break-word;
+}
+
+html::before {
+    content: "asdf";
+    position: fixed;
+    left: 0;
+    right: 0;
+    z-index: -1;
+    background-image: url("/assets/graffiti.avif");
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-position: 50% 50%;
+    height: calc(100vh + 2 * var(--blurpix));
+    width: calc(100vw + 2 * var(--blurpix));
+    filter: blur(var(--blurpix));
+    margin: calc(-1 * var(--blurpix));
+}
+
+@font-face {
+    font-family: "Rock Salt";
+    font-style: normal;
+    font-weight: 400;
+    src: url("./assets/rock-salt.woff2") format("woff2");
+}
+
+.graffiti {
+    font-family: "Rock Salt", cursive;
+}

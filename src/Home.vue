@@ -67,7 +67,15 @@
         <section>
             <h2>Demo</h2>
 
-            <Demo />
+            <Suspense>
+                <Demo />
+
+                <template #fallback>
+                    <p class="demo-loading" role="status" aria-live="polite">
+                        Loading interactive demo...
+                    </p>
+                </template>
+            </Suspense>
         </section>
 
         <section>
@@ -123,9 +131,10 @@
 </template>
 
 <script setup lang="ts">
-import { onBeforeUnmount, ref } from "vue";
+import { defineAsyncComponent, onBeforeUnmount, ref } from "vue";
 import Header from "./Header.vue";
-import Demo from "./Demo.vue";
+
+const Demo = defineAsyncComponent(() => import("./Demo.vue"));
 
 const bibtexEntry = `@inproceedings{graffiti,
     title = {Graffiti: Enabling an Ecosystem of Personalized and Interoperable Social Applications},
@@ -288,6 +297,31 @@ section {
     overflow: auto;
     outline: 2px solid transparent;
     transition: outline 0.2s ease;
+}
+
+.demo-loading {
+    margin: 0;
+    padding: 0.75rem 1rem;
+    border-radius: 0.5rem;
+    background: var(--solid-background);
+    animation: demo-loading-pulse 2s ease-in-out infinite;
+}
+
+@keyframes demo-loading-pulse {
+    0%,
+    100% {
+        opacity: 0.6;
+    }
+
+    50% {
+        opacity: 1;
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .demo-loading {
+        animation: none;
+    }
 }
 
 @media (min-width: 900px) {

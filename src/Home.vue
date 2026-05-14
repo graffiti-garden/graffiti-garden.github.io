@@ -21,7 +21,7 @@
                 Applications within the Graffiti ecosystem also
                 <strong>interoperate</strong>. You can freely move between
                 different Graffiti apps—each with its own aesthetic, feature
-                set, and moderation—all without losing your friends or data!
+                set, and moderation—all without losing your friends or data.
             </p>
 
             <p>
@@ -63,7 +63,7 @@
         <section>
             <h2>Demo</h2>
 
-            <div id="app">TODO</div>
+            <Demo />
         </section>
 
         <section>
@@ -116,6 +116,7 @@
 <script setup lang="ts">
 import { onBeforeUnmount, ref } from "vue";
 import Header from "./Header.vue";
+import Demo from "./Demo.vue";
 
 const bibtexEntry = `@inproceedings{graffiti,
     title = {Graffiti: Enabling an Ecosystem of Personalized and Interoperable Social Applications},

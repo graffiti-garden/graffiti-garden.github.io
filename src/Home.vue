@@ -10,11 +10,12 @@
 
         <section id="overview">
             <p>
-                Graffiti is an infrastructure that you can build custom social
-                apps on top of using <strong>only front-end code</strong>—no
-                need to build or deploy your own server. You can build apps like
-                <a href="">Twitter</a>, <a href="">Messenger</a>,
-                <a href="">Wikipedia</a>, or something completely new!
+                Graffiti is an infrastructure that can be used to build a wide
+                variety of custom social apps using
+                <strong>only front-end code</strong>—no need to build or deploy
+                your own server. You can build apps like <a href="">Twitter</a>,
+                <a href="">Messenger</a>, <a href="">Wikipedia</a>, or something
+                completely new!
             </p>
 
             <p>
@@ -50,7 +51,7 @@
                         />
                     </picture>
 
-                    <figcaption>Read the Paper</figcaption>
+                    <figcaption class="button-like">Read the Paper</figcaption>
                 </figure>
             </a>
             <p>
@@ -183,61 +184,62 @@ section {
     }
 }
 
-.paper p {
-    text-align: center;
-}
+.paper {
+    p {
+        text-align: center;
+    }
 
-.paper figure {
-    position: relative;
-    overflow: hidden;
-    border-radius: 0.5rem;
-}
+    figure {
+        position: relative;
+        overflow: hidden;
+        border-radius: 0.5rem;
 
-.paper figure img {
-    display: block;
-    width: 100%;
-    max-width: 100%;
-    max-height: 100%;
-    height: auto;
-    object-fit: contain;
-}
+        img {
+            display: block;
+            width: 100%;
+            max-width: 100%;
+            max-height: 100%;
+            height: auto;
+            object-fit: contain;
+        }
+    }
 
-.paper figcaption {
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    width: fit-content;
-    max-width: calc(100% - 2rem);
-    padding: 0.5rem 0.75rem;
-    line-height: 1.3;
-    font-size: 1.25rem;
-    color: #fff;
-    font-weight: 700;
-    text-align: center;
-    background: #444;
-    border-radius: 0.25rem;
-    z-index: 1;
-}
+    figcaption {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        width: fit-content;
+        max-width: calc(100% - 2rem);
+        z-index: 100;
+    }
 
-.paper figure::after {
-    content: "";
-    position: absolute;
-    inset: 0;
-    background: rgb(202 122 204 / 14%);
-    opacity: 0;
-    transition: opacity 180ms ease;
-    pointer-events: none;
-}
+    figure::after {
+        content: "";
+        position: absolute;
+        inset: 0;
+        background: color-mix(in oklab, var(--highlight) 30%, transparent);
+        opacity: 0;
+        outline: 2px solid transparent;
+        transition:
+            opacity 0.2s ease,
+            outline 0.2s ease;
+        pointer-events: none;
+    }
 
-.paper > a:hover figure,
-.paper > a:focus-visible figure {
-    box-shadow: 0 0 0 2px var(--highlight);
-}
+    a:is(:hover, :focus-visible) {
+        figure {
+            outline: 2px solid var(--highlight);
 
-.paper > a:hover figure::after,
-.paper > a:focus-visible figure::after {
-    opacity: 1;
+            &::after {
+                opacity: 1;
+            }
+        }
+
+        .button-like {
+            background-color: var(--highlight-hover);
+        }
+    }
 }
 
 @media (max-width: 899px) {
@@ -256,28 +258,14 @@ section {
     top: 0.75rem;
     right: 0.75rem;
     z-index: 1;
-    padding: 0.7rem 0.95rem;
-    font-size: 1rem;
-    line-height: 1;
-    border: 1px solid grey;
-    border-radius: 0.25rem;
-    background: #444;
-    color: #fff;
-    cursor: pointer;
-    transition: 160ms ease;
 }
 
 .bibtex:hover,
 .bibtex:focus-within {
     cursor: pointer;
 
-    button {
-        background: #555;
-    }
-
     pre {
-        background: rgb(10 10 10 / 95%);
-        box-shadow: 0 0 0 2px var(--highlight);
+        outline: 2px solid var(--highlight);
     }
 }
 
@@ -287,11 +275,11 @@ section {
     min-width: 0;
     padding: 1rem;
     border-radius: 0.5rem;
-    border: 1px solid grey;
-    background: rgb(10 10 10 / 88%);
+    background-color: var(--solid-background);
     white-space: pre;
     overflow: auto;
-    transition: 160ms ease;
+    outline: 2px solid transparent;
+    transition: outline 0.2s ease;
 }
 
 @media (min-width: 900px) {

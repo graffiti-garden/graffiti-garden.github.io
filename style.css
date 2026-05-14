@@ -1,7 +1,10 @@
 :root {
     --blurpix: 4px;
     --highlight: #8b3f8e;
+    --highlight-hover: #ca7acc;
+    --within-highlight: #fff;
     --background-color: #ffffffcc;
+    --solid-background: #ccc;
     --text-color: #222;
     --title-color: #000;
     color-scheme: light;
@@ -14,6 +17,9 @@
         --text-color: #ddd;
         --title-color: #ffffff;
         --highlight: #ca7acc;
+        --highlight-hover: #a95bac;
+        --within-highlight: #000;
+        --solid-background: #444;
     }
 }
 
@@ -77,7 +83,8 @@ a {
     text-decoration: none;
 }
 
-a:hover {
+a:hover,
+a:focus-within {
     text-decoration: underline;
 }
 
@@ -90,9 +97,35 @@ a > img {
 .graffiti {
     font-family: "Rock Salt", cursive;
     color: var(--title-color);
+
+    a {
+        color: inherit;
+    }
 }
 
 strong {
     font-weight: 700;
     color: var(--title-color);
+}
+
+button,
+a[role="button"],
+.button-like {
+    display: inline-block;
+    padding: 0.6em 0.8em;
+    background-color: var(--highlight);
+    color: var(--within-highlight);
+    border: none;
+    border-radius: 0.25rem;
+    cursor: pointer;
+    text-decoration: none;
+    line-height: 1;
+    font-size: inherit;
+    text-align: center;
+    transition: background-color 0.2s ease;
+
+    &:hover,
+    &:focus-within {
+        background-color: var(--highlight-hover);
+    }
 }

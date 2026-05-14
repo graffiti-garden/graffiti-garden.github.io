@@ -12,6 +12,7 @@
                     <li>
                         <a
                             href="https://dl.acm.org/doi/pdf/10.1145/3746059.3747627?download=true"
+                            role="button"
                             download
                         >
                             📄 Paper
@@ -20,6 +21,7 @@
                     <li>
                         <a
                             href="https://api.graffiti.garden/classes/Graffiti.html"
+                            role="button"
                         >
                             🛠️ API Docs
                         </a>
@@ -27,13 +29,17 @@
                     <li>
                         <a
                             href="https://vue.graffiti.garden/variables/GraffitiPlugin.html"
+                            role="button"
                         >
                             <img src="/assets/vue-white.svg" alt="Vue logo" />
                             Vue Plugin Docs
                         </a>
                     </li>
                     <li>
-                        <a href="https://github.com/graffiti-garden">
+                        <a
+                            href="https://github.com/graffiti-garden"
+                            role="button"
+                        >
                             <img
                                 src="/assets/github-white.svg"
                                 alt="GitHub logo"
@@ -52,7 +58,7 @@ import { onMounted, onUnmounted, ref, watch } from "vue";
 
 const navOpen = ref(true);
 
-const mq = window.matchMedia("(min-width: 800px)");
+const mq = window.matchMedia("(min-width: 900px)");
 const syncNav = () => {
     navOpen.value = mq.matches;
 };
@@ -80,17 +86,11 @@ header {
         gap: 1rem;
         list-style: none;
         align-items: baseline;
-
-        li a {
-            background: #444;
-            padding: 0.5rem 0.5rem;
-            border-radius: 0.25rem;
-        }
-
-        li a:hover {
-            background: #666;
-        }
     }
+}
+
+details summary {
+    font-weight: bold;
 }
 
 details {
@@ -100,13 +100,13 @@ details[open]::details-content {
     display: contents;
 }
 
-@media (min-width: 800px) {
+@media (min-width: 900px) {
     summary {
         display: none;
     }
 }
 
-@media (max-width: 799px) {
+@media (max-width: 899px) {
     header {
         display: grid;
         gap: 0;
@@ -146,10 +146,13 @@ details[open]::details-content {
 
         ul {
             flex-direction: column;
-            align-items: flex-end;
+            align-items: center;
             gap: 0.5rem;
 
             li {
+                width: 100%;
+                display: flex;
+                justify-content: flex-end;
                 padding-top: 0;
                 padding-bottom: 0;
             }

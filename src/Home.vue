@@ -5,32 +5,35 @@
         <section class="title">
             <h1 class="graffiti">Graffiti</h1>
 
-            <h2>An infrastructure for building social software.</h2>
+            <h2>Build your own social app.</h2>
         </section>
 
         <section id="overview">
             <p>
-                Graffiti is an infrastructure that can be used to build a wide
-                variety of custom social apps using
-                <strong>only front-end code</strong>—no need to build or deploy
-                your own server. You can build apps like <a href="">Twitter</a>,
-                <a href="">Messenger</a>, <a href="">Wikipedia</a>, or something
-                completely new!
+                Graffiti provides all of the backend services you need to build
+                your own social app. All you need to do is build the frontend!
             </p>
 
             <p>
-                Applications within the Graffiti ecosystem also
-                <strong>interoperate</strong>. You can freely move between
-                different Graffiti apps—each with its own aesthetic, feature
-                set, and moderation—all without losing your friends or data.
+                Graffiti's client-side Typescript API is expressive enough to
+                build apps like
+                <a href="https://glitter.graffiti.garden">Twitter</a>,
+                <a href="https://parallax.graffiti.garden/">Messenger</a>,
+                <a href="https://wiki.graffiti.garden">Wikipedia</a>, or
+                something completely new! The API also makes it easy to address
+                nuanced social dyanamics like <strong>moderation</strong>,
+                <strong>privacy</strong>, and <strong>context collapse</strong>.
             </p>
-
             <p>
-                Graffiti is
-                <strong>decentralized</strong>: you get to choose which of the
-                generic Graffiti servers your data is hosted on. Your choice of
-                server does not effect who you can interact with, and you can
-                change servers at any time or even host your own.
+                The Graffiti backend is <strong>decentralized</strong> so you
+                and your users will never be locked-in to a single provider.
+                Every user of a Graffiti app can choose where their data is
+                hosted or even host their own.
+            </p>
+            <p>
+                Graffiti apps <strong>interoperate</strong> so you can build an
+                app that connects with an existing Graffiti community while
+                offering its own aesthetic, features, and moderation.
             </p>
         </section>
 
@@ -89,6 +92,11 @@
                         Vue Plugin Documentation </a
                     >: Use Graffiti within <a href="https://vuejs.org">Vue</a>'s
                     reactive programming environment.
+                </li>
+                <li>
+                    <a href="https://github.com/graffiti-garden">Source Code</a
+                    >: All of the Graffiti codebase is open sourced under GNU
+                    GPLv3.
                 </li>
             </ul>
         </section>

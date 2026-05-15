@@ -183,7 +183,7 @@ main {
     grid-template-columns: minmax(0, 1fr);
     gap: 1rem;
     padding: 1rem;
-    max-width: 120ch;
+    max-width: 100ch;
     margin: 0 auto;
 }
 section {

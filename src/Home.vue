@@ -20,7 +20,7 @@
                 <a href="https://glitter.graffiti.garden">Twitter</a>,
                 <a href="https://parallax.graffiti.garden/">Messenger</a>,
                 <a href="https://wiki.graffiti.garden">Wikipedia</a>, or
-                something completely new! The API also makes it easy to address
+                something completely new. The API also makes it easy to address
                 nuanced social dyanamics like <strong>moderation</strong>,
                 <strong>privacy</strong>, and <strong>context collapse</strong>.
             </p>
@@ -346,6 +346,7 @@ section {
 }
 
 .waving {
+    display: inline-block;
     animation: wave 1.5s linear infinite;
     transform-origin: 80% 80%;
 }

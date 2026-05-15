@@ -8,7 +8,6 @@ import {
     onMounted,
     onUnmounted,
 } from "vue";
-import { useGraffiti, useGraffitiSession } from "@graffiti-garden/wrapper-vue";
 import Splitter from "primevue/splitter";
 import SplitterPanel from "primevue/splitterpanel";
 import Tabs from "primevue/tabs";
@@ -18,19 +17,16 @@ import TabPanels from "primevue/tabpanels";
 import TabPanel from "primevue/tabpanel";
 import { VueMonacoEditor } from "@guolao/vue-monaco-editor";
 
-const graffiti = useGraffiti();
-const graffitiSession = useGraffitiSession();
-
 const code = ref("");
 const editorOptions = {
     minimap: { enabled: false },
-    wordWrap: "on" as const,
     fontSize: 14,
+    lineNumbersMinChars: 3,
 };
 const monacoTheme = ref<"vs" | "vs-dark">("vs");
 
 onBeforeMount(async () => {
-    const response = await import("./demo.html?raw");
+    const response = await import("./demo/demo.html?raw");
     code.value = response.default.trim();
 });
 
@@ -61,17 +57,19 @@ onUnmounted(() => {
     mq.removeEventListener("change", syncNav);
     colorSchemeMq.removeEventListener("change", syncTheme);
 });
+
+const data = { processingWave: false };
 </script>
 
 <template>
     <Splitter v-if="!isMobile" class="demo-splitter">
-        <SplitterPanel>
+        <SplitterPanel :size="40">
             <h3>Demo</h3>
 
             <p v-if="errorMessage" class="error">{{ errorMessage }}</p>
-            <Renderer v-else :code="code" />
+            <Renderer v-else :code="code" :data="data" />
         </SplitterPanel>
-        <SplitterPanel>
+        <SplitterPanel :size="60">
             <h3>Demo Code (Editable!)</h3>
 
             <VueMonacoEditor
@@ -92,7 +90,7 @@ onUnmounted(() => {
         <TabPanels>
             <TabPanel value="0">
                 <p v-if="errorMessage" class="error">{{ errorMessage }}</p>
-                <Renderer class="render" v-else :code="code" />
+                <Renderer v-else :code="code" :data="data" />
             </TabPanel>
             <TabPanel value="1">
                 <VueMonacoEditor
@@ -105,6 +103,14 @@ onUnmounted(() => {
             </TabPanel>
         </TabPanels>
     </Tabs>
+
+    <p>
+        <em>
+            (This demo uses the frontend framework
+            <a href="https://vuejs.org/" target="_blank">Vue</a>. Graffiti
+            plugins for other frameworks will be available in the future)
+        </em>
+    </p>
 </template>
 
 <style>

@@ -129,4 +129,14 @@ a[role="button"],
     &:focus-within {
         background-color: var(--highlight-hover);
     }
+
+    &:disabled {
+        background-color: color-mix(
+            in srgb,
+            var(--highlight) 50%,
+            var(--solid-background)
+        );
+        color: var(--text-color);
+        cursor: not-allowed;
+    }
 }

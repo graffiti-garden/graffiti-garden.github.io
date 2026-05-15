@@ -92,6 +92,23 @@ const hyperscript = computed(() => {
 </script>
 
 <template>
-    <p class="error" v-if="errorMessage">{{ errorMessage }}</p>
-    <hyperscript v-else />
+    <div class="render">
+        <p class="error" v-if="errorMessage">{{ errorMessage }}</p>
+        <hyperscript v-else />
+    </div>
 </template>
+
+<style scoped>
+.error {
+    color: red;
+}
+
+.render {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 1rem;
+    padding: 1rem;
+    background: var(--solid-background);
+}
+</style>

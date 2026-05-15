@@ -1,13 +1,33 @@
 <script setup lang="ts">
 import Renderer from "./PlaygroundRenderer.vue";
-import { ref, watch, onErrorCaptured, onBeforeMount } from "vue";
+import {
+    ref,
+    watch,
+    onErrorCaptured,
+    onBeforeMount,
+    onMounted,
+    onUnmounted,
+} from "vue";
 import { useGraffiti, useGraffitiSession } from "@graffiti-garden/wrapper-vue";
+import Splitter from "primevue/splitter";
+import SplitterPanel from "primevue/splitterpanel";
+import Tabs from "primevue/tabs";
+import TabList from "primevue/tablist";
+import Tab from "primevue/tab";
+import TabPanels from "primevue/tabpanels";
+import TabPanel from "primevue/tabpanel";
+import { VueMonacoEditor } from "@guolao/vue-monaco-editor";
 
 const graffiti = useGraffiti();
 const graffitiSession = useGraffitiSession();
 
 const code = ref("");
-const activeTab = ref<"render" | "code">("render");
+const editorOptions = {
+    minimap: { enabled: false },
+    wordWrap: "on" as const,
+    fontSize: 14,
+};
+const monacoTheme = ref<"vs" | "vs-dark">("vs");
 
 onBeforeMount(async () => {
     const response = await import("./demo.html?raw");
@@ -21,125 +41,125 @@ onErrorCaptured((e) => {
 });
 // Reset the error whenever the code changes
 watch(code, () => (errorMessage.value = undefined));
+
+const isMobile = ref(false);
+const mq = window.matchMedia("(max-width: 800px)");
+const colorSchemeMq = window.matchMedia("(prefers-color-scheme: dark)");
+const syncNav = () => {
+    isMobile.value = mq.matches;
+};
+const syncTheme = () => {
+    monacoTheme.value = colorSchemeMq.matches ? "vs-dark" : "vs";
+};
+onMounted(() => {
+    syncNav();
+    syncTheme();
+    mq.addEventListener("change", syncNav);
+    colorSchemeMq.addEventListener("change", syncTheme);
+});
+onUnmounted(() => {
+    mq.removeEventListener("change", syncNav);
+    colorSchemeMq.removeEventListener("change", syncTheme);
+});
 </script>
 
 <template>
-    <div class="demo">
-        <div class="tabs" role="tablist" aria-label="Demo panels">
-            <button
-                id="render-tab"
-                class="tab"
-                role="tab"
-                type="button"
-                :aria-selected="activeTab === 'render'"
-                aria-controls="render-panel"
-                @click="activeTab = 'render'"
-            >
-                Render
-            </button>
-            <button
-                id="code-tab"
-                class="tab"
-                role="tab"
-                type="button"
-                :aria-selected="activeTab === 'code'"
-                aria-controls="code-panel"
-                @click="activeTab = 'code'"
-            >
-                Code
-            </button>
-        </div>
+    <Splitter v-if="!isMobile" class="demo-splitter">
+        <SplitterPanel>
+            <h3>Demo</h3>
 
-        <section
-            id="render-panel"
-            class="panel render"
-            role="tabpanel"
-            aria-labelledby="render-tab"
-            :class="{ 'mobile-hidden': activeTab !== 'render' }"
-        >
             <p v-if="errorMessage" class="error">{{ errorMessage }}</p>
             <Renderer v-else :code="code" />
-        </section>
+        </SplitterPanel>
+        <SplitterPanel>
+            <h3>Demo Code (Editable!)</h3>
 
-        <section
-            id="code-panel"
-            class="panel code"
-            role="tabpanel"
-            aria-labelledby="code-tab"
-            :class="{ 'mobile-hidden': activeTab !== 'code' }"
-        >
-            <textarea v-model="code" />
-        </section>
-    </div>
+            <VueMonacoEditor
+                v-model:value="code"
+                language="html"
+                :theme="monacoTheme"
+                class-name="demo-editor"
+                :options="editorOptions"
+            />
+        </SplitterPanel>
+    </Splitter>
+
+    <Tabs v-else value="0" class="demo-tabs">
+        <TabList>
+            <Tab value="0"> Demo </Tab>
+            <Tab value="1"> Edit Demo Code </Tab>
+        </TabList>
+        <TabPanels>
+            <TabPanel value="0">
+                <p v-if="errorMessage" class="error">{{ errorMessage }}</p>
+                <Renderer class="render" v-else :code="code" />
+            </TabPanel>
+            <TabPanel value="1">
+                <VueMonacoEditor
+                    v-model:value="code"
+                    language="html"
+                    :theme="monacoTheme"
+                    class-name="demo-editor"
+                    :options="editorOptions"
+                />
+            </TabPanel>
+        </TabPanels>
+    </Tabs>
 </template>
 
-<style scoped>
-.demo {
-    display: grid;
-    gap: 0.75rem;
+<style>
+.demo-editor,
+.demo-splitter .render {
+    height: 20rem;
 }
 
-.tabs {
-    display: grid;
-    grid-template-columns: repeat(2, minmax(0, 1fr));
+.demo-splitter .render {
+    border-top-left-radius: 0.5rem;
+    border-bottom-left-radius: 0.5rem;
+}
+
+.demo-splitter .demo-editor {
+    overflow: hidden;
+    border-top-right-radius: 0.5rem;
+    border-bottom-right-radius: 0.5rem;
+}
+
+.demo-splitter .p-splitter-gutter {
+    background: var(--highlight);
+}
+
+.demo-splitter h3 {
+    text-align: center;
+}
+
+.demo-splitter .p-splitterpanel {
+    display: flex;
+    flex-direction: column;
+}
+
+.demo-tabs {
+    display: flex;
+    flex-direction: column;
     gap: 0.5rem;
 }
-
-.tab {
-    border: 1px solid rgb(125 125 125 / 80%);
-    border-radius: 0.4rem;
-    padding: 0.45rem 0.7rem;
-    background: rgb(0 0 0 / 10%);
-    color: inherit;
-    font: inherit;
-    cursor: pointer;
-}
-
-.tab[aria-selected="true"] {
-    background: #444;
-    color: #fff;
-    border-color: #444;
-}
-
-.panel {
-    border: 1px solid rgb(125 125 125 / 80%);
-    border-radius: 0.5rem;
-    padding: 0.75rem;
-    background: rgb(255 255 255 / 65%);
-}
-
-.code textarea {
-    width: 100%;
-    min-height: 20rem;
-    font: inherit;
-    color: inherit;
-    background: transparent;
+.demo-tabs .p-tablist-tab-list {
+    display: flex;
+    gap: 0.5rem;
     border: none;
-    resize: vertical;
 }
 
-.code textarea:focus {
-    outline: none;
+.demo-tabs .p-tab {
+    padding: 0.5rem;
 }
 
-@media (max-width: 899px) {
-    .mobile-hidden {
-        display: none;
-    }
+.demo-tabs .p-tab.p-tab-active {
+    color: var(--highlight);
+    border-bottom-color: var(--highlight);
 }
 
-@media (min-width: 900px) {
-    .demo {
-        grid-template-columns: repeat(2, minmax(0, 1fr));
-        align-items: start;
-    }
-
-    .tabs {
-        grid-column: 1 / -1;
-    }
-
-    .mobile-hidden {
-        display: block;
-    }
+.demo-tabs .p-tabpanels {
+    background: var(--solid-background);
+    border-radius: 0.5rem;
+    overflow: clip;
 }
 </style>

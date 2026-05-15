@@ -33,7 +33,7 @@
             <p>
                 Graffiti apps <strong>interoperate</strong> so you can build an
                 app that connects with an existing Graffiti community while
-                offering its own aesthetic, features, and moderation.
+                offering your own aesthetic, features, and moderation.
             </p>
         </section>
 
@@ -65,8 +65,6 @@
         </section>
 
         <section>
-            <h2>Demo</h2>
-
             <Suspense>
                 <Demo />
 
@@ -344,6 +342,20 @@ section {
 
     main > section:not(.title):not(#overview):not(.paper) {
         grid-column: 1 / -1;
+    }
+}
+
+.waving {
+    animation: wave 1.5s linear infinite;
+    transform-origin: 80% 80%;
+}
+
+@keyframes wave {
+    25% {
+        transform: rotate(-10deg);
+    }
+    75% {
+        transform: rotate(10deg);
     }
 }
 </style>

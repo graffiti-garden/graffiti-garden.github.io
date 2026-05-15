@@ -52,6 +52,7 @@ html::before {
     font-style: normal;
     font-weight: 400;
     src: url("./assets/rock-salt.woff2") format("woff2");
+    font-display: swap;
 }
 
 html {
@@ -95,7 +96,7 @@ a > img {
 }
 
 .graffiti {
-    font-family: "Rock Salt", cursive;
+    font-family: "Rock Salt", sans-serif;
     color: var(--title-color);
 
     a {

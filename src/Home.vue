@@ -37,32 +37,54 @@
             </p>
         </section>
 
-        <section class="paper">
-            <a
-                href="https://dl.acm.org/doi/pdf/10.1145/3746059.3747627?download=true"
-                download
-            >
-                <figure>
-                    <picture>
-                        <source
-                            media="(max-width: 899px)"
-                            srcset="/assets/paper-wide.avif"
-                        />
+        <aside class="paper" aria-label="Paper and talk">
+            <section aria-label="Talk">
+                <a
+                    href="https://www.youtube.com/watch?v=uQhkvRRCezc"
+                    @click.prevent="openVideo"
+                >
+                    <figure>
                         <img
-                            src="/assets/paper-tall.avif"
-                            alt="Screenshot of the front page of the Graffiti paper"
+                            src="https://img.youtube.com/vi/uQhkvRRCezc/hqdefault.jpg"
+                            alt="Thumbnail for the Graffiti paper talk"
                         />
-                    </picture>
 
-                    <figcaption class="button-like">Read the Paper</figcaption>
-                </figure>
-            </a>
-            <p>
-                <a href="https://uist.acm.org/2025/awards/">
-                    🏆 Best Paper at UIST’25
+                        <figcaption class="button-like">
+                            Watch the Talk
+                        </figcaption>
+                    </figure>
                 </a>
-            </p>
-        </section>
+            </section>
+
+            <section aria-label="Paper">
+                <a
+                    href="https://dl.acm.org/doi/pdf/10.1145/3746059.3747627?download=true"
+                    download
+                >
+                    <figure>
+                        <picture>
+                            <source
+                                media="(max-width: 899px)"
+                                srcset="/assets/paper-wide.avif"
+                            />
+                            <img
+                                src="/assets/paper-tall.avif"
+                                alt="Screenshot of the front page of the Graffiti paper"
+                            />
+                        </picture>
+
+                        <figcaption class="button-like">
+                            Read the Paper
+                        </figcaption>
+                    </figure>
+                </a>
+                <p>
+                    <a href="https://uist.acm.org/2025/awards/">
+                        🏆 Best Paper at UIST’25
+                    </a>
+                </p>
+            </section>
+        </aside>
 
         <section>
             <Suspense>
@@ -82,20 +104,20 @@
             <ul>
                 <li>
                     <a href="https://vue.graffiti.garden/examples/">
-                        Simple Examples </a
+                        Simple Examples</a
                     >: See how likes, follows, comments, profiles, and more can
                     be implemented in just a few lines of code.
                 </li>
                 <li>
                     <a href="https://api.graffiti.garden/classes/Graffiti.html">
-                        API Documentation </a
+                        API Documentation</a
                     >: Use Graffiti anywhere you use Javascript or Typescript.
                 </li>
                 <li>
                     <a
                         href="https://vue.graffiti.garden/variables/GraffitiPlugin.html"
                     >
-                        Vue Plugin Documentation </a
+                        Vue Plugin Documentation</a
                     >: Use Graffiti within <a href="https://vuejs.org">Vue</a>'s
                     reactive programming environment.
                 </li>
@@ -126,6 +148,23 @@
             </div>
         </section>
     </main>
+
+    <dialog
+        id="paper-video-dialog"
+        ref="videoDialog"
+        class="video-dialog"
+        aria-label="Graffiti paper talk"
+        @click.self="closeVideo"
+        @close="videoPlaying = false"
+    >
+        <iframe
+            v-if="videoPlaying"
+            src="https://www.youtube.com/embed/uQhkvRRCezc?autoplay=1&rel=0"
+            title="Graffiti paper talk"
+            allow="autoplay; encrypted-media; picture-in-picture; fullscreen"
+            allowfullscreen
+        ></iframe>
+    </dialog>
 </template>
 
 <script setup lang="ts">
@@ -133,6 +172,9 @@ import { defineAsyncComponent, onBeforeUnmount, ref } from "vue";
 import Header from "./Header.vue";
 
 const Demo = defineAsyncComponent(() => import("./Demo.vue"));
+
+const videoDialog = ref<HTMLDialogElement | null>(null);
+const videoPlaying = ref(false);
 
 const bibtexEntry = `@inproceedings{graffiti,
     title = {Graffiti: Enabling an Ecosystem of Personalized and Interoperable Social Applications},
@@ -152,6 +194,15 @@ const bibtexEntry = `@inproceedings{graffiti,
 
 const copyState = ref<"idle" | "copied" | "error">("idle");
 let copyFeedbackTimer: ReturnType<typeof setTimeout> | null = null;
+
+function openVideo() {
+    videoPlaying.value = true;
+    videoDialog.value?.showModal();
+}
+
+function closeVideo() {
+    videoDialog.value?.close();
+}
 
 async function copyBibtex() {
     try {
@@ -200,6 +251,10 @@ section {
 }
 
 .paper {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+
     p {
         text-align: center;
     }
@@ -217,6 +272,11 @@ section {
             height: auto;
             object-fit: contain;
         }
+    }
+
+    section:first-child img {
+        aspect-ratio: 16 / 9;
+        object-fit: cover;
     }
 
     figcaption {
@@ -255,6 +315,28 @@ section {
             background-color: var(--highlight-hover);
         }
     }
+}
+
+.video-dialog {
+    width: min(90vw, 72rem);
+    margin: auto;
+    padding: 0;
+    border: 0;
+    border-radius: 0.75rem;
+    background: #000;
+}
+
+.video-dialog::backdrop {
+    background: rgb(0 0 0 / 75%);
+    backdrop-filter: blur(4px);
+}
+
+.video-dialog iframe {
+    display: block;
+    width: 100%;
+    aspect-ratio: 16 / 9;
+    border: 0;
+    border-radius: 0.75rem;
 }
 
 @media (max-width: 899px) {

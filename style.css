@@ -55,7 +55,7 @@ html::before {
     font-display: swap;
 }
 
-html {
+#app {
     font-family:
         Inter,
         -apple-system,

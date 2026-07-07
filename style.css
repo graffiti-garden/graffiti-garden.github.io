@@ -34,17 +34,13 @@
 html::before {
     content: "";
     position: fixed;
-    left: 0;
-    right: 0;
+    inset: calc(-1 * var(--blurpix));
     z-index: -1;
     background-image: url("/assets/graffiti.avif");
     background-size: cover;
     background-repeat: no-repeat;
     background-position: 50% 50%;
-    height: calc(100vh + 2 * var(--blurpix));
-    width: calc(100vw + 2 * var(--blurpix));
     filter: blur(var(--blurpix));
-    margin: calc(-1 * var(--blurpix));
 }
 
 @font-face {

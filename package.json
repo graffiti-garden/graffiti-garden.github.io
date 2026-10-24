@@ -6,8 +6,8 @@
     "preview": "vite preview"
   },
   "dependencies": {
-    "@graffiti-garden/implementation-decentralized": "^0.0.9",
-    "@graffiti-garden/wrapper-vue": "^1.2.2",
+    "@graffiti-garden/implementation-decentralized": "^0.1.8",
+    "@graffiti-garden/wrapper-vue": "^1.4.3",
     "@guolao/vue-monaco-editor": "^1.6.0",
     "monaco-editor": "^0.55.1",
     "primevue": "^4.5.5",

@@ -37,7 +37,7 @@
                     </li>
                     <li>
                         <a
-                            href="https://github.com/graffiti-garden"
+                            href="https://github.com/graffiti-garden/graffiti"
                             role="button"
                         >
                             <img

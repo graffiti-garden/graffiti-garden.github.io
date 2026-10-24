@@ -122,7 +122,7 @@
                     reactive programming environment.
                 </li>
                 <li>
-                    <a href="https://github.com/graffiti-garden">Source Code</a
+                    <a href="https://github.com/graffiti-garden/graffiti">Source Code</a
                     >: All of the Graffiti codebase is open sourced under GNU
                     GPLv3.
                 </li>
